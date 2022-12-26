@@ -68,12 +68,12 @@
 /* #define RTC_CLOCK_SOURCE_LSI */
 
 #ifdef RTC_CLOCK_SOURCE_HSE
-  #define RTC_ASYNCH_PREDIV       99U
-  #define RTC_SYNCH_PREDIV        9U
-  #define RCC_RTCCLKSOURCE_1MHZ   ((uint32_t)((uint32_t)RCC_BDCR_RTCSEL | (uint32_t)((HSE_VALUE/1000000U) << 16U)))
+#define RTC_ASYNCH_PREDIV       99U
+#define RTC_SYNCH_PREDIV        9U
+#define RCC_RTCCLKSOURCE_1MHZ   ((uint32_t)((uint32_t)RCC_BDCR_RTCSEL | (uint32_t)((HSE_VALUE/1000000U) << 16U)))
 #else /* RTC_CLOCK_SOURCE_LSE || RTC_CLOCK_SOURCE_LSI */
-  #define RTC_ASYNCH_PREDIV       0U
-  #define RTC_SYNCH_PREDIV        31U
+#define RTC_ASYNCH_PREDIV       0U
+#define RTC_SYNCH_PREDIV        31U
 #endif /* RTC_CLOCK_SOURCE_HSE */
 
 /* Private macro -------------------------------------------------------------*/
@@ -94,7 +94,7 @@ void RTC_Alarm_IRQHandler(void);
   * @param  TickPriority: Tick interrupt priority.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
+HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
   __IO uint32_t counter = 0U;
 
@@ -124,10 +124,10 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
 #error Please select the RTC Clock source
 #endif /* RTC_CLOCK_SOURCE_LSE */
 
-  if(HAL_RCC_OscConfig(&RCC_OscInitStruct) == HAL_OK)
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) == HAL_OK)
   {
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-    if(HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) == HAL_OK)
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) == HAL_OK)
     {
       /* Enable RTC Clock */
       __HAL_RCC_RTC_ENABLE();
@@ -166,9 +166,9 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
 
       counter = 0U;
       /* Wait till RTC ALRAWF flag is set and if Time out is reached exit */
-      while(__HAL_RTC_ALARM_GET_FLAG(&hRTC_Handle, RTC_FLAG_ALRAWF) == 0U)
+      while (__HAL_RTC_ALARM_GET_FLAG(&hRTC_Handle, RTC_FLAG_ALRAWF) == 0U)
       {
-        if(counter++ == (SystemCoreClock /48U)) /* Timeout = ~ 1s */
+        if (counter++ == (SystemCoreClock / 48U)) /* Timeout = ~ 1s */
         {
           return HAL_ERROR;
         }
@@ -186,14 +186,14 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
       __HAL_RTC_ALARM_EXTI_ENABLE_RISING_EDGE();
 
       /* Check if the Initialization mode is set */
-      if((hRTC_Handle.Instance->ISR & RTC_ISR_INITF) == (uint32_t)RESET)
+      if ((hRTC_Handle.Instance->ISR & RTC_ISR_INITF) == (uint32_t)RESET)
       {
         /* Set the Initialization mode */
         hRTC_Handle.Instance->ISR = (uint32_t)RTC_INIT_MASK;
         counter = 0U;
-        while((hRTC_Handle.Instance->ISR & RTC_ISR_INITF) == (uint32_t)RESET)
+        while ((hRTC_Handle.Instance->ISR & RTC_ISR_INITF) == (uint32_t)RESET)
         {
-          if(counter++ == (SystemCoreClock /48U)) /* Timeout = ~ 1s */
+          if (counter++ == (SystemCoreClock / 48U)) /* Timeout = ~ 1s */
           {
             return HAL_ERROR;
           }
@@ -264,9 +264,9 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
   /* Set the Initialization mode */
   hrtc->Instance->ISR = (uint32_t)RTC_INIT_MASK;
 
-  while((hrtc->Instance->ISR & RTC_ISR_INITF) == (uint32_t)RESET)
+  while ((hrtc->Instance->ISR & RTC_ISR_INITF) == (uint32_t)RESET)
   {
-    if(counter++ == (SystemCoreClock /48U)) /* Timeout = ~ 1s */
+    if (counter++ == (SystemCoreClock / 48U)) /* Timeout = ~ 1s */
     {
       break;
     }

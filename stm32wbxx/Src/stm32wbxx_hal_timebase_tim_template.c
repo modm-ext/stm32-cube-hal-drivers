@@ -52,15 +52,16 @@ void TIM2_IRQHandler(void);
   * @param  TickPriority: Tick interrupt priority.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
+HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
   RCC_ClkInitTypeDef    clkconfig;
-  uint32_t              uwTimclock, uwAPB1Prescaler;
+  uint32_t              uwTimclock;
+  uint32_t              uwAPB1Prescaler;
   uint32_t              uwPrescalerValue;
   uint32_t              pFLatency;
 
-    /*Configure the TIM2 IRQ priority */
-  HAL_NVIC_SetPriority(TIM2_IRQn, TickPriority ,0U);
+  /* Configure the TIM2 IRQ priority */
+  HAL_NVIC_SetPriority(TIM2_IRQn, TickPriority, 0U);
 
   /* Enable the TIM2 global Interrupt */
   HAL_NVIC_EnableIRQ(TIM2_IRQn);
@@ -81,11 +82,11 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
   }
   else
   {
-    uwTimclock = 2U*HAL_RCC_GetPCLK1Freq();
+    uwTimclock = 2U * HAL_RCC_GetPCLK1Freq();
   }
 
   /* Compute the prescaler value to have TIM2 counter clock equal to 1MHz */
-  uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);
+  uwPrescalerValue = (uint32_t)((uwTimclock / 1000000U) - 1U);
 
   /* Initialize TIM2 */
   TimHandle.Instance = TIM2;
@@ -100,7 +101,7 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
   TimHandle.Init.Prescaler = uwPrescalerValue;
   TimHandle.Init.ClockDivision = 0U;
   TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-  if(HAL_TIM_Base_Init(&TimHandle) == HAL_OK)
+  if (HAL_TIM_Base_Init(&TimHandle) == HAL_OK)
   {
     /* Start the TIM time Base generation in interrupt mode */
     return HAL_TIM_Base_Start_IT(&TimHandle);

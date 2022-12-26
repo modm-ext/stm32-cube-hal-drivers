@@ -69,12 +69,12 @@
 /* #define RTC_CLOCK_SOURCE_LSI */
 
 #ifdef RTC_CLOCK_SOURCE_HSE
-  #define RTC_ASYNCH_PREDIV       99U
-  #define RTC_SYNCH_PREDIV        9U
-  #define RCC_RTCCLKSOURCE_1MHZ   ((uint32_t)((uint32_t)RCC_BDCR_RTCSEL | (uint32_t)((HSE_VALUE/1000000U) << 16U)))
+#define RTC_ASYNCH_PREDIV       99U
+#define RTC_SYNCH_PREDIV        9U
+#define RCC_RTCCLKSOURCE_1MHZ   ((uint32_t)((uint32_t)RCC_BDCR_RTCSEL | (uint32_t)((HSE_VALUE/1000000U) << 16U)))
 #else /* RTC_CLOCK_SOURCE_LSE || RTC_CLOCK_SOURCE_LSI */
-  #define RTC_ASYNCH_PREDIV       0U
-  #define RTC_SYNCH_PREDIV        31U
+#define RTC_ASYNCH_PREDIV       0U
+#define RTC_SYNCH_PREDIV        31U
 #endif /* RTC_CLOCK_SOURCE_HSE */
 
 /* Private macro -------------------------------------------------------------*/
@@ -100,7 +100,7 @@ void RTC_WKUP_IRQHandler(void);
   * @param  TickPriority: Tick interrupt priority.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
+HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
   __IO uint32_t counter = 0U;
 
@@ -130,10 +130,10 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
 #error Please select the RTC Clock source
 #endif /* RTC_CLOCK_SOURCE_LSE */
 
-  if(HAL_RCC_OscConfig(&RCC_OscInitStruct) == HAL_OK)
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) == HAL_OK)
   {
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-    if(HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) == HAL_OK)
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) == HAL_OK)
     {
       /* Enable RTC Clock */
       __HAL_RCC_RTC_ENABLE();
@@ -168,12 +168,12 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
       __HAL_RTC_WAKEUPTIMER_DISABLE(&hRTC_Handle);
 
       /* In case of interrupt mode is used, the interrupt source must disabled */
-      __HAL_RTC_WAKEUPTIMER_DISABLE_IT(&hRTC_Handle,RTC_IT_WUT);
+      __HAL_RTC_WAKEUPTIMER_DISABLE_IT(&hRTC_Handle, RTC_IT_WUT);
 
       /* Wait till RTC WUTWF flag is set  */
-      while(__HAL_RTC_WAKEUPTIMER_GET_FLAG(&hRTC_Handle, RTC_FLAG_WUTWF) == 0U)
+      while (__HAL_RTC_WAKEUPTIMER_GET_FLAG(&hRTC_Handle, RTC_FLAG_WUTWF) == 0U)
       {
-        if(counter++ == (SystemCoreClock /48U))
+        if (counter++ == (SystemCoreClock / 48U))
         {
           return HAL_ERROR;
         }
@@ -200,7 +200,7 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
       __HAL_RTC_WAKEUPTIMER_EXTI_ENABLE_RISING_EDGE();
 
       /* Configure the Interrupt in the RTC_CR register */
-      __HAL_RTC_WAKEUPTIMER_ENABLE_IT(&hRTC_Handle,RTC_IT_WUT);
+      __HAL_RTC_WAKEUPTIMER_ENABLE_IT(&hRTC_Handle, RTC_IT_WUT);
 
       /* Enable the Wake-up Timer */
       __HAL_RTC_WAKEUPTIMER_ENABLE(&hRTC_Handle);
