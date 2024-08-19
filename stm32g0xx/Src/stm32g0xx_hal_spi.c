@@ -68,6 +68,14 @@
           (##) HAL_SPI_DeInit()
           (##) HAL_SPI_Init()
      [..]
+       Data buffer address alignment restriction:
+      (#) There is no support for unaligned accesses on the Cortex-M0 processor.
+          If the user wants to transfer in 16Bit data mode, it shall ensure that 16-bit aligned address is used for:
+          (##) pData parameter in HAL_SPI_Transmit(), HAL_SPI_Transmit_IT(), HAL_SPI_Receive() and HAL_SPI_Receive_IT()
+          (##) pTxData and pRxData parameters in HAL_SPI_TransmitReceive() and HAL_SPI_TransmitReceive_IT()
+      (#) There is no such restriction when going through DMA by using HAL_SPI_Transmit_DMA(), HAL_SPI_Receive_DMA()
+          and HAL_SPI_TransmitReceive_DMA().
+     [..]
        Callback registration:
 
       (#) The compilation flag USE_HAL_SPI_REGISTER_CALLBACKS when set to 1U
@@ -821,14 +829,17 @@ HAL_StatusTypeDef HAL_SPI_UnRegisterCallback(SPI_HandleTypeDef *hspi, HAL_SPI_Ca
 HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
   uint32_t tickstart;
-  HAL_StatusTypeDef errorcode = HAL_OK;
   uint16_t initial_TxXferCount;
+
+  if (hspi->Init.DataSize > SPI_DATASIZE_8BIT)
+  {
+    /* in this case, 16-bit access is performed on Data
+       So, check Data is 16-bit aligned address */
+    assert_param(IS_SPI_16BIT_ALIGNED_ADDRESS(pData));
+  }
 
   /* Check Direction parameter */
   assert_param(IS_SPI_DIRECTION_2LINES_OR_1LINE(hspi->Init.Direction));
-
-  /* Process Locked */
-  __HAL_LOCK(hspi);
 
   /* Init tickstart for timeout management*/
   tickstart = HAL_GetTick();
@@ -836,15 +847,16 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
 
   if (hspi->State != HAL_SPI_STATE_READY)
   {
-    errorcode = HAL_BUSY;
-    goto error;
+    return HAL_BUSY;
   }
 
   if ((pData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
 
   /* Set the transaction information */
   hspi->State       = HAL_SPI_STATE_BUSY_TX;
@@ -907,8 +919,9 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
         /* Timeout management */
         if ((((HAL_GetTick() - tickstart) >=  Timeout) && (Timeout != HAL_MAX_DELAY)) || (Timeout == 0U))
         {
-          errorcode = HAL_TIMEOUT;
-          goto error;
+          hspi->State = HAL_SPI_STATE_READY;
+          __HAL_UNLOCK(hspi);
+          return HAL_TIMEOUT;
         }
       }
     }
@@ -936,8 +949,9 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
         /* Timeout management */
         if ((((HAL_GetTick() - tickstart) >=  Timeout) && (Timeout != HAL_MAX_DELAY)) || (Timeout == 0U))
         {
-          errorcode = HAL_TIMEOUT;
-          goto error;
+          hspi->State = HAL_SPI_STATE_READY;
+          __HAL_UNLOCK(hspi);
+          return HAL_TIMEOUT;
         }
       }
     }
@@ -962,16 +976,18 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
     __HAL_SPI_CLEAR_OVRFLAG(hspi);
   }
 
-  if (hspi->ErrorCode != HAL_SPI_ERROR_NONE)
-  {
-    errorcode = HAL_ERROR;
-  }
-
-error:
   hspi->State = HAL_SPI_STATE_READY;
   /* Process Unlocked */
   __HAL_UNLOCK(hspi);
-  return errorcode;
+
+  if (hspi->ErrorCode != HAL_SPI_ERROR_NONE)
+  {
+    return HAL_ERROR;
+  }
+  else
+  {
+    return HAL_OK;
+  }
 }
 
 /**
@@ -991,7 +1007,18 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
   __IO uint8_t  tmpreg8 = 0;
 #endif /* USE_SPI_CRC */
   uint32_t tickstart;
-  HAL_StatusTypeDef errorcode = HAL_OK;
+
+  if (hspi->Init.DataSize > SPI_DATASIZE_8BIT)
+  {
+    /* in this case, 16-bit access is performed on Data
+       So, check Data is 16-bit aligned address */
+    assert_param(IS_SPI_16BIT_ALIGNED_ADDRESS(pData));
+  }
+
+  if (hspi->State != HAL_SPI_STATE_READY)
+  {
+    return HAL_BUSY;
+  }
 
   if ((hspi->Init.Mode == SPI_MODE_MASTER) && (hspi->Init.Direction == SPI_DIRECTION_2LINES))
   {
@@ -1000,23 +1027,16 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
     return HAL_SPI_TransmitReceive(hspi, pData, pData, Size, Timeout);
   }
 
-  /* Process Locked */
-  __HAL_LOCK(hspi);
-
   /* Init tickstart for timeout management*/
   tickstart = HAL_GetTick();
 
-  if (hspi->State != HAL_SPI_STATE_READY)
-  {
-    errorcode = HAL_BUSY;
-    goto error;
-  }
-
   if ((pData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
 
   /* Set the transaction information */
   hspi->State       = HAL_SPI_STATE_BUSY_RX;
@@ -1088,8 +1108,9 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
         /* Timeout management */
         if ((((HAL_GetTick() - tickstart) >=  Timeout) && (Timeout != HAL_MAX_DELAY)) || (Timeout == 0U))
         {
-          errorcode = HAL_TIMEOUT;
-          goto error;
+          hspi->State = HAL_SPI_STATE_READY;
+          __HAL_UNLOCK(hspi);
+          return HAL_TIMEOUT;
         }
       }
     }
@@ -1111,8 +1132,9 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
         /* Timeout management */
         if ((((HAL_GetTick() - tickstart) >=  Timeout) && (Timeout != HAL_MAX_DELAY)) || (Timeout == 0U))
         {
-          errorcode = HAL_TIMEOUT;
-          goto error;
+          hspi->State = HAL_SPI_STATE_READY;
+          __HAL_UNLOCK(hspi);
+          return HAL_TIMEOUT;
         }
       }
     }
@@ -1129,8 +1151,8 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
     if (SPI_WaitFlagStateUntilTimeout(hspi, SPI_FLAG_RXNE, SET, Timeout, tickstart) != HAL_OK)
     {
       /* the latest data has not been received */
-      errorcode = HAL_TIMEOUT;
-      goto error;
+      __HAL_UNLOCK(hspi);
+      return HAL_TIMEOUT;
     }
 
     /* Receive last data in 16 Bit mode */
@@ -1148,8 +1170,9 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
     if (SPI_WaitFlagStateUntilTimeout(hspi, SPI_FLAG_RXNE, SET, Timeout, tickstart) != HAL_OK)
     {
       SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_CRC);
-      errorcode = HAL_TIMEOUT;
-      goto error;
+      hspi->State = HAL_SPI_STATE_READY;
+      __HAL_UNLOCK(hspi);
+      return HAL_TIMEOUT;
     }
 
     /* Read CRC to Flush DR and RXNE flag */
@@ -1175,8 +1198,9 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
         {
           /* Error on the CRC reception */
           SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_CRC);
-          errorcode = HAL_TIMEOUT;
-          goto error;
+          hspi->State = HAL_SPI_STATE_READY;
+          __HAL_UNLOCK(hspi);
+          return HAL_TIMEOUT;
         }
         /* Read 8bit CRC again in case of 16bit CRC in 8bit Data mode */
         tmpreg8 = *ptmpreg8;
@@ -1202,15 +1226,17 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
   }
 #endif /* USE_SPI_CRC */
 
+  hspi->State = HAL_SPI_STATE_READY;
+  /* Unlock the process */
+  __HAL_UNLOCK(hspi);
   if (hspi->ErrorCode != HAL_SPI_ERROR_NONE)
   {
-    errorcode = HAL_ERROR;
+    return HAL_ERROR;
   }
-
-error :
-  hspi->State = HAL_SPI_STATE_READY;
-  __HAL_UNLOCK(hspi);
-  return errorcode;
+  else
+  {
+    return HAL_OK;
+  }
 }
 
 /**
@@ -1240,13 +1266,17 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
 
   /* Variable used to alternate Rx and Tx during transfer */
   uint32_t             txallowed = 1U;
-  HAL_StatusTypeDef    errorcode = HAL_OK;
+
+  if (hspi->Init.DataSize > SPI_DATASIZE_8BIT)
+  {
+    /* in this case, 16-bit access is performed on Data
+       So, check Data is 16-bit aligned address */
+    assert_param(IS_SPI_16BIT_ALIGNED_ADDRESS(pTxData));
+    assert_param(IS_SPI_16BIT_ALIGNED_ADDRESS(pRxData));
+  }
 
   /* Check Direction parameter */
   assert_param(IS_SPI_DIRECTION_2LINES(hspi->Init.Direction));
-
-  /* Process Locked */
-  __HAL_LOCK(hspi);
 
   /* Init tickstart for timeout management*/
   tickstart = HAL_GetTick();
@@ -1263,15 +1293,16 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
   if (!((tmp_state == HAL_SPI_STATE_READY) || \
         ((tmp_mode == SPI_MODE_MASTER) && (hspi->Init.Direction == SPI_DIRECTION_2LINES) && (tmp_state == HAL_SPI_STATE_BUSY_RX))))
   {
-    errorcode = HAL_BUSY;
-    goto error;
+    return HAL_BUSY;
   }
 
   if ((pTxData == NULL) || (pRxData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
 
   /* Don't overwrite in case of HAL_SPI_STATE_BUSY_RX */
   if (hspi->State != HAL_SPI_STATE_BUSY_RX)
@@ -1327,6 +1358,20 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
       hspi->Instance->DR = *((uint16_t *)hspi->pTxBuffPtr);
       hspi->pTxBuffPtr += sizeof(uint16_t);
       hspi->TxXferCount--;
+
+#if (USE_SPI_CRC != 0U)
+      /* Enable CRC Transmission */
+      if ((hspi->TxXferCount == 0U) && (hspi->Init.CRCCalculation == SPI_CRCCALCULATION_ENABLE))
+      {
+        /* Set NSS Soft to received correctly the CRC on slave mode with NSS pulse activated */
+        if ((READ_BIT(spi_cr1, SPI_CR1_MSTR) == 0U) && (READ_BIT(spi_cr2, SPI_CR2_NSSP) == SPI_CR2_NSSP))
+        {
+          SET_BIT(hspi->Instance->CR1, SPI_CR1_SSM);
+        }
+        SET_BIT(hspi->Instance->CR1, SPI_CR1_CRCNEXT);
+      }
+#endif /* USE_SPI_CRC */
+
     }
     while ((hspi->TxXferCount > 0U) || (hspi->RxXferCount > 0U))
     {
@@ -1364,8 +1409,9 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
       }
       if (((HAL_GetTick() - tickstart) >=  Timeout) && (Timeout != HAL_MAX_DELAY))
       {
-        errorcode = HAL_TIMEOUT;
-        goto error;
+        hspi->State = HAL_SPI_STATE_READY;
+        __HAL_UNLOCK(hspi);
+        return HAL_TIMEOUT;
       }
     }
   }
@@ -1377,6 +1423,19 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
       *((__IO uint8_t *)&hspi->Instance->DR) = (*hspi->pTxBuffPtr);
       hspi->pTxBuffPtr += sizeof(uint8_t);
       hspi->TxXferCount--;
+
+#if (USE_SPI_CRC != 0U)
+      /* Enable CRC Transmission */
+      if ((hspi->TxXferCount == 0U) && (hspi->Init.CRCCalculation == SPI_CRCCALCULATION_ENABLE))
+      {
+        /* Set NSS Soft to received correctly the CRC on slave mode with NSS pulse activated */
+        if ((READ_BIT(spi_cr1, SPI_CR1_MSTR) == 0U) && (READ_BIT(spi_cr2, SPI_CR2_NSSP) == SPI_CR2_NSSP))
+        {
+          SET_BIT(hspi->Instance->CR1, SPI_CR1_SSM);
+        }
+        SET_BIT(hspi->Instance->CR1, SPI_CR1_CRCNEXT);
+      }
+#endif /* USE_SPI_CRC */
     }
     while ((hspi->TxXferCount > 0U) || (hspi->RxXferCount > 0U))
     {
@@ -1414,8 +1473,9 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
       }
       if ((((HAL_GetTick() - tickstart) >=  Timeout) && ((Timeout != HAL_MAX_DELAY))) || (Timeout == 0U))
       {
-        errorcode = HAL_TIMEOUT;
-        goto error;
+        hspi->State = HAL_SPI_STATE_READY;
+        __HAL_UNLOCK(hspi);
+        return HAL_TIMEOUT;
       }
     }
   }
@@ -1429,8 +1489,9 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
     {
       /* Error on the CRC reception */
       SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_CRC);
-      errorcode = HAL_TIMEOUT;
-      goto error;
+      hspi->State = HAL_SPI_STATE_READY;
+      __HAL_UNLOCK(hspi);
+      return HAL_TIMEOUT;
     }
     /* Read CRC */
     if (hspi->Init.DataSize == SPI_DATASIZE_16BIT)
@@ -1455,8 +1516,9 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
         {
           /* Error on the CRC reception */
           SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_CRC);
-          errorcode = HAL_TIMEOUT;
-          goto error;
+          hspi->State = HAL_SPI_STATE_READY;
+          __HAL_UNLOCK(hspi);
+          return HAL_TIMEOUT;
         }
         /* Read 8bit CRC again in case of 16bit CRC in 8bit Data mode */
         tmpreg8 = *ptmpreg8;
@@ -1472,22 +1534,32 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
     SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_CRC);
     /* Clear CRC Flag */
     __HAL_SPI_CLEAR_CRCERRFLAG(hspi);
-
-    errorcode = HAL_ERROR;
+    __HAL_UNLOCK(hspi);
+    return HAL_ERROR;
   }
 #endif /* USE_SPI_CRC */
 
   /* Check the end of the transaction */
   if (SPI_EndRxTxTransaction(hspi, Timeout, tickstart) != HAL_OK)
   {
-    errorcode = HAL_ERROR;
     hspi->ErrorCode = HAL_SPI_ERROR_FLAG;
+    __HAL_UNLOCK(hspi);
+    return HAL_ERROR;
   }
 
-error :
+
   hspi->State = HAL_SPI_STATE_READY;
+  /* Unlock the process */
   __HAL_UNLOCK(hspi);
-  return errorcode;
+
+  if (hspi->ErrorCode != HAL_SPI_ERROR_NONE)
+  {
+    return HAL_ERROR;
+  }
+  else
+  {
+    return HAL_OK;
+  }
 }
 
 /**
@@ -1500,25 +1572,30 @@ error :
   */
 HAL_StatusTypeDef HAL_SPI_Transmit_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
 {
-  HAL_StatusTypeDef errorcode = HAL_OK;
+
+  if (hspi->Init.DataSize > SPI_DATASIZE_8BIT)
+  {
+    /* in this case, 16-bit access is performed on Data
+       So, check Data is 16-bit aligned address */
+    assert_param(IS_SPI_16BIT_ALIGNED_ADDRESS(pData));
+  }
 
   /* Check Direction parameter */
   assert_param(IS_SPI_DIRECTION_2LINES_OR_1LINE(hspi->Init.Direction));
 
-  /* Process Locked */
-  __HAL_LOCK(hspi);
 
   if ((pData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
 
   if (hspi->State != HAL_SPI_STATE_READY)
   {
-    errorcode = HAL_BUSY;
-    goto error;
+    return HAL_BUSY;
   }
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
 
   /* Set the transaction information */
   hspi->State       = HAL_SPI_STATE_BUSY_TX;
@@ -1559,10 +1636,6 @@ HAL_StatusTypeDef HAL_SPI_Transmit_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, u
   }
 #endif /* USE_SPI_CRC */
 
-  /* Enable TXE and ERR interrupt */
-  __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_TXE | SPI_IT_ERR));
-
-
   /* Check if the SPI is already enabled */
   if ((hspi->Instance->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE)
   {
@@ -1570,9 +1643,12 @@ HAL_StatusTypeDef HAL_SPI_Transmit_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, u
     __HAL_SPI_ENABLE(hspi);
   }
 
-error :
+  /* Process Unlocked */
   __HAL_UNLOCK(hspi);
-  return errorcode;
+  /* Enable TXE and ERR interrupt */
+  __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_TXE | SPI_IT_ERR));
+
+  return HAL_OK;
 }
 
 /**
@@ -1585,7 +1661,18 @@ error :
   */
 HAL_StatusTypeDef HAL_SPI_Receive_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
 {
-  HAL_StatusTypeDef errorcode = HAL_OK;
+  if (hspi->Init.DataSize > SPI_DATASIZE_8BIT)
+  {
+    /* in this case, 16-bit access is performed on Data
+       So, check Data is 16-bit aligned address */
+    assert_param(IS_SPI_16BIT_ALIGNED_ADDRESS(pData));
+  }
+
+
+  if (hspi->State != HAL_SPI_STATE_READY)
+  {
+    return HAL_BUSY;
+  }
 
   if ((hspi->Init.Direction == SPI_DIRECTION_2LINES) && (hspi->Init.Mode == SPI_MODE_MASTER))
   {
@@ -1594,20 +1681,14 @@ HAL_StatusTypeDef HAL_SPI_Receive_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, ui
     return HAL_SPI_TransmitReceive_IT(hspi, pData, pData, Size);
   }
 
-  /* Process Locked */
-  __HAL_LOCK(hspi);
-
-  if (hspi->State != HAL_SPI_STATE_READY)
-  {
-    errorcode = HAL_BUSY;
-    goto error;
-  }
 
   if ((pData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
 
   /* Set the transaction information */
   hspi->State       = HAL_SPI_STATE_BUSY_RX;
@@ -1661,9 +1742,6 @@ HAL_StatusTypeDef HAL_SPI_Receive_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, ui
   }
 #endif /* USE_SPI_CRC */
 
-  /* Enable TXE and ERR interrupt */
-  __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_RXNE | SPI_IT_ERR));
-
   /* Note : The SPI must be enabled after unlocking current process
             to avoid the risk of SPI interrupt handle execution before current
             process unlock */
@@ -1675,10 +1753,12 @@ HAL_StatusTypeDef HAL_SPI_Receive_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, ui
     __HAL_SPI_ENABLE(hspi);
   }
 
-error :
   /* Process Unlocked */
   __HAL_UNLOCK(hspi);
-  return errorcode;
+  /* Enable RXNE and ERR interrupt */
+  __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_RXNE | SPI_IT_ERR));
+
+  return HAL_OK;
 }
 
 /**
@@ -1694,13 +1774,17 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_IT(SPI_HandleTypeDef *hspi, uint8_t *p
 {
   uint32_t             tmp_mode;
   HAL_SPI_StateTypeDef tmp_state;
-  HAL_StatusTypeDef    errorcode = HAL_OK;
+
+  if (hspi->Init.DataSize > SPI_DATASIZE_8BIT)
+  {
+    /* in this case, 16-bit access is performed on Data
+       So, check Data is 16-bit aligned address */
+    assert_param(IS_SPI_16BIT_ALIGNED_ADDRESS(pTxData));
+    assert_param(IS_SPI_16BIT_ALIGNED_ADDRESS(pRxData));
+  }
 
   /* Check Direction parameter */
   assert_param(IS_SPI_DIRECTION_2LINES(hspi->Init.Direction));
-
-  /* Process locked */
-  __HAL_LOCK(hspi);
 
   /* Init temporary variables */
   tmp_state           = hspi->State;
@@ -1709,15 +1793,16 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_IT(SPI_HandleTypeDef *hspi, uint8_t *p
   if (!((tmp_state == HAL_SPI_STATE_READY) || \
         ((tmp_mode == SPI_MODE_MASTER) && (hspi->Init.Direction == SPI_DIRECTION_2LINES) && (tmp_state == HAL_SPI_STATE_BUSY_RX))))
   {
-    errorcode = HAL_BUSY;
-    goto error;
+    return HAL_BUSY;
   }
 
   if ((pTxData == NULL) || (pRxData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
+
+  /* Process locked */
+  __HAL_LOCK(hspi);
 
   /* Don't overwrite in case of HAL_SPI_STATE_BUSY_RX */
   if (hspi->State != HAL_SPI_STATE_BUSY_RX)
@@ -1775,8 +1860,6 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_IT(SPI_HandleTypeDef *hspi, uint8_t *p
     SET_BIT(hspi->Instance->CR2, SPI_RXFIFO_THRESHOLD);
   }
 
-  /* Enable TXE, RXNE and ERR interrupt */
-  __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_TXE | SPI_IT_RXNE | SPI_IT_ERR));
 
   /* Check if the SPI is already enabled */
   if ((hspi->Instance->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE)
@@ -1785,10 +1868,12 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_IT(SPI_HandleTypeDef *hspi, uint8_t *p
     __HAL_SPI_ENABLE(hspi);
   }
 
-error :
   /* Process Unlocked */
   __HAL_UNLOCK(hspi);
-  return errorcode;
+  /* Enable TXE, RXNE and ERR interrupt */
+  __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_TXE | SPI_IT_RXNE | SPI_IT_ERR));
+
+  return HAL_OK;
 }
 
 /**
@@ -1801,7 +1886,6 @@ error :
   */
 HAL_StatusTypeDef HAL_SPI_Transmit_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
 {
-  HAL_StatusTypeDef errorcode = HAL_OK;
 
   /* Check tx dma handle */
   assert_param(IS_SPI_DMA_HANDLE(hspi->hdmatx));
@@ -1809,20 +1893,18 @@ HAL_StatusTypeDef HAL_SPI_Transmit_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, 
   /* Check Direction parameter */
   assert_param(IS_SPI_DIRECTION_2LINES_OR_1LINE(hspi->Init.Direction));
 
-  /* Process Locked */
-  __HAL_LOCK(hspi);
-
   if (hspi->State != HAL_SPI_STATE_READY)
   {
-    errorcode = HAL_BUSY;
-    goto error;
+    return HAL_BUSY;
   }
 
   if ((pData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
 
   /* Set the transaction information */
   hspi->State       = HAL_SPI_STATE_BUSY_TX;
@@ -1889,10 +1971,9 @@ HAL_StatusTypeDef HAL_SPI_Transmit_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, 
   {
     /* Update SPI error code */
     SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_DMA);
-    errorcode = HAL_ERROR;
-
-    hspi->State = HAL_SPI_STATE_READY;
-    goto error;
+    /* Process Unlocked */
+    __HAL_UNLOCK(hspi);
+    return HAL_ERROR;
   }
 
   /* Check if the SPI is already enabled */
@@ -1902,16 +1983,16 @@ HAL_StatusTypeDef HAL_SPI_Transmit_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, 
     __HAL_SPI_ENABLE(hspi);
   }
 
+  /* Process Unlocked */
+  __HAL_UNLOCK(hspi);
+
   /* Enable the SPI Error Interrupt Bit */
   __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_ERR));
 
   /* Enable Tx DMA Request */
   SET_BIT(hspi->Instance->CR2, SPI_CR2_TXDMAEN);
 
-error :
-  /* Process Unlocked */
-  __HAL_UNLOCK(hspi);
-  return errorcode;
+  return HAL_OK;
 }
 
 /**
@@ -1926,10 +2007,13 @@ error :
   */
 HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size)
 {
-  HAL_StatusTypeDef errorcode = HAL_OK;
-
   /* Check rx dma handle */
   assert_param(IS_SPI_DMA_HANDLE(hspi->hdmarx));
+
+  if (hspi->State != HAL_SPI_STATE_READY)
+  {
+    return HAL_BUSY;
+  }
 
   if ((hspi->Init.Direction == SPI_DIRECTION_2LINES) && (hspi->Init.Mode == SPI_MODE_MASTER))
   {
@@ -1942,20 +2026,13 @@ HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, u
     return HAL_SPI_TransmitReceive_DMA(hspi, pData, pData, Size);
   }
 
-  /* Process Locked */
-  __HAL_LOCK(hspi);
-
-  if (hspi->State != HAL_SPI_STATE_READY)
-  {
-    errorcode = HAL_BUSY;
-    goto error;
-  }
-
   if ((pData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
 
   /* Set the transaction information */
   hspi->State       = HAL_SPI_STATE_BUSY_RX;
@@ -2034,10 +2111,9 @@ HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, u
   {
     /* Update SPI error code */
     SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_DMA);
-    errorcode = HAL_ERROR;
-
-    hspi->State = HAL_SPI_STATE_READY;
-    goto error;
+    /* Process Unlocked */
+    __HAL_UNLOCK(hspi);
+    return HAL_ERROR;
   }
 
   /* Check if the SPI is already enabled */
@@ -2047,16 +2123,16 @@ HAL_StatusTypeDef HAL_SPI_Receive_DMA(SPI_HandleTypeDef *hspi, uint8_t *pData, u
     __HAL_SPI_ENABLE(hspi);
   }
 
+  /* Process Unlocked */
+  __HAL_UNLOCK(hspi);
+
   /* Enable the SPI Error Interrupt Bit */
   __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_ERR));
 
   /* Enable Rx DMA Request */
   SET_BIT(hspi->Instance->CR2, SPI_CR2_RXDMAEN);
 
-error:
-  /* Process Unlocked */
-  __HAL_UNLOCK(hspi);
-  return errorcode;
+  return HAL_OK;
 }
 
 /**
@@ -2074,7 +2150,6 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
 {
   uint32_t             tmp_mode;
   HAL_SPI_StateTypeDef tmp_state;
-  HAL_StatusTypeDef errorcode = HAL_OK;
 
   /* Check rx & tx dma handles */
   assert_param(IS_SPI_DMA_HANDLE(hspi->hdmarx));
@@ -2083,9 +2158,6 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
   /* Check Direction parameter */
   assert_param(IS_SPI_DIRECTION_2LINES(hspi->Init.Direction));
 
-  /* Process locked */
-  __HAL_LOCK(hspi);
-
   /* Init temporary variables */
   tmp_state           = hspi->State;
   tmp_mode            = hspi->Init.Mode;
@@ -2093,15 +2165,16 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
   if (!((tmp_state == HAL_SPI_STATE_READY) ||
         ((tmp_mode == SPI_MODE_MASTER) && (hspi->Init.Direction == SPI_DIRECTION_2LINES) && (tmp_state == HAL_SPI_STATE_BUSY_RX))))
   {
-    errorcode = HAL_BUSY;
-    goto error;
+    return HAL_BUSY;
   }
 
   if ((pTxData == NULL) || (pRxData == NULL) || (Size == 0U))
   {
-    errorcode = HAL_ERROR;
-    goto error;
+    return HAL_ERROR;
   }
+
+  /* Process locked */
+  __HAL_LOCK(hspi);
 
   /* Don't overwrite in case of HAL_SPI_STATE_BUSY_RX */
   if (hspi->State != HAL_SPI_STATE_BUSY_RX)
@@ -2202,10 +2275,9 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
   {
     /* Update SPI error code */
     SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_DMA);
-    errorcode = HAL_ERROR;
-
-    hspi->State = HAL_SPI_STATE_READY;
-    goto error;
+    /* Process Unlocked */
+    __HAL_UNLOCK(hspi);
+    return HAL_ERROR;
   }
 
   /* Enable Rx DMA Request */
@@ -2224,10 +2296,9 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
   {
     /* Update SPI error code */
     SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_DMA);
-    errorcode = HAL_ERROR;
-
-    hspi->State = HAL_SPI_STATE_READY;
-    goto error;
+    /* Process Unlocked */
+    __HAL_UNLOCK(hspi);
+    return HAL_ERROR;
   }
 
   /* Check if the SPI is already enabled */
@@ -2236,16 +2307,17 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_DMA(SPI_HandleTypeDef *hspi, uint8_t *
     /* Enable SPI peripheral */
     __HAL_SPI_ENABLE(hspi);
   }
+
+  /* Process Unlocked */
+  __HAL_UNLOCK(hspi);
+
   /* Enable the SPI Error Interrupt Bit */
   __HAL_SPI_ENABLE_IT(hspi, (SPI_IT_ERR));
 
   /* Enable Tx DMA Request */
   SET_BIT(hspi->Instance->CR2, SPI_CR2_TXDMAEN);
 
-error :
-  /* Process Unlocked */
-  __HAL_UNLOCK(hspi);
-  return errorcode;
+  return HAL_OK;
 }
 
 /**
