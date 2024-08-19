@@ -81,8 +81,6 @@ extern "C" {
 #define ADC_REG_RANK_15_SQRX_BITOFFSET_POS (ADC_SQR4_SQ15_Pos)
 #define ADC_REG_RANK_16_SQRX_BITOFFSET_POS (ADC_SQR4_SQ16_Pos)
 
-
-
 /* Internal mask for ADC group injected sequencer:                            */
 /* To select into literal LL_ADC_INJ_RANK_x the relevant bits for:            */
 /* - data register offset                                                     */
@@ -106,8 +104,6 @@ extern "C" {
 #define ADC_INJ_RANK_2_JSQR_BITOFFSET_POS  (ADC_JSQR_JSQ2_Pos)
 #define ADC_INJ_RANK_3_JSQR_BITOFFSET_POS  (ADC_JSQR_JSQ3_Pos)
 #define ADC_INJ_RANK_4_JSQR_BITOFFSET_POS  (ADC_JSQR_JSQ4_Pos)
-
-
 
 /* Internal mask for ADC group regular trigger:                               */
 /* To select into literal LL_ADC_REG_TRIG_x the relevant bits for:            */
@@ -137,8 +133,6 @@ extern "C" {
 #define ADC_REG_TRIG_EXTSEL_BITOFFSET_POS  (ADC_CFGR_EXTSEL_Pos)
 #define ADC_REG_TRIG_EXTEN_BITOFFSET_POS   (ADC_CFGR_EXTEN_Pos)
 
-
-
 /* Internal mask for ADC group injected trigger:                              */
 /* To select into literal LL_ADC_INJ_TRIG_x the relevant bits for:            */
 /* - injected trigger source                                                  */
@@ -166,11 +160,6 @@ extern "C" {
 /* Definition of ADC group injected trigger bits information.                 */
 #define ADC_INJ_TRIG_EXTSEL_BITOFFSET_POS  (ADC_JSQR_JEXTSEL_Pos)
 #define ADC_INJ_TRIG_EXTEN_BITOFFSET_POS   (ADC_JSQR_JEXTEN_Pos)
-
-
-
-
-
 
 /* Internal mask for ADC channel:                                             */
 /* To select into literal LL_ADC_CHANNEL_x the relevant bits for:             */
@@ -377,16 +366,16 @@ extern "C" {
                                            with which VrefInt has been calibrated in production
                                            (tolerance: +-10 mV) (unit: mV). */
 /* Temperature sensor */
-#define TEMPSENSOR_CAL1_ADDR               ((uint16_t*) (0x08FFF814UL)) /* Address of parameter TS_CAL1: On STM32H7,
+#define TEMPSENSOR_CAL1_ADDR               ((uint16_t*) (0x08FFF814UL)) /* Address of parameter TS_CAL1: On STM32H5,
                                            temperature sensor ADC raw data acquired at temperature  30 DegC
                                            (tolerance: +-5 DegC), Vref+ = 3.3 V (tolerance: +-10 mV). */
-#define TEMPSENSOR_CAL2_ADDR               ((uint16_t*) (0x08FFF818UL)) /* Address of parameter TS_CAL2: On STM32H7,
-                                           temperature sensor ADC raw data acquired at temperature 110 DegC
+#define TEMPSENSOR_CAL2_ADDR               ((uint16_t*) (0x08FFF818UL)) /* Address of parameter TS_CAL2: On STM32H5,
+                                           temperature sensor ADC raw data acquired at temperature 130 DegC
                                            (tolerance: +-5 DegC), Vref+ = 3.3 V (tolerance: +-10 mV). */
 #define TEMPSENSOR_CAL1_TEMP               (30L)                        /* Temperature at which temperature sensor
                                            has been calibrated in production for data into TEMPSENSOR_CAL1_ADDR
                                            (tolerance: +-5 DegC) (unit: DegC). */
-#define TEMPSENSOR_CAL2_TEMP               (110L)                       /* Temperature at which temperature sensor
+#define TEMPSENSOR_CAL2_TEMP               (130L)                       /* Temperature at which temperature sensor
                                            has been calibrated in production for data into TEMPSENSOR_CAL2_ADDR
                                            (tolerance: +-5 DegC) (unit: DegC). */
 #define TEMPSENSOR_CAL_VREFANALOG          (3300UL)                     /* Analog voltage reference (Vref+) value
@@ -396,7 +385,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /* Private macros ------------------------------------------------------------*/
 /** @defgroup ADC_LL_Private_Macros ADC Private Macros
@@ -417,7 +405,6 @@ extern "C" {
 /**
   * @}
   */
-
 
 /* Exported types ------------------------------------------------------------*/
 #if defined(USE_FULL_LL_DRIVER)
@@ -2098,8 +2085,8 @@ typedef struct
 /* Literal set to maximum value (refer to device datasheet,                   */
 /* parameter "tSTART").                                                       */
 /* Unit: us                                                                   */
-#define LL_ADC_DELAY_TEMPSENSOR_STAB_US        (120UL)        /*!< Delay for temperature sensor stabilization time */
-#define LL_ADC_DELAY_TEMPSENSOR_BUFFER_STAB_US ( 15UL)        /*!< Delay for temperature sensor buffer stabilization
+#define LL_ADC_DELAY_TEMPSENSOR_STAB_US        ( 26UL)        /*!< Delay for temperature sensor stabilization time */
+#define LL_ADC_DELAY_TEMPSENSOR_BUFFER_STAB_US ( 26UL)        /*!< Delay for temperature sensor buffer stabilization
                                                                    time (starting from ADC enable, refer to
                                                                    @ref LL_ADC_Enable()) */
 
@@ -2785,6 +2772,32 @@ typedef struct
 ((__ADC_DATA__) * (__VREFANALOG_VOLTAGE__)                                   \
  / __LL_ADC_DIGITAL_SCALE(__ADC_RESOLUTION__)                                \
 )
+
+/**
+  * @brief  Helper macro to calculate the voltage (unit: mVolt)
+  *         corresponding to a ADC conversion data (unit: digital value) in
+  *         differential ended mode.
+  * @note   ADC data from ADC data register is unsigned and centered around
+  *         middle code in. Converted voltage can be positive or negative
+  *         depending on differential input voltages.
+  * @note   Analog reference voltage (Vref+) must be either known from
+  *         user board environment or can be calculated using ADC measurement
+  *         and ADC helper macro @ref __LL_ADC_CALC_VREFANALOG_VOLTAGE().
+  * @param  __VREFANALOG_VOLTAGE__ Analog reference voltage (unit: mV)
+  * @param  __ADC_DATA__ ADC conversion data (unit: digital value).
+  * @param  __ADC_RESOLUTION__ This parameter can be one of the following values:
+  *         @arg @ref LL_ADC_RESOLUTION_12B
+  *         @arg @ref LL_ADC_RESOLUTION_10B
+  *         @arg @ref LL_ADC_RESOLUTION_8B
+  *         @arg @ref LL_ADC_RESOLUTION_6B
+  * @retval ADC conversion data equivalent voltage value (unit: mVolt)
+  */
+#define __LL_ADC_CALC_DIFF_DATA_TO_VOLTAGE(__VREFANALOG_VOLTAGE__,\
+                                           __ADC_DATA__,\
+                                           __ADC_RESOLUTION__)\
+((int32_t)((__ADC_DATA__) << 1U) * (int32_t)(__VREFANALOG_VOLTAGE__)\
+ / (int32_t)(__LL_ADC_DIGITAL_SCALE(__ADC_RESOLUTION__))\
+ - (int32_t)(__VREFANALOG_VOLTAGE__))
 
 /**
   * @brief  Helper macro to calculate analog reference voltage (Vref+)

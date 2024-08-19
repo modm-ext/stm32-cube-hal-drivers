@@ -24,10 +24,10 @@
 extern "C" {
 #endif
 
+#if defined(FMC_Bank5_6_R)
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h5xx_ll_fmc.h"
-#if defined(FMC_Bank5_6_R)
 
 /** @addtogroup STM32H5xx_HAL_Driver
   * @{
@@ -212,7 +212,7 @@ uint32_t          HAL_SDRAM_GetModeStatus(SDRAM_HandleTypeDef *hsdram);
   * @{
   */
 /* SDRAM State functions ********************************************************/
-HAL_SDRAM_StateTypeDef  HAL_SDRAM_GetState(SDRAM_HandleTypeDef *hsdram);
+HAL_SDRAM_StateTypeDef  HAL_SDRAM_GetState(const SDRAM_HandleTypeDef *hsdram);
 /**
   * @}
   */

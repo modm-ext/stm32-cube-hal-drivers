@@ -56,7 +56,6 @@
 
     (#) At this stage, you can perform SD read/write/erase operations after SD card initialization
 
-
   *** SD Card Initialization and configuration ***
   ================================================
   [..]
@@ -259,6 +258,7 @@
   * @{
   */
 
+#if defined (SDMMC1) || defined (SDMMC2)
 #ifdef HAL_SD_MODULE_ENABLED
 
 /* Private typedef -----------------------------------------------------------*/
@@ -435,7 +435,7 @@ HAL_StatusTypeDef HAL_SD_Init(SD_HandleTypeDef *hsd)
   tickstart = HAL_GetTick();
   while ((HAL_SD_GetCardState(hsd) != HAL_SD_CARD_TRANSFER))
   {
-    if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+    if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
     {
       hsd->ErrorCode = HAL_SD_ERROR_TIMEOUT;
       hsd->State = HAL_SD_STATE_READY;
@@ -611,7 +611,6 @@ HAL_StatusTypeDef HAL_SD_DeInit(SD_HandleTypeDef *hsd)
 
   return HAL_OK;
 }
-
 
 /**
   * @brief  Initializes the SD MSP.
@@ -1315,7 +1314,6 @@ HAL_StatusTypeDef HAL_SD_ReadBlocks_DMA(SD_HandleTypeDef *hsd, uint8_t *pData, u
     /* Enable transfer interrupts */
     __HAL_SD_ENABLE_IT(hsd, (SDMMC_IT_DCRCFAIL | SDMMC_IT_DTIMEOUT | SDMMC_IT_RXOVERR | SDMMC_IT_DATAEND));
 
-
     return HAL_OK;
   }
   else
@@ -1381,7 +1379,6 @@ HAL_StatusTypeDef HAL_SD_WriteBlocks_DMA(SD_HandleTypeDef *hsd, const uint8_t *p
     config.TransferMode  = SDMMC_TRANSFER_MODE_BLOCK;
     config.DPSM          = SDMMC_DPSM_DISABLE;
     (void)SDMMC_ConfigData(hsd->Instance, &config);
-
 
     __SDMMC_CMDTRANS_ENABLE(hsd->Instance);
 
@@ -2329,7 +2326,6 @@ HAL_StatusTypeDef HAL_SD_GetCardStatus(SD_HandleTypeDef *hsd, HAL_SD_CardStatusT
     status = HAL_ERROR;
   }
 
-
   return status;
 }
 
@@ -2370,6 +2366,7 @@ HAL_StatusTypeDef HAL_SD_ConfigWideBusOperation(SD_HandleTypeDef *hsd, uint32_t 
   SDMMC_InitTypeDef Init;
   uint32_t errorstate;
   uint32_t sdmmc_clk;
+
   HAL_StatusTypeDef status = HAL_OK;
 
   /* Check the parameters */
@@ -2421,11 +2418,15 @@ HAL_StatusTypeDef HAL_SD_ConfigWideBusOperation(SD_HandleTypeDef *hsd, uint32_t 
       sdmmc_clk = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC1);
     }
 #if defined(SDMMC2)
-    else
+    else if (hsd->Instance == SDMMC2)
     {
       sdmmc_clk = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC2);
     }
 #endif /* SDMMC2 */
+    else
+    {
+      sdmmc_clk = 0U;
+    }
     if (sdmmc_clk != 0U)
     {
       /* Configure the SDMMC peripheral */
@@ -2808,7 +2809,7 @@ HAL_StatusTypeDef HAL_SD_ConfigSpeedBusOperation(SD_HandleTypeDef *hsd, uint32_t
   tickstart = HAL_GetTick();
   while ((HAL_SD_GetCardState(hsd) != HAL_SD_CARD_TRANSFER))
   {
-    if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+    if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
     {
       hsd->ErrorCode = HAL_SD_ERROR_TIMEOUT;
       hsd->State = HAL_SD_STATE_READY;
@@ -2891,7 +2892,7 @@ HAL_StatusTypeDef HAL_SD_Abort(SD_HandleTypeDef *hsd)
       {
         while (!__HAL_SD_GET_FLAG(hsd, SDMMC_FLAG_DABORT | SDMMC_FLAG_BUSYD0END))
         {
-          if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+          if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
           {
             hsd->ErrorCode = HAL_SD_ERROR_TIMEOUT;
             hsd->State = HAL_SD_STATE_READY;
@@ -2904,7 +2905,7 @@ HAL_StatusTypeDef HAL_SD_Abort(SD_HandleTypeDef *hsd)
       {
         while (!__HAL_SD_GET_FLAG(hsd, SDMMC_FLAG_DATAEND))
         {
-          if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+          if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
           {
             hsd->ErrorCode = HAL_SD_ERROR_TIMEOUT;
             hsd->State = HAL_SD_STATE_READY;
@@ -2917,7 +2918,7 @@ HAL_StatusTypeDef HAL_SD_Abort(SD_HandleTypeDef *hsd)
     {
       while (!__HAL_SD_GET_FLAG(hsd, SDMMC_FLAG_DABORT | SDMMC_FLAG_DATAEND))
       {
-        if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+        if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
         {
           hsd->ErrorCode = HAL_SD_ERROR_TIMEOUT;
           hsd->State = HAL_SD_STATE_READY;
@@ -2948,7 +2949,6 @@ HAL_StatusTypeDef HAL_SD_Abort(SD_HandleTypeDef *hsd)
   }
   return HAL_OK;
 }
-
 
 /**
   * @brief  Abort the current transfer and disable the SD (IT mode).
@@ -3006,7 +3006,6 @@ HAL_StatusTypeDef HAL_SD_Abort_IT(SD_HandleTypeDef *hsd)
 /** @addtogroup SD_Private_Functions
   * @{
   */
-
 
 /**
   * @brief  Initializes the sd card.
@@ -3213,7 +3212,7 @@ static uint32_t SD_PowerON(SD_HandleTypeDef *hsd)
         /* Check to CKSTOP */
         while ((hsd->Instance->STA & SDMMC_FLAG_CKSTOP) != SDMMC_FLAG_CKSTOP)
         {
-          if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+          if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
           {
             return HAL_SD_ERROR_TIMEOUT;
           }
@@ -3243,7 +3242,7 @@ static uint32_t SD_PowerON(SD_HandleTypeDef *hsd)
           /* Check VSWEND Flag */
           while ((hsd->Instance->STA & SDMMC_FLAG_VSWEND) != SDMMC_FLAG_VSWEND)
           {
-            if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+            if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
             {
               return HAL_SD_ERROR_TIMEOUT;
             }
@@ -3351,7 +3350,7 @@ static uint32_t SD_SendSDStatus(SD_HandleTypeDef *hsd, uint32_t *pSDstatus)
       }
     }
 
-    if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+    if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
     {
       return HAL_SD_ERROR_TIMEOUT;
     }
@@ -3379,7 +3378,7 @@ static uint32_t SD_SendSDStatus(SD_HandleTypeDef *hsd, uint32_t *pSDstatus)
     *pData = SDMMC_ReadFIFO(hsd->Instance);
     pData++;
 
-    if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+    if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
     {
       return HAL_SD_ERROR_TIMEOUT;
     }
@@ -3514,7 +3513,6 @@ static uint32_t SD_WideBus_Disable(SD_HandleTypeDef *hsd)
   }
 }
 
-
 /**
   * @brief  Finds the SD card SCR register value.
   * @param  hsd: Pointer to SD handle
@@ -3569,8 +3567,7 @@ static uint32_t SD_FindSCR(SD_HandleTypeDef *hsd, uint32_t *pSCR)
       index++;
     }
 
-
-    if ((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
+    if ((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
     {
       return HAL_SD_ERROR_TIMEOUT;
     }
@@ -3726,7 +3723,6 @@ uint32_t SD_SwitchSpeed(SD_HandleTypeDef *hsd, uint32_t SwitchSpeedMode)
 
     (void)SDMMC_ConfigData(hsd->Instance, &sdmmc_datainitstructure);
 
-
     errorstate = SDMMC_CmdSwitch(hsd->Instance, SwitchSpeedMode);
     if (errorstate != HAL_SD_ERROR_NONE)
     {
@@ -3744,8 +3740,7 @@ uint32_t SD_SwitchSpeed(SD_HandleTypeDef *hsd, uint32_t SwitchSpeedMode)
         }
         loop ++;
       }
-
-      if ((HAL_GetTick() - Timeout) >=  SDMMC_DATATIMEOUT)
+      if ((HAL_GetTick() - Timeout) >=  SDMMC_SWDATATIMEOUT)
       {
         hsd->ErrorCode = HAL_SD_ERROR_TIMEOUT;
         hsd->State = HAL_SD_STATE_READY;
@@ -3861,7 +3856,7 @@ static uint32_t SD_UltraHighSpeed(SD_HandleTypeDef *hsd, uint32_t UltraHighSpeed
         loop ++;
       }
 
-      if ((HAL_GetTick() - Timeout) >=  SDMMC_DATATIMEOUT)
+      if ((HAL_GetTick() - Timeout) >=  SDMMC_SWDATATIMEOUT)
       {
         hsd->ErrorCode = HAL_SD_ERROR_TIMEOUT;
         hsd->State = HAL_SD_STATE_READY;
@@ -3988,7 +3983,7 @@ static uint32_t SD_DDR_Mode(SD_HandleTypeDef *hsd)
         loop ++;
       }
 
-      if ((HAL_GetTick() - Timeout) >=  SDMMC_DATATIMEOUT)
+      if ((HAL_GetTick() - Timeout) >=  SDMMC_SWDATATIMEOUT)
       {
         hsd->ErrorCode = HAL_SD_ERROR_TIMEOUT;
         hsd->State = HAL_SD_STATE_READY;
@@ -4086,6 +4081,7 @@ __weak void HAL_SDEx_Write_DMALnkLstBufCpltCallback(SD_HandleTypeDef *hsd)
   */
 
 #endif /* HAL_SD_MODULE_ENABLED */
+#endif /* SDMMC1 || SDMMC2 */
 
 /**
   * @}

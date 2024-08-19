@@ -24,10 +24,10 @@
 extern "C" {
 #endif
 
+#if defined(FMC_BANK1)
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h5xx_ll_fmc.h"
-#if defined(FMC_BANK1)
 
 /** @addtogroup STM32H5xx_HAL_Driver
   * @{

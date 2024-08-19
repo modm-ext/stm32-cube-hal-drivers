@@ -248,15 +248,16 @@ typedef enum
   */
 typedef enum
 {
-  HAL_I3C_STATE_RESET      = 0x00U,   /*!< Peripheral is not yet Initialized                   */
-  HAL_I3C_STATE_READY      = 0x10U,   /*!< Peripheral Initialized and ready for use            */
-  HAL_I3C_STATE_BUSY       = 0x20U,   /*!< An internal process is ongoing                      */
-  HAL_I3C_STATE_BUSY_TX    = 0x21U,   /*!< Data Transmission process is ongoing                */
-  HAL_I3C_STATE_BUSY_RX    = 0x22U,   /*!< Data Reception process is ongoing                   */
-  HAL_I3C_STATE_BUSY_DAA   = 0x24U,   /*!< Dynamic address assignment process is ongoing       */
-  HAL_I3C_STATE_LISTEN     = 0x30U,   /*!< Listen process is ongoing                           */
-  HAL_I3C_STATE_ABORT      = 0x60U,   /*!< Abort user request ongoing                          */
-  HAL_I3C_STATE_ERROR      = 0xE0U,   /*!< Error                                               */
+  HAL_I3C_STATE_RESET       = 0x00U,   /*!< Peripheral is not yet Initialized                   */
+  HAL_I3C_STATE_READY       = 0x10U,   /*!< Peripheral Initialized and ready for use            */
+  HAL_I3C_STATE_BUSY        = 0x20U,   /*!< An internal process is ongoing                      */
+  HAL_I3C_STATE_BUSY_TX     = 0x21U,   /*!< Data Transmission process is ongoing                */
+  HAL_I3C_STATE_BUSY_RX     = 0x22U,   /*!< Data Reception process is ongoing                   */
+  HAL_I3C_STATE_BUSY_TX_RX  = 0x23U,   /*!< Data Multiple Transfer process is ongoing           */
+  HAL_I3C_STATE_BUSY_DAA    = 0x24U,   /*!< Dynamic address assignment process is ongoing       */
+  HAL_I3C_STATE_LISTEN      = 0x30U,   /*!< Listen process is ongoing                           */
+  HAL_I3C_STATE_ABORT       = 0x60U,   /*!< Abort user request ongoing                          */
+  HAL_I3C_STATE_ERROR       = 0xE0U,   /*!< Error                                               */
 
 } HAL_I3C_StateTypeDef;
 /**
@@ -333,6 +334,56 @@ typedef struct
   uint32_t           Direction;  /*!< CCC read and/or write direction message                               */
 
 } I3C_CCCTypeDef;
+/**
+  * @}
+  */
+
+/** @defgroup I3C_BCRTypeDef_Structure_definition I3C BCRTypeDef Structure definition
+  * @brief    I3C BCRTypeDef Structure definition
+  * @{
+  */
+typedef struct
+{
+  FunctionalState         MaxDataSpeedLimitation;  /*!< Max data speed limitation */
+  FunctionalState         IBIRequestCapable;       /*!< IBI request capable */
+  FunctionalState         IBIPayload;              /*!< IBI payload data */
+  FunctionalState         OfflineCapable;          /*!< Offline capable */
+  FunctionalState         VirtualTargetSupport;    /*!< Virtual target support */
+  FunctionalState         AdvancedCapabilities;    /*!< Advanced capabilities */
+  FunctionalState         DeviceRole;              /*!< Device role */
+
+} I3C_BCRTypeDef;
+/**
+  * @}
+  */
+
+/** @defgroup I3C_PIDTypeDef_Structure_definition I3C PIDTypeDef Structure definition
+  * @brief    I3C_PIDTypeDef Structure definition
+  * @{
+  */
+typedef struct
+{
+  uint16_t  MIPIMID;         /*!< MIPI Manufacturer ID */
+  uint8_t   IDTSEL;          /*!< Provisioned ID Type Selector */
+  uint16_t  PartID;          /*!< Part ID device vendor to define */
+  uint8_t   MIPIID;          /*!< Instance ID */
+
+} I3C_PIDTypeDef;
+/**
+  * @}
+  */
+
+/** @defgroup I3C_ENTDAAPayloadTypeDef_Structure_definition I3C ENTDAAPayloadTypeDef Structure definition
+  * @brief    I3C ENTDAAPayloadTypeDef Structure definition
+  * @{
+  */
+typedef struct
+{
+  I3C_BCRTypeDef   BCR;             /*!< Bus Characteristics Register */
+  uint32_t         DCR;             /*!< Device Characteristics Register */
+  I3C_PIDTypeDef   PID;             /*!< Provisioned ID */
+
+} I3C_ENTDAAPayloadTypeDef;
 /**
   * @}
   */
@@ -418,8 +469,7 @@ typedef struct __I3C_HandleTypeDef
   __IO uint32_t              ErrorCode;                           /*!< I3C Error code                            */
 
   HAL_StatusTypeDef(*XferISR)(struct __I3C_HandleTypeDef *hi3c,
-                              uint32_t itFlags,
-                              uint32_t itSources);                /*!< I3C transfer IRQ handler function pointer */
+                              uint32_t itMasks);                  /*!< I3C transfer IRQ handler function pointer */
 
   void(*ptrTxFunc)(struct __I3C_HandleTypeDef *hi3c);             /*!< I3C transmit function pointer             */
 
@@ -428,40 +478,43 @@ typedef struct __I3C_HandleTypeDef
 #if (USE_HAL_I3C_REGISTER_CALLBACKS == 1U)
 
   void (* CtrlTxCpltCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Controller private data and CCC Tx Transfer complete callback    */
+  /*!< I3C Controller private data and CCC Tx Transfer complete callback                           */
 
   void (* CtrlRxCpltCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Controller private data and CCC Rx Transfer completed callback   */
+  /*!< I3C Controller private data and CCC Rx Transfer completed callback                          */
+
+  void (* CtrlMultipleXferCpltCallback)(struct __I3C_HandleTypeDef *hi3c);
+  /*!< I3C Controller multiple Direct CCC, I3C private or I2C Transfer completed callback          */
 
   void (* CtrlDAACpltCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Controller Dynamic Address Assignment completed callback         */
+  /*!< I3C Controller Dynamic Address Assignment completed callback                                */
 
   void (* TgtReqDynamicAddrCallback)(struct __I3C_HandleTypeDef *hi3c, uint64_t targetPayload);
   /*!< I3C Controller request dynamic address callback during Dynamic Address Assignment processus */
 
   void (* TgtTxCpltCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Target private data Tx Transfer completed callback               */
+  /*!< I3C Target private data Tx Transfer completed callback                                      */
 
   void (* TgtRxCpltCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Target private data Rx Transfer completed callback               */
+  /*!< I3C Target private data Rx Transfer completed callback                                      */
 
   void (* TgtHotJoinCallback)(struct __I3C_HandleTypeDef *hi3c, uint8_t dynamicAddress);
-  /*!< I3C Target Hot-Join callback                                         */
+  /*!< I3C Target Hot-Join callback                                                                */
 
   void (* NotifyCallback)(struct __I3C_HandleTypeDef *hi3c, uint32_t eventId);
-  /*!< I3C Target or Controller asynchronous events callback                */
+  /*!< I3C Target or Controller asynchronous events callback                                       */
 
   void (* ErrorCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Error callback                                                   */
+  /*!< I3C Error callback                                                                          */
 
   void (* AbortCpltCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Abort complete callback                                          */
+  /*!< I3C Abort complete callback                                                                 */
 
   void (* MspInitCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Msp Init callback                                                */
+  /*!< I3C Msp Init callback                                                                       */
 
   void (* MspDeInitCallback)(struct __I3C_HandleTypeDef *hi3c);
-  /*!< I3C Msp DeInit callback                                              */
+  /*!< I3C Msp DeInit callback                                                                     */
 
 #endif /* USE_HAL_I3C_REGISTER_CALLBACKS == 1U */
 
@@ -477,18 +530,32 @@ typedef struct __I3C_HandleTypeDef
   */
 typedef enum
 {
-  HAL_I3C_CTRL_TX_COMPLETE_CB_ID     = 0x00U,  /*!< I3C Controller Tx Transfer completed callback ID                  */
-  HAL_I3C_CTRL_RX_COMPLETE_CB_ID     = 0x01U,  /*!< I3C Controller Rx Transfer completed callback ID                  */
-  HAL_I3C_CTRL_DAA_COMPLETE_CB_ID    = 0x02U,  /*!< I3C Controller Dynamic Address Assignment completed callback ID   */
-  HAL_I3C_TGT_REQ_DYNAMIC_ADDR_CB_ID = 0x03U,  /*!< I3C Controller request dynamic address completed callback ID      */
-  HAL_I3C_TGT_TX_COMPLETE_CB_ID      = 0x04U,  /*!< I3C Target Tx Transfer completed callback ID                      */
-  HAL_I3C_TGT_RX_COMPLETE_CB_ID      = 0x05U,  /*!< I3C Target Rx Transfer completed callback ID                      */
-  HAL_I3C_TGT_HOTJOIN_CB_ID          = 0x06U,  /*!< I3C Target Hot-join notification callback ID                      */
-  HAL_I3C_NOTIFY_CB_ID               = 0x07U,  /*!< I3C Target or Controller receive notification callback ID         */
-  HAL_I3C_ERROR_CB_ID                = 0x08U,  /*!< I3C Error callback ID                                             */
-  HAL_I3C_ABORT_CB_ID                = 0x09U,  /*!< I3C Abort callback ID                                             */
-  HAL_I3C_MSPINIT_CB_ID              = 0x0AU,  /*!< I3C Msp Init callback ID                                          */
-  HAL_I3C_MSPDEINIT_CB_ID            = 0x0BU   /*!< I3C Msp DeInit callback ID                                        */
+  /*!< I3C Controller Tx Transfer completed callback ID                  */
+  HAL_I3C_CTRL_TX_COMPLETE_CB_ID               = 0x00U,
+  /*!< I3C Controller Rx Transfer completed callback ID                  */
+  HAL_I3C_CTRL_RX_COMPLETE_CB_ID               = 0x01U,
+  /*!< I3C Controller Multiple Transfer completed callback ID            */
+  HAL_I3C_CTRL_MULTIPLE_XFER_COMPLETE_CB_ID    = 0x02U,
+  /*!< I3C Controller Dynamic Address Assignment completed callback ID   */
+  HAL_I3C_CTRL_DAA_COMPLETE_CB_ID              = 0x03U,
+  /*!< I3C Controller request dynamic address completed callback ID      */
+  HAL_I3C_TGT_REQ_DYNAMIC_ADDR_CB_ID           = 0x04U,
+  /*!< I3C Target Tx Transfer completed callback ID                      */
+  HAL_I3C_TGT_TX_COMPLETE_CB_ID                = 0x05U,
+  /*!< I3C Target Rx Transfer completed callback ID                      */
+  HAL_I3C_TGT_RX_COMPLETE_CB_ID                = 0x06U,
+  /*!< I3C Target Hot-join notification callback ID                      */
+  HAL_I3C_TGT_HOTJOIN_CB_ID                    = 0x07U,
+  /*!< I3C Target or Controller receive notification callback ID         */
+  HAL_I3C_NOTIFY_CB_ID                         = 0x08U,
+  /*!< I3C Error callback ID                                             */
+  HAL_I3C_ERROR_CB_ID                          = 0x09U,
+  /*!< I3C Abort callback ID                                             */
+  HAL_I3C_ABORT_CB_ID                          = 0x0AU,
+  /*!< I3C Msp Init callback ID                                          */
+  HAL_I3C_MSPINIT_CB_ID                        = 0x0BU,
+  /*!< I3C Msp DeInit callback ID                                        */
+  HAL_I3C_MSPDEINIT_CB_ID                      = 0x0CU
 
 } HAL_I3C_CallbackIDTypeDef;
 /**
@@ -896,7 +963,27 @@ typedef  void (*pI3C_TgtReqDynamicAddrCallbackTypeDef)(I3C_HandleTypeDef *hi3c, 
 /** @defgroup I3C_BCR_IN_PAYLOAD I3C BCR IN PAYLOAD
   * @{
   */
-#define HAL_I3C_BCR_IN_PAYLOAD_SHIFT    48  /*!< BCR field in target payload */
+#define HAL_I3C_BCR_IN_PAYLOAD_SHIFT             48                  /*!< BCR field in target payload */
+/**
+  * @}
+  */
+
+/** @defgroup I3C_PATTERN_CONFIGURATION I3C PATTERN CONFIGURATION
+  * @{
+  */
+#define HAL_I3C_TARGET_RESET_PATTERN             0x00000001U        /*!< Target reset pattern */
+#define HAL_I3C_HDR_EXIT_PATTERN                 0x00000002U        /*!< HDR exit pattern */
+/**
+  * @}
+  */
+
+/** @defgroup I3C_RESET_PATTERN RESET PATTERN
+  * @{
+  */
+#define HAL_I3C_RESET_PATTERN_DISABLE            0x00000000U
+/*!< Standard STOP condition emitted at the end of a frame */
+#define HAL_I3C_RESET_PATTERN_ENABLE             I3C_CFGR_RSTPTRN
+/*!< Reset pattern is inserted before the STOP condition of any emitted frame */
 /**
   * @}
   */
@@ -1028,6 +1115,7 @@ HAL_StatusTypeDef HAL_I3C_ActivateNotification(I3C_HandleTypeDef *hi3c, I3C_Xfer
 HAL_StatusTypeDef HAL_I3C_DeactivateNotification(I3C_HandleTypeDef *hi3c, uint32_t interruptMask);
 void HAL_I3C_CtrlTxCpltCallback(I3C_HandleTypeDef *hi3c);
 void HAL_I3C_CtrlRxCpltCallback(I3C_HandleTypeDef *hi3c);
+void HAL_I3C_CtrlMultipleXferCpltCallback(I3C_HandleTypeDef *hi3c);
 void HAL_I3C_CtrlDAACpltCallback(I3C_HandleTypeDef *hi3c);
 void HAL_I3C_TgtReqDynamicAddrCallback(I3C_HandleTypeDef *hi3c, uint64_t targetPayload);
 void HAL_I3C_TgtTxCpltCallback(I3C_HandleTypeDef *hi3c);
@@ -1061,6 +1149,8 @@ HAL_StatusTypeDef HAL_I3C_AddDescToFrame(I3C_HandleTypeDef         *hi3c,
                                          I3C_XferTypeDef           *pXferData,
                                          uint8_t                   nbFrame,
                                          uint32_t                  option);
+HAL_StatusTypeDef HAL_I3C_Ctrl_SetConfigResetPattern(I3C_HandleTypeDef *hi3c, uint32_t resetPattern);
+HAL_StatusTypeDef HAL_I3C_Ctrl_GetConfigResetPattern(I3C_HandleTypeDef *hi3c, uint32_t *pResetPattern);
 /**
   * @}
   */
@@ -1118,6 +1208,12 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Receive_IT(I3C_HandleTypeDef   *hi3c,
 HAL_StatusTypeDef HAL_I3C_Ctrl_Receive_DMA(I3C_HandleTypeDef   *hi3c,
                                            I3C_XferTypeDef     *pXferData);
 
+/* Controller multiple Direct CCC Command, I3C private or I2C transfer APIs */
+HAL_StatusTypeDef HAL_I3C_Ctrl_MultipleTransfer_IT(I3C_HandleTypeDef   *hi3c,
+                                                   I3C_XferTypeDef     *pXferData);
+HAL_StatusTypeDef HAL_I3C_Ctrl_MultipleTransfer_DMA(I3C_HandleTypeDef   *hi3c,
+                                                    I3C_XferTypeDef     *pXferData);
+
 /* Controller assign dynamic address APIs */
 HAL_StatusTypeDef HAL_I3C_Ctrl_SetDynAddr(I3C_HandleTypeDef *hi3c, uint8_t devAddress);
 HAL_StatusTypeDef HAL_I3C_Ctrl_DynAddrAssign_IT(I3C_HandleTypeDef *hi3c, uint32_t dynOption);
@@ -1125,6 +1221,18 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_DynAddrAssign(I3C_HandleTypeDef *hi3c,
                                              uint64_t          *target_payload,
                                              uint32_t           dynOption,
                                              uint32_t           timeout);
+/* Controller check device ready APIs */
+HAL_StatusTypeDef HAL_I3C_Ctrl_IsDeviceI3C_Ready(I3C_HandleTypeDef *hi3c,
+                                                 uint8_t            devAddress,
+                                                 uint32_t           trials,
+                                                 uint32_t           timeout);
+HAL_StatusTypeDef HAL_I3C_Ctrl_IsDeviceI2C_Ready(I3C_HandleTypeDef *hi3c,
+                                                 uint8_t            devAddress,
+                                                 uint32_t           trials,
+                                                 uint32_t           timeout);
+/* Controller arbitration APIs */
+HAL_StatusTypeDef HAL_I3C_Ctrl_GenerateArbitration(I3C_HandleTypeDef *hi3c, uint32_t timeout);
+
 /**
   * @}
   */
@@ -1159,6 +1267,9 @@ uint32_t HAL_I3C_GetError(const I3C_HandleTypeDef *hi3c);
 HAL_StatusTypeDef HAL_I3C_GetCCCInfo(I3C_HandleTypeDef *hi3c,
                                      uint32_t notifyId,
                                      I3C_CCCInfoTypeDef *pCCCInfo);
+HAL_StatusTypeDef HAL_I3C_Get_ENTDAA_Payload_Info(I3C_HandleTypeDef *hi3c,
+                                                  uint64_t ENTDAA_payload,
+                                                  I3C_ENTDAAPayloadTypeDef *pENTDAA_payload);
 /**
   * @}
   */
@@ -1256,7 +1367,8 @@ HAL_StatusTypeDef HAL_I3C_GetCCCInfo(I3C_HandleTypeDef *hi3c,
 #define IS_I3C_DMADESTINATIONWORD_VALUE(__VALUE__) ((__VALUE__) == DMA_DEST_DATAWIDTH_WORD)
 
 #define I3C_GET_DMA_REMAIN_DATA(__HANDLE__) (__HAL_DMA_GET_COUNTER(__HANDLE__) + HAL_DMAEx_GetFifoLevel(__HANDLE__))
-
+#define IS_I3C_RESET_PATTERN(__RSTPTRN__) (((__RSTPTRN__) == HAL_I3C_RESET_PATTERN_ENABLE)   || \
+                                           ((__RSTPTRN__) == HAL_I3C_RESET_PATTERN_DISABLE))
 /**
   * @}
   */
