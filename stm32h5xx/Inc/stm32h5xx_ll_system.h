@@ -56,7 +56,13 @@ extern "C" {
 /** @defgroup SYSTEM_LL_Private_Constants SYSTEM Private Constants
   * @{
   */
-
+#define LL_SBS_HDPL_INCREMENT_VALUE   0x6AU                               /*!< Define used for the HDPL increment */
+#define LL_SBS_DBG_UNLOCK             (0xB4U << SBS_DBGCR_DBG_UNLOCK_Pos) /*!< Define used to unlock debug */
+#define LL_SBS_ACCESS_PORT_UNLOCK     0xB4U                               /*!< Define used to unlock access port */
+#define LL_SBS_DBG_CONFIG_LOCK        0xC3U                               /*!< Define used to lock debug configuration */
+#define LL_SBS_DBG_CONFIG_UNLOCK      0xB4U                               /*!< Define used to unlock debug configuration */
+#define LL_SBS_DEBUG_SEC_NSEC         0xB4U                               /*!< Define used to open debug for secure and non-secure */
+#define LL_SBS_DEBUG_NSEC             0x3CU                               /*!< Define used to open debug for non-secure only */
 /**
   * @}
   */
@@ -143,8 +149,8 @@ extern "C" {
 /** @defgroup SYSTEM_LL_SBS_EPOCH_Selection  EPOCH Selection
   * @{
   */
-#define LL_SBS_EPOCH_SEL_SECURE         0x0UL                         /*!< EPOCH secure selected */
-#define LL_SBS_EPOCH_SEL_NONSECURE      SBS_EPOCHSELCR_EPOCH_SEL_0    /*!< EPOCH non secure selected */
+#define LL_SBS_EPOCH_SEL_NONSECURE      0x0UL                         /*!< EPOCH non secure selected */
+#define LL_SBS_EPOCH_SEL_SECURE         SBS_EPOCHSELCR_EPOCH_SEL_0    /*!< EPOCH secure selected */
 #define LL_SBS_EPOCH_SEL_PUFCHECK       SBS_EPOCHSELCR_EPOCH_SEL_1    /*!< EPOCH all zeros for PUF integrity check */
 
 /**
@@ -154,10 +160,10 @@ extern "C" {
 /** @defgroup SYSTEM_LL_SBS_NextHDPL_Selection  Next HDPL Selection
   * @{
   */
-#define LL_SBS_OBKHDPL_INCR_0                   0x00000000U
-#define LL_SBS_OBKHDPL_INCR_1                   SBS_NEXTHDPLCR_NEXTHDPL_0
-#define LL_SBS_OBKHDPL_INCR_2                   SBS_NEXTHDPLCR_NEXTHDPL_1
-#define LL_SBS_OBKHDPL_INCR_3                   SBS_NEXTHDPLCR_NEXTHDPL
+#define LL_SBS_OBKHDPL_INCR_0           0x00000000U                   /*!< Index to add to the current HDPL to point (through OBK-HDPL) to the next secure storage areas */
+#define LL_SBS_OBKHDPL_INCR_1           SBS_NEXTHDPLCR_NEXTHDPL_0     /*!< Index to add to the current HDPL to point (through OBK-HDPL) to the next secure storage areas */
+#define LL_SBS_OBKHDPL_INCR_2           SBS_NEXTHDPLCR_NEXTHDPL_1     /*!< Index to add to the current HDPL to point (through OBK-HDPL) to the next secure storage areas */
+#define LL_SBS_OBKHDPL_INCR_3           SBS_NEXTHDPLCR_NEXTHDPL       /*!< Index to add to the current HDPL to point (through OBK-HDPL) to the next secure storage areas */
 /**
   * @}
   */
@@ -165,10 +171,10 @@ extern "C" {
 /** @defgroup SYSTEM_LL_SBS_HDPL_Value  HDPL Value
   * @{
   */
-#define LL_SBS_HDPL_VALUE_0                     0x000000B4U
-#define LL_SBS_HDPL_VALUE_1                     0x00000051U
-#define LL_SBS_HDPL_VALUE_2                     0x0000008AU
-#define LL_SBS_HDPL_VALUE_3                     0x0000006FU
+#define LL_SBS_HDPL_VALUE_0             0x000000B4U                   /*!< Hide protection level 0 */
+#define LL_SBS_HDPL_VALUE_1             0x00000051U                   /*!< Hide protection level 1 */
+#define LL_SBS_HDPL_VALUE_2             0x0000008AU                   /*!< Hide protection level 2 */
+#define LL_SBS_HDPL_VALUE_3             0x0000006FU                   /*!< Hide protection level 3 */
 /**
   * @}
   */
@@ -207,8 +213,6 @@ extern "C" {
 #define LL_SBS_CLASSB_NSEC              0U                      /*!< Class B configuration secure/non-secure access */
 #define LL_SBS_FPU_SEC                  SBS_SECCFGR_FPUSEC      /*!< FPU configuration secure-only access */
 #define LL_SBS_FPU_NSEC                 0U                      /*!< FPU configuration secure/non-secure access */
-#define LL_SBS_SMPS_SEC                 SBS_SECCFGR_SDCE_SEC_EN /*!< SMPS configuration secure-only access */
-#define LL_SBS_SMPS_NSEC                0U                      /*!< SMPS configuration secure/non-secure access */
 /**
   * @}
   */
@@ -703,7 +707,7 @@ __STATIC_INLINE  void LL_SBS_FLASH_EnableECCNMI(void)
   */
 __STATIC_INLINE void LL_SBS_IncrementHDPLValue(void)
 {
-  MODIFY_REG(SBS->HDPLCR, SBS_HDPLCR_INCR_HDPL, 0x00000006AU);
+  MODIFY_REG(SBS->HDPLCR, SBS_HDPLCR_INCR_HDPL, LL_SBS_HDPL_INCREMENT_VALUE);
 }
 
 /**
@@ -758,6 +762,129 @@ __STATIC_INLINE  uint32_t LL_SBS_GetOBKHDPL(void)
   * @}
   */
 
+/** @defgroup SYSTEM_LL_SBS_EF_Debug_Control Debug Control
+  * @{
+  */
+
+/**
+  * @brief  Set the authenticated debug hide protection level
+  * @rmtoll SBS_DBGCR DBG_AUTH_HDPL     LL_SBS_SetAuthDbgHDPL
+  * @param  Level This parameter can be one of the following values:
+  *         @arg @ref LL_SBS_HDPL_VALUE_1
+  *         @arg @ref LL_SBS_HDPL_VALUE_2
+  *         @arg @ref LL_SBS_HDPL_VALUE_3
+  * @retval None
+  */
+__STATIC_INLINE void LL_SBS_SetAuthDbgHDPL(uint32_t Level)
+{
+  MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_AUTH_HDPL, (Level << SBS_DBGCR_DBG_AUTH_HDPL_Pos));
+}
+
+/**
+  * @brief  Get current hide protection level
+  * @rmtoll SBS_DBGCR DBG_AUTH_HDPL     LL_SBS_GetAuthDbgHDPL
+  * @retval Returned value is the hide protection level where the authenticated debug is opened:
+  *         @arg @ref LL_SBS_HDPL_VALUE_1
+  *         @arg @ref LL_SBS_HDPL_VALUE_2
+  *         @arg @ref LL_SBS_HDPL_VALUE_3
+  */
+__STATIC_INLINE uint32_t LL_SBS_GetAuthDbgHDPL(void)
+{
+  return (uint32_t)(READ_BIT(SBS->DBGCR, SBS_DBGCR_DBG_AUTH_HDPL) >> SBS_DBGCR_DBG_AUTH_HDPL_Pos);
+}
+
+#if defined(SBS_DBGCR_DBG_AUTH_SEC)
+/**
+  * @brief  Configure the authenticated debug security access.
+  * @rmtoll SBS_DBGCR DBG_AUTH_SEC     LL_SBS_SetAuthDbgSec
+  * @param  Control debug opening secure/non-secure or non-secure only
+  *         This parameter can be one of the following values:
+  *            @arg LL_SBS_DEBUG_SEC_NSEC: debug opening for secure and non-secure.
+  *            @arg LL_SBS_DEBUG_NSEC: debug opening for non-secure only.
+  * @retval None
+  */
+__STATIC_INLINE void LL_SBS_SetAuthDbgSec(uint32_t Security)
+{
+  MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_AUTH_SEC, (Security << SBS_DBGCR_DBG_AUTH_SEC_Pos));
+}
+
+/**
+  * @brief  Get the current value of the hide protection level.
+  * @rmtoll SBS_DBGCR DBG_AUTH_SEC     LL_SBS_GetAuthDbgSec
+  * @note   This function can be only used when device state is Closed.
+  * @retval Returned value can be one of the following values:
+  *            @arg SBS_DEBUG_SEC_NSEC: debug opening for secure and non-secure.
+  *            @arg any other value: debug opening for non-secure only.
+  */
+__STATIC_INLINE uint32_t LL_SBS_GetAuthDbgSec(void)
+{
+  return ((SBS->DBGCR & SBS_DBGCR_DBG_AUTH_SEC) >> SBS_DBGCR_DBG_AUTH_SEC_Pos);
+}
+#endif /* SBS_DBGCR_DBG_AUTH_SEC */
+
+/**
+  * @brief  Unlock the debug
+  * @rmtoll SBS_DBGCR DBG_UNLOCK     LL_SBS_UnlockDebug
+  * @retval None
+  */
+__STATIC_INLINE void LL_SBS_UnlockDebug(void)
+{
+  MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_UNLOCK, LL_SBS_DBG_UNLOCK);
+}
+
+/**
+  * @brief  Check if the debug is unlocked
+  * @rmtoll SBS_DBGCR DBG_UNLOCK     LL_SBS_IsUnlockedDebug
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_SBS_IsUnlockedDebug(void)
+{
+  return ((READ_BIT(SBS->DBGCR, SBS_DBGCR_DBG_UNLOCK) == LL_SBS_DBG_UNLOCK) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Unlock the access port
+  * @rmtoll SBS_DBGCR AP_UNLOCK     LL_SBS_UnlockAccessPort
+  * @retval None
+  */
+__STATIC_INLINE void LL_SBS_UnlockAccessPort(void)
+{
+  MODIFY_REG(SBS->DBGCR, SBS_DBGCR_AP_UNLOCK, LL_SBS_ACCESS_PORT_UNLOCK);
+}
+
+/**
+  * @brief  Check if the access port is unlocked
+  * @rmtoll SBS_DBGCR AP_UNLOCK     LL_SBS_IsUnlockedAccessPort
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_SBS_IsUnlockedAccessPort(void)
+{
+  return ((READ_BIT(SBS->DBGCR, SBS_DBGCR_AP_UNLOCK) == LL_SBS_ACCESS_PORT_UNLOCK) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Lock the debug configuration
+  * @rmtoll SBS_DBGLOCKR DBGCFG_LOCK     LL_SBS_LockDebugConfig
+  * @retval None
+  */
+__STATIC_INLINE void LL_SBS_LockDebugConfig(void)
+{
+  MODIFY_REG(SBS->DBGLOCKR, SBS_DBGLOCKR_DBGCFG_LOCK, LL_SBS_DBG_CONFIG_LOCK);
+}
+
+/**
+  * @brief  Check if the debug configuration is locked
+  * @rmtoll SBS_DBGLOCKR DBGCFG_LOCK     LL_SBS_IsLockedDebugConfig
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_SBS_IsLockedDebugConfig(void)
+{
+  return ((READ_BIT(SBS->DBGLOCKR, SBS_DBGLOCKR_DBGCFG_LOCK) != LL_SBS_DBG_CONFIG_UNLOCK) ? 1UL : 0UL);
+}
+
+/**
+  * @}
+  */
 
 /** @defgroup SYSTEM_LL_SBS_EF_lock_Management lock Management
   * @{
@@ -846,20 +973,17 @@ __STATIC_INLINE uint32_t LL_SBS_GetSecureLock(void)
   */
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-
 /**
   * @brief  Configure Secure mode
   * @note Only available from secure state when system implements security (TZEN=1)
   * @rmtoll SECCFGR     SBSSEC        LL_SBS_ConfigSecure\n
   *         SECCFGR     CLASSBSEC     LL_SBS_ConfigSecure\n
-  *         SECCFGR     FPUSEC        LL_SBS_ConfigSecure\n
-  *         SECCFGR     SDCE_SEC_EN   LL_SBS_ConfigSecure
+  *         SECCFGR     FPUSEC        LL_SBS_ConfigSecure
   * @param  Configuration This parameter shall be the full combination
   *         of the following values:
   *         @arg @ref LL_SBS_CLOCK_SEC or LL_SBS_CLOCK_NSEC
   *         @arg @ref LL_SBS_CLASSB_SEC or LL_SBS_CLASSB_NSEC
   *         @arg @ref LL_SBS_FPU_SEC or LL_SBS_FPU_NSEC
-  *         @arg @ref LL_SBS_SMPS_SEC or LL_SBS_SMPS_NSEC
   * @retval None
   */
 __STATIC_INLINE void LL_SBS_ConfigSecure(uint32_t Configuration)
@@ -872,19 +996,16 @@ __STATIC_INLINE void LL_SBS_ConfigSecure(uint32_t Configuration)
   * @note Only available when system implements security (TZEN=1)
   * @rmtoll SECCFGR     SBSSEC        LL_SBS_ConfigSecure\n
   *         SECCFGR     CLASSBSEC     LL_SBS_ConfigSecure\n
-  *         SECCFGR     FPUSEC        LL_SBS_ConfigSecure\n
-  *         SECCFGR     SDCE_SEC_EN   LL_SBS_ConfigSecure
+  *         SECCFGR     FPUSEC        LL_SBS_ConfigSecure
   * @retval Returned value is the combination of the following values:
   *         @arg @ref LL_SBS_CLOCK_SEC or LL_SBS_CLOCK_NSEC
   *         @arg @ref LL_SBS_CLASSB_SEC or LL_SBS_CLASSB_NSEC
   *         @arg @ref LL_SBS_FPU_SEC or LL_SBS_FPU_NSEC
-  *         @arg @ref LL_SBS_SMPS_SEC or LL_SBS_SMPS_NSEC
   */
 __STATIC_INLINE uint32_t LL_SBS_GetConfigSecure(void)
 {
-  return (uint32_t)(READ_BIT(SBS->SECCFGR, LL_SBS_CLOCK_SEC | LL_SBS_CLASSB_SEC | LL_SBS_FPU_SEC | LL_SBS_SMPS_SEC));
+  return (uint32_t)(READ_BIT(SBS->SECCFGR, LL_SBS_CLOCK_SEC | LL_SBS_CLASSB_SEC | LL_SBS_FPU_SEC));
 }
-
 #endif /* __ARM_FEATURE_CMSE && __ARM_FEATURE_CMSE == 3U */
 
 /**
@@ -901,7 +1022,7 @@ __STATIC_INLINE uint32_t LL_SBS_GetConfigSecure(void)
 
 /**
   * @brief  Get the compensation cell value of the GPIO PMOS transistor supplied by VDD
-  * @rmtoll CCVALR    PCV1   LL_SBS_GetPMOSVddCompensationValue
+  * @rmtoll CCVALR    APSRC1   LL_SBS_GetPMOSVddCompensationValue
   * @retval Returned value is the PMOS compensation cell
   */
 __STATIC_INLINE uint32_t LL_SBS_GetPMOSVddCompensationValue(void)
@@ -911,7 +1032,7 @@ __STATIC_INLINE uint32_t LL_SBS_GetPMOSVddCompensationValue(void)
 
 /**
   * @brief  Get the compensation cell value of the GPIO NMOS transistor supplied by VDD
-  * @rmtoll CCVALR    NCV1   LL_SBS_GetNMOSVddCompensationValue
+  * @rmtoll CCVALR    ANSRC1   LL_SBS_GetNMOSVddCompensationValue
   * @retval Returned value is the NMOS compensation cell
   */
 __STATIC_INLINE uint32_t LL_SBS_GetNMOSVddCompensationValue(void)
@@ -921,7 +1042,7 @@ __STATIC_INLINE uint32_t LL_SBS_GetNMOSVddCompensationValue(void)
 
 /**
   * @brief  Get the compensation cell value of the GPIO PMOS transistor supplied by VDDIO2
-  * @rmtoll CCVALR    PCV2   LL_SBS_GetPMOSVddIO2CompensationValue
+  * @rmtoll CCVALR    APSRC2   LL_SBS_GetPMOSVddIO2CompensationValue
   * @retval Returned value is the PMOS compensation cell
   */
 __STATIC_INLINE uint32_t LL_SBS_GetPMOSVddIO2CompensationValue(void)
@@ -931,7 +1052,7 @@ __STATIC_INLINE uint32_t LL_SBS_GetPMOSVddIO2CompensationValue(void)
 
 /**
   * @brief  Get the compensation cell value of the GPIO NMOS transistor supplied by VDDIO2
-  * @rmtoll CCVALR    NCV2   LL_SBS_GetNMOSVddIO2CompensationValue
+  * @rmtoll CCVALR    ANSRC2   LL_SBS_GetNMOSVddIO2CompensationValue
   * @retval Returned value is the NMOS compensation cell
   */
 __STATIC_INLINE uint32_t LL_SBS_GetNMOSVddIO2CompensationValue(void)
@@ -941,7 +1062,7 @@ __STATIC_INLINE uint32_t LL_SBS_GetNMOSVddIO2CompensationValue(void)
 
 /**
   * @brief  Set the compensation cell code of the GPIO PMOS transistor supplied by VDD
-  * @rmtoll CCSWCR    PCC1  LL_SBS_SetPMOSVddCompensationCode
+  * @rmtoll CCSWCR    SW_APSRC1  LL_SBS_SetPMOSVddCompensationCode
   * @param  PMOSCode PMOS compensation code
   *         This code is applied to the PMOS compensation cell when the CS1 bit of the
   *         SBS_CCCSR is set
@@ -954,7 +1075,7 @@ __STATIC_INLINE void LL_SBS_SetPMOSVddCompensationCode(uint32_t PMOSCode)
 
 /**
   * @brief  Get the compensation cell code of the GPIO PMOS transistor supplied by VDD
-  * @rmtoll CCSWCR    PCC1   LL_SBS_GetPMOSVddCompensationCode
+  * @rmtoll CCSWCR    SW_APSRC1   LL_SBS_GetPMOSVddCompensationCode
   * @retval Returned value is the PMOS compensation cell
   */
 __STATIC_INLINE uint32_t LL_SBS_GetPMOSVddCompensationCode(void)
@@ -964,7 +1085,7 @@ __STATIC_INLINE uint32_t LL_SBS_GetPMOSVddCompensationCode(void)
 
 /**
   * @brief  Set the compensation cell code of the GPIO PMOS transistor supplied by VDDIO
-  * @rmtoll CCSWCR    PCC2  LL_SBS_SetPMOSVddIOCompensationCode
+  * @rmtoll CCSWCR    SW_APSRC2  LL_SBS_SetPMOSVddIOCompensationCode
   * @param  PMOSCode PMOS compensation code
   *         This code is applied to the PMOS compensation cell when the CS2 bit of the
   *         SBS_CCCSR is set
@@ -975,10 +1096,9 @@ __STATIC_INLINE void LL_SBS_SetPMOSVddIOCompensationCode(uint32_t PMOSCode)
   MODIFY_REG(SBS->CCSWCR, SBS_CCSWCR_SW_APSRC2, PMOSCode << SBS_CCSWCR_SW_APSRC2_Pos);
 }
 
-
 /**
   * @brief  Get the compensation cell code of the GPIO PMOS transistor supplied by VDDIO
-  * @rmtoll CCSWCR    PCC2   LL_SBS_GetPMOSVddIOCompensationCode
+  * @rmtoll CCSWCR    SW_APSRC2   LL_SBS_GetPMOSVddIOCompensationCode
   * @retval Returned value is the PMOS compensation
   */
 __STATIC_INLINE uint32_t LL_SBS_GetPMOSVddIOCompensationCode(void)
@@ -1113,7 +1233,7 @@ __STATIC_INLINE uint32_t LL_SBS_IsActiveFlag_VddCMPCR(void)
 
 /**
   * @brief  Get Compensation Cell ready Flag of GPIO supplied by VDDIO
-  * @rmtoll CCCSR   RDY1   LL_SBS_IsActiveFlag_VddIOCMPCR
+  * @rmtoll CCCSR   RDY2   LL_SBS_IsActiveFlag_VddIOCMPCR
   * @retval State of bit (1 or 0).
   */
 __STATIC_INLINE uint32_t LL_SBS_IsActiveFlag_VddIOCMPCR(void)
@@ -1690,5 +1810,5 @@ __STATIC_INLINE uint32_t LL_SBS_GetEraseAfterResetStatus(void)
 }
 #endif
 
-#endif /* STM32h5xx_LL_SYSTEM_H */
+#endif /* STM32H5xx_LL_SYSTEM_H */
 

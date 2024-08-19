@@ -211,15 +211,17 @@ HAL_StatusTypeDef HAL_RS485Ex_Init(UART_HandleTypeDef *huart, uint32_t Polarity,
   /* Disable the Peripheral */
   __HAL_UART_DISABLE(huart);
 
+  /* Perform advanced settings configuration */
+  /* For some items, configuration requires to be done prior TE and RE bits are set */
+  if (huart->AdvancedInit.AdvFeatureInit != UART_ADVFEATURE_NO_INIT)
+  {
+    UART_AdvFeatureConfig(huart);
+  }
+
   /* Set the UART Communication parameters */
   if (UART_SetConfig(huart) == HAL_ERROR)
   {
     return HAL_ERROR;
-  }
-
-  if (huart->AdvancedInit.AdvFeatureInit != UART_ADVFEATURE_NO_INIT)
-  {
-    UART_AdvFeatureConfig(huart);
   }
 
   /* Enable the Driver Enable mode by setting the DEM bit in the CR3 register */
@@ -574,7 +576,7 @@ HAL_StatusTypeDef HAL_UARTEx_DisableFifoMode(UART_HandleTypeDef *huart)
   /* Disable UART */
   __HAL_UART_DISABLE(huart);
 
-  /* Enable FIFO mode */
+  /* Disable FIFO mode */
   CLEAR_BIT(tmpcr1, USART_CR1_FIFOEN);
   huart->FifoMode = UART_FIFOMODE_DISABLE;
 
@@ -724,6 +726,14 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
       return  HAL_ERROR;
     }
 
+#if defined(USART_DMAREQUESTS_SW_WA)
+    /* Disable the UART DMA Rx request if enabled */
+    if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
+    {
+      CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
+    }
+
+#endif /* USART_DMAREQUESTS_SW_WA */
     huart->ErrorCode = HAL_UART_ERROR_NONE;
     huart->RxState = HAL_UART_STATE_BUSY_RX;
     huart->ReceptionType = HAL_UART_RECEPTION_TOIDLE;
@@ -843,6 +853,14 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_IT(UART_HandleTypeDef *huart, uint8_t
       return HAL_ERROR;
     }
 
+#if defined(USART_DMAREQUESTS_SW_WA)
+    /* Disable the UART DMA Rx request if enabled */
+    if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
+    {
+      CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
+    }
+
+#endif /* USART_DMAREQUESTS_SW_WA */
     /* Set Reception type to reception till IDLE Event*/
     huart->ReceptionType = HAL_UART_RECEPTION_TOIDLE;
     huart->RxEventType = HAL_UART_RXEVENT_TC;

@@ -24,10 +24,10 @@
 extern "C" {
 #endif
 
+#if defined(FMC_BANK3)
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h5xx_ll_fmc.h"
-#if defined(FMC_BANK3)
 
 /** @addtogroup STM32H5xx_HAL_Driver
   * @{
@@ -105,7 +105,6 @@ typedef struct
   FunctionalState ExtraCommandEnable;    /*!< NAND extra command needed for Page reading mode. This
                                               parameter is mandatory for some NAND parts after the read
                                               command (NAND_CMD_AREA_TRUE1) and before DATA reading sequence.
-                                              Example: Toshiba THTH58BYG3S0HBAI6.
                                               This parameter could be ENABLE or DISABLE
                                               Please check the Read Mode sequence in the NAND device datasheet */
 } NAND_DeviceConfigTypeDef;
@@ -195,7 +194,7 @@ HAL_StatusTypeDef  HAL_NAND_Init(NAND_HandleTypeDef *hnand, FMC_NAND_PCC_TimingT
                                  FMC_NAND_PCC_TimingTypeDef *AttSpace_Timing);
 HAL_StatusTypeDef  HAL_NAND_DeInit(NAND_HandleTypeDef *hnand);
 
-HAL_StatusTypeDef  HAL_NAND_ConfigDevice(NAND_HandleTypeDef *hnand, NAND_DeviceConfigTypeDef *pDeviceConfig);
+HAL_StatusTypeDef  HAL_NAND_ConfigDevice(NAND_HandleTypeDef *hnand, const NAND_DeviceConfigTypeDef *pDeviceConfig);
 
 HAL_StatusTypeDef  HAL_NAND_Read_ID(NAND_HandleTypeDef *hnand, NAND_IDTypeDef *pNAND_ID);
 
