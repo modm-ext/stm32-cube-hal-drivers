@@ -75,7 +75,7 @@
     SDMMC Peripheral (STM32 side) and the MMC Card, and put it into StandBy State (Ready for data transfer).
     This function provide the following operations:
 
-    (#) Initialize the SDMMC peripheral interface with defaullt configuration.
+    (#) Initialize the SDMMC peripheral interface with default configuration.
         The initialization process is done at 400KHz. You can change or adapt
         this frequency by adjusting the "ClockDiv" field.
         The MMC Card frequency (SDMMC_CK) is computed as follows:
@@ -305,7 +305,7 @@
 #define MMC_EXT_CSD_S_A_TIMEOUT_POS               8
 
 /* Frequencies used in the driver for clock divider calculation */
-#define MMC_INIT_FREQ                   400000U   /* Initalization phase : 400 kHz max */
+#define MMC_INIT_FREQ                   400000U   /* Initialization phase : 400 kHz max */
 #define MMC_HIGH_SPEED_FREQ             52000000U /* High speed phase : 52 MHz max */
 /**
   * @}
@@ -1719,15 +1719,15 @@ void HAL_MMC_IRQHandler(MMC_HandleTypeDef *hmmc)
 #endif
         }
       }
+      /* Disable the DMA transfer for transmit request by setting the DMAEN bit
+      in the MMC DCTRL register */
+      hmmc->Instance->DCTRL &= (uint32_t)~((uint32_t)SDMMC_DCTRL_DMAEN);
+      /* Clear all the static flags */
+      __HAL_MMC_CLEAR_FLAG(hmmc, SDMMC_STATIC_DATA_FLAGS);
+      hmmc->State = HAL_MMC_STATE_READY;
+      hmmc->Context = MMC_CONTEXT_NONE;
       if(((context & MMC_CONTEXT_READ_SINGLE_BLOCK) == 0U) && ((context & MMC_CONTEXT_READ_MULTIPLE_BLOCK) == 0U))
       {
-        /* Disable the DMA transfer for transmit request by setting the DMAEN bit
-        in the MMC DCTRL register */
-        hmmc->Instance->DCTRL &= (uint32_t)~((uint32_t)SDMMC_DCTRL_DMAEN);
-
-        hmmc->State = HAL_MMC_STATE_READY;
-        hmmc->Context = MMC_CONTEXT_NONE;
-
 #if defined (USE_HAL_MMC_REGISTER_CALLBACKS) && (USE_HAL_MMC_REGISTER_CALLBACKS == 1U)
         hmmc->TxCpltCallback(hmmc);
 #else
@@ -4365,7 +4365,14 @@ static uint32_t MMC_HighSpeed(MMC_HandleTypeDef *hmmc, FunctionalState state)
           }
           else
           {
-            Init.ClockDiv = sdmmc_clk/(2U*MMC_HIGH_SPEED_FREQ);
+            if (sdmmc_clk <= MMC_HIGH_SPEED_FREQ)
+            {
+              Init.ClockDiv = 0;
+            }
+            else
+            {
+              Init.ClockDiv = (sdmmc_clk / (2U * MMC_HIGH_SPEED_FREQ)) + 1U;
+            }
             (void)SDMMC_Init(hmmc->Instance, Init);
 
             SET_BIT(hmmc->Instance->CLKCR, SDMMC_CLKCR_BUSSPEED);
@@ -4537,6 +4544,8 @@ static uint32_t MMC_PwrClassUpdate(MMC_HandleTypeDef *hmmc, uint32_t Wide, uint3
       supported_pwr_class = ((hmmc->Ext_CSD[(MMC_EXT_CSD_PWR_CL_52_INDEX/4)] >> MMC_EXT_CSD_PWR_CL_52_POS) & 0x000000FFU);
     }
     else
+#else /* Prevent compiler warning in case of -Wextra */
+    UNUSED(Speed);
 #endif
     {
       /* Field PWR_CL_26_xxx [201 or 203] */

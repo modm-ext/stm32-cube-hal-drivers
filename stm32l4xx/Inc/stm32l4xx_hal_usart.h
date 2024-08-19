@@ -147,7 +147,7 @@ typedef struct __USART_HandleTypeDef
 
 #endif /* USART_CR1_FIFOEN */
 #if defined(USART_CR2_SLVEN)
-  uint32_t                      SlaveMode;               /*!< Enable/Disable UART SPI Slave Mode. This parameter can be a value
+  uint32_t                      SlaveMode;               /*!< Enable/Disable USART SPI Slave Mode. This parameter can be a value
                                                               of @ref USARTEx_Slave_Mode */
 
 #endif /* USART_CR2_SLVEN */
@@ -566,8 +566,8 @@ typedef  void (*pUSART_CallbackTypeDef)(USART_HandleTypeDef *husart);  /*!< poin
   * @retval None
   */
 #define __HAL_USART_CLEAR_UDRFLAG(__HANDLE__)   __HAL_USART_CLEAR_FLAG((__HANDLE__), USART_CLEAR_UDRF)
-#endif /* USART_CR2_SLVEN */
 
+#endif /* USART_CR2_SLVEN */
 /** @brief  Enable the specified USART interrupt.
   * @param  __HANDLE__ specifies the USART Handle.
   * @param  __INTERRUPT__ specifies the USART interrupt source to enable.
@@ -747,8 +747,7 @@ typedef  void (*pUSART_CallbackTypeDef)(USART_HandleTypeDef *husart);  /*!< poin
    ((__CLOCKPRESCALER__) == USART_PRESCALER_DIV16)  ? 16U :      \
    ((__CLOCKPRESCALER__) == USART_PRESCALER_DIV32)  ? 32U :      \
    ((__CLOCKPRESCALER__) == USART_PRESCALER_DIV64)  ? 64U :      \
-   ((__CLOCKPRESCALER__) == USART_PRESCALER_DIV128) ? 128U :     \
-   ((__CLOCKPRESCALER__) == USART_PRESCALER_DIV256) ? 256U : 1U)
+   ((__CLOCKPRESCALER__) == USART_PRESCALER_DIV128) ? 128U : 256U)
 
 /** @brief  BRR division operation to set BRR register in 8-bit oversampling mode.
   * @param  __PCLK__ USART clock.
