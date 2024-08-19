@@ -22,7 +22,7 @@ as the Cube release version in braces:
 - [H7: v1.11.3 created 15-March-2024](https://github.com/STMicroelectronics/stm32h7xx_hal_driver)
 - [L0: v1.10.6 created 27-January-2023](https://github.com/STMicroelectronics/stm32l0xx_hal_driver)
 - [L1: v1.4.5 created 07-April-2023](https://github.com/STMicroelectronics/stm32l1xx_hal_driver)
-- [L4: v1.13.3 created 15-April-2022](https://github.com/STMicroelectronics/stm32l4xx_hal_driver)
+- [L4: v1.13.5 created 28-June-2024](https://github.com/STMicroelectronics/stm32l4xx_hal_driver)
 - [L5: v1.0.5 created 04-November-2022](https://github.com/STMicroelectronics/stm32l5xx_hal_driver)
 - [U0: v1.1.0 created 08-February-2023](https://github.com/STMicroelectronics/stm32u0xx_hal_driver)
 - [U5: v1.2.0 created 08-February-2023](https://github.com/STMicroelectronics/stm32u5xx_hal_driver)
