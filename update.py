@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
-import urllib.request
-import zipfile
 import shutil
 import logging
 import os, re, sys
-import svn.remote
 import subprocess
 
 from pathlib import Path
 from multiprocessing.pool import ThreadPool
-from socket import timeout
 
 stm32_families = [
-    "l0", "l1", "l4", "l5",
-    "f0", "f1", "f2", "f3", "f4", "f7",
     "c0",
+    "f0", "f1", "f2", "f3", "f4", "f7",
     "g0", "g4",
     "h5", "h7",
+    "l0", "l1", "l4", "l5",
+    "u0", "u5",
     "wb", "wl",
-    "u5",
 ]
 
 def get_header_version(release_notes):
@@ -34,10 +30,9 @@ logging.basicConfig(level=logging.DEBUG if "-vv" in sys.argv else logging.INFO)
 def get_header_files(family):
     LOGGER = logging.getLogger(family.upper())
 
-    remote_path = Path("raw/STM32{}xx".format(family.upper()))
-    repo_url = "https://github.com/STMicroelectronics/STM32Cube{0}/trunk/Drivers/STM32{0}xx_HAL_Driver".format(family.upper())
-    repo = svn.remote.RemoteClient(repo_url)
-    repo.export(str(remote_path))
+    remote_path = Path(f"raw/STM32{family.upper()}xx").absolute()
+    repo_url = "https://github.com/STMicroelectronics/stm32{0}xx_hal_driver".format(family.lower())
+    subprocess.run(f"git clone --depth=1 {repo_url} {remote_path}", shell=True)
 
     remote_readme = (remote_path / "Release_Notes.html")
     remote_readme_content = remote_readme.read_text(errors="replace")
@@ -51,6 +46,10 @@ def get_header_files(family):
     else:
         header_local_version = None
     LOGGER.info("Header v{} -> v{}".format(header_local_version, header_remote_version))
+
+    if header_local_version == header_remote_version:
+        LOGGER.info("Skipping update...")
+        return (header_remote_version, header_remote_date)
 
     shutil.rmtree(destination_path, ignore_errors=True)
     destination_path.mkdir(parents=True)
