@@ -7,10 +7,10 @@ on:
 
 jobs:
   update:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Configure Git
         run: |
           git config --global user.email "bot@modm.io"
@@ -23,7 +23,7 @@ jobs:
           git push origin main
 
   keep-alive:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       actions: write
     steps:

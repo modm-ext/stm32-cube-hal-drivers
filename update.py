@@ -8,13 +8,13 @@ from pathlib import Path
 from multiprocessing.pool import ThreadPool
 
 stm32_families = [
-    "c0",
-    "f0", "f1", "f2", "f3", "f4", "f7",
-    "g0", "g4",
-    "h5", "h7",
-    "l0", "l1", "l4", "l5",
-    "u0", "u5",
-    "wb", "wl",
+    "c0xx",
+    "f0xx", "f1xx", "f2xx", "f3xx", "f4xx", "f7xx",
+    "g0xx", "g4xx",
+    "h5xx", "h7xx", "h7rsxx",
+    "l0xx", "l1xx", "l4xx", "l5xx",
+    "u0xx", "u5xx",
+    "wbxx", "wb0x", "wbaxx", "wlxx", "wl3x",
 ]
 
 def get_header_version(release_notes):
@@ -28,10 +28,10 @@ def get_header_date(release_notes):
 logging.basicConfig(level=logging.DEBUG if "-vv" in sys.argv else logging.INFO)
 
 def get_header_files(family):
-    LOGGER = logging.getLogger(family.upper())
+    LOGGER = logging.getLogger(family)
 
-    remote_path = Path(f"raw/STM32{family.upper()}xx").absolute()
-    repo_url = "https://github.com/STMicroelectronics/stm32{0}xx_hal_driver".format(family.lower())
+    remote_path = Path(f"raw/stm32{family}").absolute()
+    repo_url = f"https://github.com/STMicroelectronics/stm32{family}-hal-driver.git"
     subprocess.run(f"git clone --depth=1 {repo_url} {remote_path}", shell=True)
 
     remote_readme = (remote_path / "Release_Notes.html")
@@ -39,7 +39,7 @@ def get_header_files(family):
     header_remote_version = get_header_version(remote_readme_content)
     header_remote_date = get_header_date(remote_readme_content)
 
-    destination_path = Path("stm32{}xx".format(family))
+    destination_path = Path(f"stm32{family}")
     header_local_version = (destination_path / "Release_Notes.html")
     if header_local_version.exists():
         header_local_version = get_header_version(header_local_version.read_text(errors="replace"))
@@ -64,10 +64,10 @@ def get_header_files(family):
                             dest.open("w", encoding="utf-8") as wfile:
                 wfile.writelines(l.rstrip()+"\n" for l in rfile.readlines())
 
-    for patch in Path('patches').glob("{}*.patch".format(family)):
-        LOGGER.info("Applying {}...".format(patch))
-        if os.system("git apply -v --ignore-whitespace {}".format(patch)) != 0:
-            LOGGER.critical("Applying {} FAILED...".format(patch))
+    for patch in Path('patches').glob(f"{family}*.patch"):
+        LOGGER.info(f"Applying {patch}...")
+        if os.system(f"git apply -v --ignore-whitespace {patch}") != 0:
+            LOGGER.critical(f"Applying {patch} FAILED...")
             return None
 
     LOGGER.info("Successful update")
@@ -81,8 +81,9 @@ with ThreadPool(len(stm32_families)) as pool:
 
 
 def update_readme(readme, family, new_version, new_date):
-    match = r"{0}: v.+? created .+?]".format(family.upper())
-    replace = "{0}: v{1} created {2}]".format(family.upper(), new_version, new_date)
+    family = family.rstrip('x').upper()
+    match = rf"{family}: v.+? created .+?]"
+    replace = f"{family}: v{new_version} created {new_date}]"
     return re.sub(match, replace, readme)
 
 for family, versions in zip(stm32_families, family_versions):
@@ -90,8 +91,8 @@ for family, versions in zip(stm32_families, family_versions):
     readme = Path("README.md").read_text()
     readme = update_readme(readme, family, versions[0], versions[1])
     Path("README.md").write_text(readme)
-    subprocess.run("git add README.md stm32{}xx".format(family), shell=True)
+    subprocess.run(f"git add README.md stm32{family}", shell=True)
     if subprocess.call("git diff-index --quiet HEAD --", shell=True):
-        subprocess.run('git commit -m "Update STM32{} CubeHal drivers to v{}"'.format(family.upper(), versions[0]), shell=True)
+        subprocess.run(f'git commit -m "Update STM32{family.rstrip('x').upper()} CubeHal drivers to v{versions[0]}"', shell=True)
 
 exit(family_versions.count(None))
