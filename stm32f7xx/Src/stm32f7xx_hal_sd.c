@@ -403,6 +403,7 @@ HAL_StatusTypeDef HAL_SD_Init(SD_HandleTypeDef *hsd)
 HAL_StatusTypeDef HAL_SD_InitCard(SD_HandleTypeDef *hsd)
 {
   uint32_t errorstate;
+  HAL_StatusTypeDef status;
   SD_InitTypeDef Init;
 
   /* Default SDMMC peripheral configuration for SD card initialization */
@@ -414,7 +415,11 @@ HAL_StatusTypeDef HAL_SD_InitCard(SD_HandleTypeDef *hsd)
   Init.ClockDiv            = SDMMC_INIT_CLK_DIV;
 
   /* Initialize SDMMC peripheral interface with default configuration */
-  SDMMC_Init(hsd->Instance, Init);
+  status = SDMMC_Init(hsd->Instance, Init);
+  if(status != HAL_OK)
+  {
+    return HAL_ERROR;
+  }
 
   /* Disable SDMMC Clock */
   __HAL_SD_DISABLE(hsd);
@@ -2863,7 +2868,7 @@ static uint32_t SD_SendSDStatus(SD_HandleTypeDef *hsd, uint32_t *pSDstatus)
       }
     }
 
-    if((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
+    if((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
     {
       return HAL_SD_ERROR_TIMEOUT;
     }
@@ -2891,7 +2896,7 @@ static uint32_t SD_SendSDStatus(SD_HandleTypeDef *hsd, uint32_t *pSDstatus)
     *pData = SDMMC_ReadFIFO(hsd->Instance);
     pData++;
 
-    if((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
+    if((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
     {
       return HAL_SD_ERROR_TIMEOUT;
     }
@@ -3083,7 +3088,7 @@ static uint32_t SD_FindSCR(SD_HandleTypeDef *hsd, uint32_t *pSCR)
       break;
     }
 
-    if((HAL_GetTick() - tickstart) >=  SDMMC_SWDATATIMEOUT)
+    if((HAL_GetTick() - tickstart) >=  SDMMC_DATATIMEOUT)
     {
       return HAL_SD_ERROR_TIMEOUT;
     }

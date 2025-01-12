@@ -522,6 +522,7 @@ typedef struct __DMA_HandleTypeDef
 
 #define DMA_CHANNEL_ATTRIBUTE_UNLOCKED (0x00U)                                                                       /*!< Channel attribute is unlocked */
 #define DMA_CHANNEL_ATTRIBUTE_LOCKED   (0x01U)                                                                       /*!< Channel attribute is locked   */
+
 /**
   * @}
   */
