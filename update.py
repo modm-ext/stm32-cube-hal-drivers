@@ -3,6 +3,8 @@ import shutil
 import logging
 import os, re, sys
 import subprocess
+import json
+import urllib.request
 
 from pathlib import Path
 from multiprocessing.pool import ThreadPool
@@ -31,8 +33,13 @@ def get_header_files(family):
     LOGGER = logging.getLogger(family)
 
     remote_path = Path(f"raw/stm32{family}").absolute()
-    repo_url = f"https://github.com/STMicroelectronics/stm32{family}-hal-driver.git"
-    subprocess.run(f"git clone --depth=1 {repo_url} {remote_path}", shell=True)
+    repo = f"STMicroelectronics/stm32{family}-hal-driver"
+    repo_url = f"https://github.com/{repo}.git"
+
+    with urllib.request.urlopen(f"https://api.github.com/repos/{repo}/tags") as response:
+        tag = json.loads(response.read())[0]["name"]
+
+    subprocess.run(f"git clone --depth=1 --branch {tag} {repo_url} {remote_path}", shell=True)
 
     remote_readme = (remote_path / "Release_Notes.html")
     remote_readme_content = remote_readme.read_text(errors="replace")
@@ -45,16 +52,12 @@ def get_header_files(family):
         header_local_version = get_header_version(header_local_version.read_text(errors="replace"))
     else:
         header_local_version = None
-    LOGGER.info("Header v{} -> v{}".format(header_local_version, header_remote_version))
-
-    if header_local_version == header_remote_version:
-        LOGGER.info("Skipping update...")
-        return (header_remote_version, header_remote_date)
+    LOGGER.info(f"STM32{family.upper()} -> {tag}")
 
     shutil.rmtree(destination_path, ignore_errors=True)
     destination_path.mkdir(parents=True)
     shutil.copy(remote_readme, destination_path / "Release_Notes.html")
-    for glob in ("Inc/*.h", "Src/*.c"):
+    for glob in ("Inc/*.h", "Inc/*/*.h", "Src/*.c"):
         for path in remote_path.glob(glob):
             if not path.is_file(): continue
             dest = destination_path / path.relative_to(remote_path)
@@ -76,8 +79,9 @@ def get_header_files(family):
 
 shutil.rmtree("raw", ignore_errors=True)
 Path("raw").mkdir()
-with ThreadPool(len(stm32_families)) as pool:
-    family_versions = pool.map(get_header_files, stm32_families)
+# with ThreadPool(len(stm32_families)) as pool:
+#     family_versions = pool.map(get_header_files, stm32_families)
+family_versions = [get_header_files(f) for f in stm32_families]
 
 
 def update_readme(readme, family, new_version, new_date):
