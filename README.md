@@ -31,6 +31,6 @@ as the Cube release version in braces:
 - [WB0: v1.2.0 created 05-February-2025](https://github.com/STMicroelectronics/stm32wb0x-hal-driver)
 - [WBA: v1.7.0 created 23-May-2025](https://github.com/STMicroelectronics/stm32wbaxx-hal-driver)
 - [WL: v1.3.1 created 20-December-2024](https://github.com/STMicroelectronics/stm32wlxx-hal-driver)
-- [WL3: v1.1.0 created 30-October-2024](https://github.com/STMicroelectronics/stm32wl3x-hal-driver)
+- [WL3: v1.2.0 created 04-June-2025](https://github.com/STMicroelectronics/stm32wl3x-hal-driver)
 
 This repository is updated periodically by Github Actions.
