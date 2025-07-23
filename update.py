@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
+
+import urllib.request
 import shutil
 import logging
-import os, re, sys
+import os
+import re
+import sys
 import subprocess
 import json
 import urllib.request
@@ -9,15 +13,13 @@ import urllib.request
 from pathlib import Path
 from multiprocessing.pool import ThreadPool
 
-stm32_families = [
-    "c0xx",
-    "f0xx", "f1xx", "f2xx", "f3xx", "f4xx", "f7xx",
-    "g0xx", "g4xx",
-    "h5xx", "h7xx", "h7rsxx",
-    "l0xx", "l1xx", "l4xx", "l5xx",
-    "u0xx", "u5xx",
-    "wbxx", "wb0x", "wbaxx", "wlxx", "wl3x",
-]
+readme = "https://github.com/STMicroelectronics/STM32Cube_MCU_Overall_Offer/raw/refs/heads/master/README.md"
+with urllib.request.urlopen(readme) as f:
+      readme = f.read().decode('utf-8')
+stm32_families = re.findall(r"\(https://github.com/STMicroelectronics/stm32(.*?)-hal-driver\)", readme)
+
+def replace(text, key, content):
+    return re.sub(r"<!--{0}-->.*?<!--/{0}-->".format(key), "<!--{0}-->\n{1}\n<!--/{0}-->".format(key, content), text, flags=re.DOTALL | re.MULTILINE)
 
 def get_header_version(release_notes):
     vmatch = re.search(r">V([0-9]+\.[0-9]+\.[0-9]+)", release_notes)
@@ -79,22 +81,18 @@ def get_header_files(family):
 
 shutil.rmtree("raw", ignore_errors=True)
 Path("raw").mkdir()
-# with ThreadPool(len(stm32_families)) as pool:
-#     family_versions = pool.map(get_header_files, stm32_families)
-family_versions = [get_header_files(f) for f in stm32_families]
+with ThreadPool(len(stm32_families)) as pool:
+    family_versions = pool.map(get_header_files, stm32_families)
+# family_versions = [get_header_files(f) for f in stm32_families]
 
-
-def update_readme(readme, family, new_version, new_date):
-    family = family.rstrip('x').upper()
-    match = rf"{family}: v.+? created .+?]"
-    replace = f"{family}: v{new_version} created {new_date}]"
-    return re.sub(match, replace, readme)
+readme = Path("README.md").read_text()
+table = [f"- [STM32{family.rstrip('x').upper()}: v{version} created {date}](https://github.com/STMicroelectronics/stm32{family}-hal-driver)"
+         for family, (version, date) in zip(stm32_families, family_versions)]
+readme = replace(readme, "table", "\n".join(table))
+Path("README.md").write_text(readme)
 
 for family, versions in zip(stm32_families, family_versions):
     if versions is None or versions[0] is None: continue;
-    readme = Path("README.md").read_text()
-    readme = update_readme(readme, family, versions[0], versions[1])
-    Path("README.md").write_text(readme)
     subprocess.run(f"git add README.md stm32{family}", shell=True)
     if subprocess.call("git diff-index --quiet HEAD --", shell=True):
         subprocess.run(f'git commit -m "Update STM32{family.rstrip('x').upper()} CubeHal drivers to v{versions[0]}"', shell=True)

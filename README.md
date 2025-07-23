@@ -9,6 +9,7 @@ Unix style and removing all trailing whitespace.
 Here is the list of the current device header version and release date as well
 as the Cube release version in braces:
 
+<!--table-->
 - [C0: v1.4.0 created 05-February-2025](https://github.com/STMicroelectronics/stm32c0xx-hal-driver)
 - [F0: v1.7.8 created 29-March-2024](https://github.com/STMicroelectronics/stm32f0xx-hal-driver)
 - [F1: v1.1.10 created 22-July-2024](https://github.com/STMicroelectronics/stm32f1xx-hal-driver)
@@ -32,5 +33,6 @@ as the Cube release version in braces:
 - [WBA: v1.7.0 created 23-May-2025](https://github.com/STMicroelectronics/stm32wbaxx-hal-driver)
 - [WL: v1.3.1 created 20-December-2024](https://github.com/STMicroelectronics/stm32wlxx-hal-driver)
 - [WL3: v1.2.0 created 04-June-2025](https://github.com/STMicroelectronics/stm32wl3x-hal-driver)
+<!--/table-->
 
 This repository is updated periodically by Github Actions.
