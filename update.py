@@ -13,7 +13,7 @@ import urllib.request
 from pathlib import Path
 from multiprocessing.pool import ThreadPool
 
-readme = "https://github.com/STMicroelectronics/STM32Cube_MCU_Overall_Offer/raw/refs/heads/master/README.md"
+readme = "https://github.com/STMicroelectronics/STM32Cube_MCU_Overall_Offer/blob/master/STM32Cube_HAL1_Offer.md"
 with urllib.request.urlopen(readme) as f:
       readme = f.read().decode('utf-8')
 stm32_families = re.findall(r"\(https://github.com/STMicroelectronics/stm32(.*?)-hal-driver\)", readme)
