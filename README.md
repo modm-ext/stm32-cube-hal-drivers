@@ -19,7 +19,7 @@ as the Cube release version in braces:
 - [STM32F7: v1.3.3 created 23-July-2025](https://github.com/STMicroelectronics/stm32f7xx-hal-driver)
 - [STM32G0: v1.4.7 created 27-February-2026](https://github.com/STMicroelectronics/stm32g0xx-hal-driver)
 - [STM32G4: v1.2.7 created 08-May-2026](https://github.com/STMicroelectronics/stm32g4xx-hal-driver)
-- [STM32H5: v1.6.0 created 04-February-2026](https://github.com/STMicroelectronics/stm32h5xx-hal-driver)
+- [STM32H5: v1.7.0 created 03-June-2026](https://github.com/STMicroelectronics/stm32h5xx-hal-driver)
 - [STM32H7: v1.11.6 created 04-February-2026](https://github.com/STMicroelectronics/stm32h7xx-hal-driver)
 - [STM32H7RS: v1.2.1 created 29-October-2025](https://github.com/STMicroelectronics/stm32h7rsxx-hal-driver)
 - [STM32L0: v1.10.7 created 07-March-2025](https://github.com/STMicroelectronics/stm32l0xx-hal-driver)
@@ -29,11 +29,11 @@ as the Cube release version in braces:
 - [STM32N6: v1.4.0 created 03-June-2026](https://github.com/STMicroelectronics/stm32n6xx-hal-driver)
 - [STM32U0: v1.3.0 created 04-June-2025](https://github.com/STMicroelectronics/stm32u0xx-hal-driver)
 - [STM32U3: v1.3.0 created 04-February-2026](https://github.com/STMicroelectronics/stm32u3xx-hal-driver)
-- [STM32U5: v1.6.2 created 04-June-2025](https://github.com/STMicroelectronics/stm32u5xx-hal-driver)
+- [STM32U5: v1.6.3 created 03-June-2026](https://github.com/STMicroelectronics/stm32u5xx-hal-driver)
 - [STM32WB: v1.14.7 created 29-October-2025](https://github.com/STMicroelectronics/stm32wbxx-hal-driver)
 - [STM32WB0: v1.5.0 created 05-June-2026](https://github.com/STMicroelectronics/stm32wb0x-hal-driver)
 - [STM32WBA: v1.9.0 created 20-January-2026](https://github.com/STMicroelectronics/stm32wbaxx-hal-driver)
-- [STM32WL: v1.5.0 created 04-February-2026](https://github.com/STMicroelectronics/stm32wlxx-hal-driver)
+- [STM32WL: v1.6.0 created 05-June-2026](https://github.com/STMicroelectronics/stm32wlxx-hal-driver)
 - [STM32WL3: v1.3.1 created 20-November-2025](https://github.com/STMicroelectronics/stm32wl3x-hal-driver)
 <!--/table-->
 
