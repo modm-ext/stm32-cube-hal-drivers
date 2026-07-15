@@ -10,7 +10,7 @@ Here is the list of the current device header version and release date as well
 as the Cube release version in braces:
 
 <!--table-->
-- [STM32C0: v1.4.0 created 05-February-2025](https://github.com/STMicroelectronics/stm32c0xx-hal-driver)
+- [STM32C0: v1.4.1 created 26-June-2026](https://github.com/STMicroelectronics/stm32c0xx-hal-driver)
 - [STM32F0: v1.7.8 created 29-March-2024](https://github.com/STMicroelectronics/stm32f0xx-hal-driver)
 - [STM32F1: v1.1.10 created 22-July-2024](https://github.com/STMicroelectronics/stm32f1xx-hal-driver)
 - [STM32F2: v1.2.9 created 24-July-2024](https://github.com/STMicroelectronics/stm32f2xx-hal-driver)
