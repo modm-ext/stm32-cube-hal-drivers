@@ -23,7 +23,7 @@
 #if defined(SDIO)
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -55,7 +55,7 @@ typedef enum
   HAL_MMC_STATE_RECEIVING              = 0x00000005U,  /*!< MMC Receinving State                 */
   HAL_MMC_STATE_TRANSFER               = 0x00000006U,  /*!< MMC Transfer State                  */
   HAL_MMC_STATE_ERROR                  = 0x0000000FU   /*!< MMC is in error state                */
-}HAL_MMC_StateTypeDef;
+} HAL_MMC_StateTypeDef;
 /**
   * @}
   */
@@ -65,15 +65,15 @@ typedef enum
   */
 typedef uint32_t HAL_MMC_CardStateTypeDef;
 
-#define HAL_MMC_CARD_READY          0x00000001U  /*!< Card state is ready                     */
-#define HAL_MMC_CARD_IDENTIFICATION 0x00000002U  /*!< Card is in identification state         */
-#define HAL_MMC_CARD_STANDBY        0x00000003U  /*!< Card is in standby state                */
-#define HAL_MMC_CARD_TRANSFER       0x00000004U  /*!< Card is in transfer state               */
-#define HAL_MMC_CARD_SENDING        0x00000005U  /*!< Card is sending an operation            */
-#define HAL_MMC_CARD_RECEIVING      0x00000006U  /*!< Card is receiving operation information */
-#define HAL_MMC_CARD_PROGRAMMING    0x00000007U  /*!< Card is in programming state            */
-#define HAL_MMC_CARD_DISCONNECTED   0x00000008U  /*!< Card is disconnected                    */
-#define HAL_MMC_CARD_ERROR          0x000000FFU  /*!< Card response Error                     */
+#define HAL_MMC_CARD_READY          0x00000001U  /*!< Card is in ready state (can't be checked by CMD13)          */
+#define HAL_MMC_CARD_IDENTIFICATION 0x00000002U  /*!< Card is in identification state (can't be checked by CMD13) */
+#define HAL_MMC_CARD_STANDBY        0x00000003U  /*!< Card is in standby state                                    */
+#define HAL_MMC_CARD_TRANSFER       0x00000004U  /*!< Card is in transfer state                                   */
+#define HAL_MMC_CARD_SENDING        0x00000005U  /*!< Card is sending an operation                                */
+#define HAL_MMC_CARD_RECEIVING      0x00000006U  /*!< Card is receiving operation information                     */
+#define HAL_MMC_CARD_PROGRAMMING    0x00000007U  /*!< Card is in programming state                                */
+#define HAL_MMC_CARD_DISCONNECTED   0x00000008U  /*!< Card is disconnected                                        */
+#define HAL_MMC_CARD_ERROR          0x000000FFU  /*!< Card response Error (can't be checked by CMD13)             */
 /**
   * @}
   */
@@ -103,7 +103,7 @@ typedef struct
 
   uint32_t LogBlockSize;                 /*!< Specifies logical block size in bytes           */
 
-}HAL_MMC_CardInfoTypeDef;
+} HAL_MMC_CardInfoTypeDef;
 
 /**
   * @brief  MMC handle Structure definition
@@ -147,15 +147,15 @@ typedef struct
   uint32_t                     Ext_CSD[128];
 
 #if defined (USE_HAL_MMC_REGISTER_CALLBACKS) && (USE_HAL_MMC_REGISTER_CALLBACKS == 1U)
-  void (* TxCpltCallback)                 (struct __MMC_HandleTypeDef *hmmc);
-  void (* RxCpltCallback)                 (struct __MMC_HandleTypeDef *hmmc);
-  void (* ErrorCallback)                  (struct __MMC_HandleTypeDef *hmmc);
-  void (* AbortCpltCallback)              (struct __MMC_HandleTypeDef *hmmc);
+  void (* TxCpltCallback)(struct __MMC_HandleTypeDef *hmmc);
+  void (* RxCpltCallback)(struct __MMC_HandleTypeDef *hmmc);
+  void (* ErrorCallback)(struct __MMC_HandleTypeDef *hmmc);
+  void (* AbortCpltCallback)(struct __MMC_HandleTypeDef *hmmc);
 
-  void (* MspInitCallback)                (struct __MMC_HandleTypeDef *hmmc);
-  void (* MspDeInitCallback)              (struct __MMC_HandleTypeDef *hmmc);
+  void (* MspInitCallback)(struct __MMC_HandleTypeDef *hmmc);
+  void (* MspDeInitCallback)(struct __MMC_HandleTypeDef *hmmc);
 #endif
-}MMC_HandleTypeDef;
+} MMC_HandleTypeDef;
 
 /**
   * @}
@@ -204,7 +204,7 @@ typedef struct
   __IO uint8_t  CSD_CRC;              /*!< CSD CRC                               */
   __IO uint8_t  Reserved4;            /*!< Always 1                              */
 
-}HAL_MMC_CardCSDTypeDef;
+} HAL_MMC_CardCSDTypeDef;
 /**
   * @}
   */
@@ -225,7 +225,7 @@ typedef struct
   __IO uint8_t  CID_CRC;         /*!< CID CRC               */
   __IO uint8_t  Reserved2;       /*!< Always 1              */
 
-}HAL_MMC_CardCIDTypeDef;
+} HAL_MMC_CardCIDTypeDef;
 /**
   * @}
   */
@@ -243,7 +243,7 @@ typedef enum
 
   HAL_MMC_MSP_INIT_CB_ID                = 0x10U,  /*!< MMC MspInit Callback ID                         */
   HAL_MMC_MSP_DEINIT_CB_ID              = 0x11U   /*!< MMC MspDeInit Callback ID                       */
-}HAL_MMC_CallbackIDTypeDef;
+} HAL_MMC_CallbackIDTypeDef;
 /**
   * @}
   */
@@ -251,7 +251,7 @@ typedef enum
 /** @defgroup MMC_Exported_Types_Group7 MMC Callback pointer definition
   * @{
   */
-typedef void (*pMMC_CallbackTypeDef)           (MMC_HandleTypeDef *hmmc);
+typedef void (*pMMC_CallbackTypeDef)(MMC_HandleTypeDef *hmmc);
 /**
   * @}
   */
@@ -362,19 +362,19 @@ typedef void (*pMMC_CallbackTypeDef)           (MMC_HandleTypeDef *hmmc);
 
 /* Exported macro ------------------------------------------------------------*/
 /** @defgroup MMC_Exported_macros MMC Exported Macros
- *  @brief macros to handle interrupts and specific clock configurations
- * @{
- */
+  *  @brief macros to handle interrupts and specific clock configurations
+  * @{
+  */
 /** @brief Reset MMC handle state.
   * @param  __HANDLE__ : MMC handle.
   * @retval None
   */
 #if defined (USE_HAL_MMC_REGISTER_CALLBACKS) && (USE_HAL_MMC_REGISTER_CALLBACKS == 1U)
 #define __HAL_MMC_RESET_HANDLE_STATE(__HANDLE__)           do {                                              \
-                                                               (__HANDLE__)->State = HAL_MMC_STATE_RESET; \
-                                                               (__HANDLE__)->MspInitCallback = NULL;       \
-                                                               (__HANDLE__)->MspDeInitCallback = NULL;     \
-                                                             } while(0)
+                                                                (__HANDLE__)->State = HAL_MMC_STATE_RESET; \
+                                                                (__HANDLE__)->MspInitCallback = NULL;       \
+                                                                (__HANDLE__)->MspDeInitCallback = NULL;     \
+                                                              } while(0)
 #else
 #define __HAL_MMC_RESET_HANDLE_STATE(__HANDLE__)           ((__HANDLE__)->State = HAL_MMC_STATE_RESET)
 #endif
@@ -438,7 +438,7 @@ typedef void (*pMMC_CallbackTypeDef)           (MMC_HandleTypeDef *hmmc);
   * @brief  Disable the MMC device interrupt.
   * @param  __HANDLE__: MMC Handle
   * @param  __INTERRUPT__: specifies the SDMMC interrupt sources to be disabled.
-  *          This parameter can be one or a combination of the following values:
+  *         This parameter can be one or a combination of the following values:
   *            @arg SDIO_IT_CCRCFAIL: Command response received (CRC check failed) interrupt
   *            @arg SDIO_IT_DCRCFAIL: Data block sent/received (CRC check failed) interrupt
   *            @arg SDIO_IT_CTIMEOUT: Command response timeout interrupt
@@ -585,7 +585,7 @@ typedef void (*pMMC_CallbackTypeDef)           (MMC_HandleTypeDef *hmmc);
   */
 HAL_StatusTypeDef HAL_MMC_Init(MMC_HandleTypeDef *hmmc);
 HAL_StatusTypeDef HAL_MMC_InitCard(MMC_HandleTypeDef *hmmc);
-HAL_StatusTypeDef HAL_MMC_DeInit (MMC_HandleTypeDef *hmmc);
+HAL_StatusTypeDef HAL_MMC_DeInit(MMC_HandleTypeDef *hmmc);
 void HAL_MMC_MspInit(MMC_HandleTypeDef *hmmc);
 void HAL_MMC_MspDeInit(MMC_HandleTypeDef *hmmc);
 
@@ -597,15 +597,21 @@ void HAL_MMC_MspDeInit(MMC_HandleTypeDef *hmmc);
   * @{
   */
 /* Blocking mode: Polling */
-HAL_StatusTypeDef HAL_MMC_ReadBlocks(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks, uint32_t Timeout);
-HAL_StatusTypeDef HAL_MMC_WriteBlocks(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks, uint32_t Timeout);
+HAL_StatusTypeDef HAL_MMC_ReadBlocks(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd,
+                                     uint32_t NumberOfBlocks, uint32_t Timeout);
+HAL_StatusTypeDef HAL_MMC_WriteBlocks(MMC_HandleTypeDef *hmmc, const uint8_t *pData, uint32_t BlockAdd,
+                                      uint32_t NumberOfBlocks, uint32_t Timeout);
 HAL_StatusTypeDef HAL_MMC_Erase(MMC_HandleTypeDef *hmmc, uint32_t BlockStartAdd, uint32_t BlockEndAdd);
 /* Non-Blocking mode: IT */
-HAL_StatusTypeDef HAL_MMC_ReadBlocks_IT(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks);
-HAL_StatusTypeDef HAL_MMC_WriteBlocks_IT(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks);
+HAL_StatusTypeDef HAL_MMC_ReadBlocks_IT(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd,
+                                        uint32_t NumberOfBlocks);
+HAL_StatusTypeDef HAL_MMC_WriteBlocks_IT(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd,
+                                         uint32_t NumberOfBlocks);
 /* Non-Blocking mode: DMA */
-HAL_StatusTypeDef HAL_MMC_ReadBlocks_DMA(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks);
-HAL_StatusTypeDef HAL_MMC_WriteBlocks_DMA(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks);
+HAL_StatusTypeDef HAL_MMC_ReadBlocks_DMA(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd,
+                                         uint32_t NumberOfBlocks);
+HAL_StatusTypeDef HAL_MMC_WriteBlocks_DMA(MMC_HandleTypeDef *hmmc, uint8_t *pData, uint32_t BlockAdd,
+                                          uint32_t NumberOfBlocks);
 
 void HAL_MMC_IRQHandler(MMC_HandleTypeDef *hmmc);
 
@@ -617,7 +623,8 @@ void HAL_MMC_AbortCallback(MMC_HandleTypeDef *hmmc);
 
 #if defined (USE_HAL_MMC_REGISTER_CALLBACKS) && (USE_HAL_MMC_REGISTER_CALLBACKS == 1U)
 /* MMC callback registering/unregistering */
-HAL_StatusTypeDef HAL_MMC_RegisterCallback  (MMC_HandleTypeDef *hmmc, HAL_MMC_CallbackIDTypeDef CallbackId, pMMC_CallbackTypeDef pCallback);
+HAL_StatusTypeDef HAL_MMC_RegisterCallback(MMC_HandleTypeDef *hmmc, HAL_MMC_CallbackIDTypeDef CallbackId,
+                                           pMMC_CallbackTypeDef pCallback);
 HAL_StatusTypeDef HAL_MMC_UnRegisterCallback(MMC_HandleTypeDef *hmmc, HAL_MMC_CallbackIDTypeDef CallbackId);
 #endif
 /**
@@ -647,8 +654,8 @@ HAL_StatusTypeDef HAL_MMC_GetCardExtCSD(MMC_HandleTypeDef *hmmc, uint32_t *pExtC
 /** @defgroup MMC_Exported_Functions_Group5 Peripheral State and Errors functions
   * @{
   */
-HAL_MMC_StateTypeDef HAL_MMC_GetState(MMC_HandleTypeDef *hmmc);
-uint32_t HAL_MMC_GetError(MMC_HandleTypeDef *hmmc);
+HAL_MMC_StateTypeDef HAL_MMC_GetState(const MMC_HandleTypeDef *hmmc);
+uint32_t HAL_MMC_GetError(const MMC_HandleTypeDef *hmmc);
 /**
   * @}
   */
@@ -661,7 +668,6 @@ HAL_StatusTypeDef HAL_MMC_Abort_IT(MMC_HandleTypeDef *hmmc);
 /**
   * @}
   */
-
 /* Private types -------------------------------------------------------------*/
 /** @defgroup MMC_Private_Types MMC Private Types
   * @{
@@ -675,7 +681,6 @@ HAL_StatusTypeDef HAL_MMC_Abort_IT(MMC_HandleTypeDef *hmmc);
 /** @defgroup MMC_Private_Defines MMC Private Defines
   * @{
   */
-
 /**
   * @}
   */

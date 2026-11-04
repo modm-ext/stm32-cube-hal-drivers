@@ -1264,70 +1264,70 @@
   * @{
   */
 #if defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || defined(STM32F417xx)
-#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                               ((__GPIOx__) == (GPIOB))? 1U :\
-                                               ((__GPIOx__) == (GPIOC))? 2U :\
-                                               ((__GPIOx__) == (GPIOD))? 3U :\
-                                               ((__GPIOx__) == (GPIOE))? 4U :\
-                                               ((__GPIOx__) == (GPIOF))? 5U :\
-                                               ((__GPIOx__) == (GPIOG))? 6U :\
-                                               ((__GPIOx__) == (GPIOH))? 7U : 8U)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL :\
+                                      ((__GPIOx__) == (GPIOB))? 1UL :\
+                                      ((__GPIOx__) == (GPIOC))? 2UL :\
+                                      ((__GPIOx__) == (GPIOD))? 3UL :\
+                                      ((__GPIOx__) == (GPIOE))? 4UL :\
+                                      ((__GPIOx__) == (GPIOF))? 5UL :\
+                                      ((__GPIOx__) == (GPIOG))? 6UL :\
+                                      ((__GPIOx__) == (GPIOH))? 7UL : 8UL)
 #endif /* STM32F405xx || STM32F415xx || STM32F407xx || STM32F417xx */
 
 #if defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx) ||\
     defined(STM32F469xx) || defined(STM32F479xx)
-#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                               ((__GPIOx__) == (GPIOB))? 1U :\
-                                               ((__GPIOx__) == (GPIOC))? 2U :\
-                                               ((__GPIOx__) == (GPIOD))? 3U :\
-                                               ((__GPIOx__) == (GPIOE))? 4U :\
-                                               ((__GPIOx__) == (GPIOF))? 5U :\
-                                               ((__GPIOx__) == (GPIOG))? 6U :\
-                                               ((__GPIOx__) == (GPIOH))? 7U :\
-                                               ((__GPIOx__) == (GPIOI))? 8U :\
-                                               ((__GPIOx__) == (GPIOJ))? 9U : 10U)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL :\
+                                      ((__GPIOx__) == (GPIOB))? 1UL :\
+                                      ((__GPIOx__) == (GPIOC))? 2UL :\
+                                      ((__GPIOx__) == (GPIOD))? 3UL :\
+                                      ((__GPIOx__) == (GPIOE))? 4UL :\
+                                      ((__GPIOx__) == (GPIOF))? 5UL :\
+                                      ((__GPIOx__) == (GPIOG))? 6UL :\
+                                      ((__GPIOx__) == (GPIOH))? 7UL :\
+                                      ((__GPIOx__) == (GPIOI))? 8UL :\
+                                      ((__GPIOx__) == (GPIOJ))? 9UL : 10UL)
 #endif /* STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx || STM32F469xx || STM32F479xx */
 
 #if defined(STM32F410Tx) || defined(STM32F410Cx) || defined(STM32F410Rx)
-#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                               ((__GPIOx__) == (GPIOB))? 1U :\
-                                               ((__GPIOx__) == (GPIOC))? 2U : 7U)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL :\
+                                      ((__GPIOx__) == (GPIOB))? 1UL :\
+                                      ((__GPIOx__) == (GPIOC))? 2UL : 7UL)
 #endif /* STM32F410Tx || STM32F410Cx || STM32F410Rx */
 
 #if defined(STM32F401xC) || defined(STM32F401xE) || defined(STM32F411xE)
-#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                               ((__GPIOx__) == (GPIOB))? 1U :\
-                                               ((__GPIOx__) == (GPIOC))? 2U :\
-                                               ((__GPIOx__) == (GPIOD))? 3U :\
-                                               ((__GPIOx__) == (GPIOE))? 4U : 7U)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL :\
+                                      ((__GPIOx__) == (GPIOB))? 1UL :\
+                                      ((__GPIOx__) == (GPIOC))? 2UL :\
+                                      ((__GPIOx__) == (GPIOD))? 3UL :\
+                                      ((__GPIOx__) == (GPIOE))? 4UL : 7UL)
 #endif /* STM32F401xC || STM32F401xE || STM32F411xE */
 
 #if defined(STM32F446xx) || defined(STM32F412Zx) || defined(STM32F413xx) || defined(STM32F423xx)
-#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                               ((__GPIOx__) == (GPIOB))? 1U :\
-                                               ((__GPIOx__) == (GPIOC))? 2U :\
-                                               ((__GPIOx__) == (GPIOD))? 3U :\
-                                               ((__GPIOx__) == (GPIOE))? 4U :\
-                                               ((__GPIOx__) == (GPIOF))? 5U :\
-                                               ((__GPIOx__) == (GPIOG))? 6U : 7U)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL :\
+                                      ((__GPIOx__) == (GPIOB))? 1UL :\
+                                      ((__GPIOx__) == (GPIOC))? 2UL :\
+                                      ((__GPIOx__) == (GPIOD))? 3UL :\
+                                      ((__GPIOx__) == (GPIOE))? 4UL :\
+                                      ((__GPIOx__) == (GPIOF))? 5UL :\
+                                      ((__GPIOx__) == (GPIOG))? 6UL : 7UL)
 #endif /* STM32F446xx || STM32F412Zx  || STM32F413xx || STM32F423xx */
 #if defined(STM32F412Vx)
-#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                               ((__GPIOx__) == (GPIOB))? 1U :\
-                                               ((__GPIOx__) == (GPIOC))? 2U :\
-                                               ((__GPIOx__) == (GPIOD))? 3U :\
-                                               ((__GPIOx__) == (GPIOE))? 4U : 7U)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL :\
+                                      ((__GPIOx__) == (GPIOB))? 1UL :\
+                                      ((__GPIOx__) == (GPIOC))? 2UL :\
+                                      ((__GPIOx__) == (GPIOD))? 3UL :\
+                                      ((__GPIOx__) == (GPIOE))? 4UL : 7UL)
 #endif /* STM32F412Vx */
 #if defined(STM32F412Rx)
-#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                               ((__GPIOx__) == (GPIOB))? 1U :\
-                                               ((__GPIOx__) == (GPIOC))? 2U :\
-                                               ((__GPIOx__) == (GPIOD))? 3U : 7U)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL :\
+                                      ((__GPIOx__) == (GPIOB))? 1UL :\
+                                      ((__GPIOx__) == (GPIOC))? 2UL :\
+                                      ((__GPIOx__) == (GPIOD))? 3UL : 7UL)
 #endif /* STM32F412Rx */
 #if defined(STM32F412Cx)
-#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                               ((__GPIOx__) == (GPIOB))? 1U :\
-                                               ((__GPIOx__) == (GPIOC))? 2U : 7U)
+#define GPIO_GET_INDEX(__GPIOx__)    (((__GPIOx__) == (GPIOA))? 0UL :\
+                                      ((__GPIOx__) == (GPIOB))? 1UL :\
+                                      ((__GPIOx__) == (GPIOC))? 2UL : 7UL)
 #endif /* STM32F412Cx */
 
 /**
@@ -1465,20 +1465,22 @@
 
 /*---------------------------------------- STM32F411xx------------------------*/
 #if defined(STM32F411xE)
-#define IS_GPIO_AF(AF)   (((AF) == GPIO_AF0_RTC_50Hz)   || ((AF) == GPIO_AF9_TIM14)      || \
-                          ((AF) == GPIO_AF0_MCO)        || ((AF) == GPIO_AF0_TAMPER)     || \
-                          ((AF) == GPIO_AF0_SWJ)        || ((AF) == GPIO_AF0_TRACE)      || \
-                          ((AF) == GPIO_AF1_TIM1)       || ((AF) == GPIO_AF1_TIM2)       || \
-                          ((AF) == GPIO_AF2_TIM3)       || ((AF) == GPIO_AF2_TIM4)       || \
-                          ((AF) == GPIO_AF2_TIM5)       || ((AF) == GPIO_AF4_I2C1)       || \
+#define IS_GPIO_AF(AF)   (((AF) == GPIO_AF0_RTC_50Hz)   || ((AF) == GPIO_AF1_TIM1)       || \
+                          ((AF) == GPIO_AF0_TAMPER)     || ((AF) == GPIO_AF0_SWJ)        || \
+                          ((AF) == GPIO_AF0_TRACE)      || ((AF) == GPIO_AF0_MCO)        || \
+                          ((AF) == GPIO_AF1_TIM2)       || ((AF) == GPIO_AF2_TIM3)       || \
+                          ((AF) == GPIO_AF2_TIM4)       || ((AF) == GPIO_AF2_TIM5)       || \
+                          ((AF) == GPIO_AF3_TIM9)       || ((AF) == GPIO_AF3_TIM10)      || \
+                          ((AF) == GPIO_AF3_TIM11)      || ((AF) == GPIO_AF4_I2C1)       || \
                           ((AF) == GPIO_AF4_I2C2)       || ((AF) == GPIO_AF4_I2C3)       || \
                           ((AF) == GPIO_AF5_SPI1)       || ((AF) == GPIO_AF5_SPI2)       || \
-                          ((AF) == GPIO_AF5_SPI3)       || ((AF) == GPIO_AF6_SPI4)       || \
-                          ((AF) == GPIO_AF6_SPI3)       || ((AF) == GPIO_AF5_SPI4)       || \
-                          ((AF) == GPIO_AF6_SPI5)       || ((AF) == GPIO_AF7_SPI3)       || \
-                          ((AF) == GPIO_AF7_USART1)     || ((AF) == GPIO_AF7_USART2)     || \
-                          ((AF) == GPIO_AF8_USART6)     || ((AF) == GPIO_AF10_OTG_FS)    || \
-                          ((AF) == GPIO_AF9_I2C2)       || ((AF) == GPIO_AF9_I2C3)       || \
+                          ((AF) == GPIO_AF5_SPI3)       || ((AF) == GPIO_AF5_SPI4)       || \
+                          ((AF) == GPIO_AF6_SPI2)       || ((AF) == GPIO_AF6_SPI3)       || \
+                          ((AF) == GPIO_AF6_SPI4)       || ((AF) == GPIO_AF6_SPI5)       || \
+                          ((AF) == GPIO_AF7_SPI3)       || ((AF) == GPIO_AF7_USART1)     || \
+                          ((AF) == GPIO_AF7_USART2)     || ((AF) == GPIO_AF8_USART6)     || \
+                          ((AF) == GPIO_AF9_TIM14)      || ((AF) == GPIO_AF9_I2C2)       || \
+                          ((AF) == GPIO_AF9_I2C3)       || ((AF) == GPIO_AF10_OTG_FS)    || \
                           ((AF) == GPIO_AF12_SDIO)      || ((AF) == GPIO_AF15_EVENTOUT))
 
 #endif /* STM32F411xE */

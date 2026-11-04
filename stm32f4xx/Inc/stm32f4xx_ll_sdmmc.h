@@ -21,7 +21,7 @@
 #define STM32F4xx_LL_SDMMC_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 #if defined(SDIO)
@@ -67,7 +67,7 @@ typedef struct
   uint32_t ClockDiv;             /*!< Specifies the clock frequency of the SDMMC controller.
                                       This parameter can be a value between Min_Data = 0 and Max_Data = 255 */
 
-}SDIO_InitTypeDef;
+} SDIO_InitTypeDef;
 
 
 /**
@@ -93,7 +93,7 @@ typedef struct
   uint32_t CPSM;                /*!< Specifies whether SDMMC Command path state machine (CPSM)
                                      is enabled or disabled.
                                      This parameter can be a value of @ref SDMMC_LL_CPSM_State            */
-}SDIO_CmdInitTypeDef;
+} SDIO_CmdInitTypeDef;
 
 
 /**
@@ -118,7 +118,7 @@ typedef struct
   uint32_t DPSM;                /*!< Specifies whether SDMMC Data path state machine (DPSM)
                                      is enabled or disabled.
                                      This parameter can be a value of @ref SDMMC_LL_DPSM_State         */
-}SDIO_DataInitTypeDef;
+} SDIO_DataInitTypeDef;
 
 /**
   * @}
@@ -333,7 +333,7 @@ typedef struct
 #define SDIO_CLOCK_EDGE_FALLING              SDIO_CLKCR_NEGEDGE
 
 #define IS_SDIO_CLOCK_EDGE(EDGE) (((EDGE) == SDIO_CLOCK_EDGE_RISING) || \
-                                          ((EDGE) == SDIO_CLOCK_EDGE_FALLING))
+                                  ((EDGE) == SDIO_CLOCK_EDGE_FALLING))
 /**
   * @}
   */
@@ -345,7 +345,7 @@ typedef struct
 #define SDIO_CLOCK_BYPASS_ENABLE              SDIO_CLKCR_BYPASS
 
 #define IS_SDIO_CLOCK_BYPASS(BYPASS) (((BYPASS) == SDIO_CLOCK_BYPASS_DISABLE) || \
-                                              ((BYPASS) == SDIO_CLOCK_BYPASS_ENABLE))
+                                      ((BYPASS) == SDIO_CLOCK_BYPASS_ENABLE))
 /**
   * @}
   */
@@ -357,7 +357,7 @@ typedef struct
 #define SDIO_CLOCK_POWER_SAVE_ENABLE          SDIO_CLKCR_PWRSAV
 
 #define IS_SDIO_CLOCK_POWER_SAVE(SAVE) (((SAVE) == SDIO_CLOCK_POWER_SAVE_DISABLE) || \
-                                                ((SAVE) == SDIO_CLOCK_POWER_SAVE_ENABLE))
+                                        ((SAVE) == SDIO_CLOCK_POWER_SAVE_ENABLE))
 /**
   * @}
   */
@@ -370,8 +370,8 @@ typedef struct
 #define SDIO_BUS_WIDE_8B                      SDIO_CLKCR_WIDBUS_1
 
 #define IS_SDIO_BUS_WIDE(WIDE) (((WIDE) == SDIO_BUS_WIDE_1B) || \
-                                        ((WIDE) == SDIO_BUS_WIDE_4B) || \
-                                        ((WIDE) == SDIO_BUS_WIDE_8B))
+                                ((WIDE) == SDIO_BUS_WIDE_4B) || \
+                                ((WIDE) == SDIO_BUS_WIDE_8B))
 /**
   * @}
   */
@@ -383,7 +383,7 @@ typedef struct
 #define SDIO_HARDWARE_FLOW_CONTROL_ENABLE     SDIO_CLKCR_HWFC_EN
 
 #define IS_SDIO_HARDWARE_FLOW_CONTROL(CONTROL) (((CONTROL) == SDIO_HARDWARE_FLOW_CONTROL_DISABLE) || \
-                                                        ((CONTROL) == SDIO_HARDWARE_FLOW_CONTROL_ENABLE))
+                                                ((CONTROL) == SDIO_HARDWARE_FLOW_CONTROL_ENABLE))
 /**
   * @}
   */
@@ -412,8 +412,8 @@ typedef struct
 #define SDIO_RESPONSE_LONG                  SDIO_CMD_WAITRESP
 
 #define IS_SDIO_RESPONSE(RESPONSE) (((RESPONSE) == SDIO_RESPONSE_NO)    || \
-                                            ((RESPONSE) == SDIO_RESPONSE_SHORT) || \
-                                            ((RESPONSE) == SDIO_RESPONSE_LONG))
+                                    ((RESPONSE) == SDIO_RESPONSE_SHORT) || \
+                                    ((RESPONSE) == SDIO_RESPONSE_LONG))
 /**
   * @}
   */
@@ -426,8 +426,8 @@ typedef struct
 #define SDIO_WAIT_PEND                      SDIO_CMD_WAITPEND
 
 #define IS_SDIO_WAIT(WAIT) (((WAIT) == SDIO_WAIT_NO) || \
-                                    ((WAIT) == SDIO_WAIT_IT) || \
-                                    ((WAIT) == SDIO_WAIT_PEND))
+                            ((WAIT) == SDIO_WAIT_IT) || \
+                            ((WAIT) == SDIO_WAIT_PEND))
 /**
   * @}
   */
@@ -439,7 +439,7 @@ typedef struct
 #define SDIO_CPSM_ENABLE                    SDIO_CMD_CPSMEN
 
 #define IS_SDIO_CPSM(CPSM) (((CPSM) == SDIO_CPSM_DISABLE) || \
-                                    ((CPSM) == SDIO_CPSM_ENABLE))
+                            ((CPSM) == SDIO_CPSM_ENABLE))
 /**
   * @}
   */
@@ -453,9 +453,9 @@ typedef struct
 #define SDIO_RESP4                          0x0000000CU
 
 #define IS_SDIO_RESP(RESP) (((RESP) == SDIO_RESP1) || \
-                                    ((RESP) == SDIO_RESP2) || \
-                                    ((RESP) == SDIO_RESP3) || \
-                                    ((RESP) == SDIO_RESP4))
+                            ((RESP) == SDIO_RESP2) || \
+                            ((RESP) == SDIO_RESP3) || \
+                            ((RESP) == SDIO_RESP4))
 /**
   * @}
   */
@@ -478,30 +478,34 @@ typedef struct
 #define SDIO_DATABLOCK_SIZE_16B              SDIO_DCTRL_DBLOCKSIZE_2
 #define SDIO_DATABLOCK_SIZE_32B              (SDIO_DCTRL_DBLOCKSIZE_0|SDIO_DCTRL_DBLOCKSIZE_2)
 #define SDIO_DATABLOCK_SIZE_64B              (SDIO_DCTRL_DBLOCKSIZE_1|SDIO_DCTRL_DBLOCKSIZE_2)
-#define SDIO_DATABLOCK_SIZE_128B             (SDIO_DCTRL_DBLOCKSIZE_0|SDIO_DCTRL_DBLOCKSIZE_1|SDIO_DCTRL_DBLOCKSIZE_2)
+#define SDIO_DATABLOCK_SIZE_128B             (SDIO_DCTRL_DBLOCKSIZE_0|\
+                                              SDIO_DCTRL_DBLOCKSIZE_1|SDIO_DCTRL_DBLOCKSIZE_2)
 #define SDIO_DATABLOCK_SIZE_256B             SDIO_DCTRL_DBLOCKSIZE_3
 #define SDIO_DATABLOCK_SIZE_512B             (SDIO_DCTRL_DBLOCKSIZE_0|SDIO_DCTRL_DBLOCKSIZE_3)
 #define SDIO_DATABLOCK_SIZE_1024B            (SDIO_DCTRL_DBLOCKSIZE_1|SDIO_DCTRL_DBLOCKSIZE_3)
-#define SDIO_DATABLOCK_SIZE_2048B            (SDIO_DCTRL_DBLOCKSIZE_0|SDIO_DCTRL_DBLOCKSIZE_1|SDIO_DCTRL_DBLOCKSIZE_3)
+#define SDIO_DATABLOCK_SIZE_2048B            (SDIO_DCTRL_DBLOCKSIZE_0|\
+                                              SDIO_DCTRL_DBLOCKSIZE_1|SDIO_DCTRL_DBLOCKSIZE_3)
 #define SDIO_DATABLOCK_SIZE_4096B            (SDIO_DCTRL_DBLOCKSIZE_2|SDIO_DCTRL_DBLOCKSIZE_3)
-#define SDIO_DATABLOCK_SIZE_8192B            (SDIO_DCTRL_DBLOCKSIZE_0|SDIO_DCTRL_DBLOCKSIZE_2|SDIO_DCTRL_DBLOCKSIZE_3)
-#define SDIO_DATABLOCK_SIZE_16384B           (SDIO_DCTRL_DBLOCKSIZE_1|SDIO_DCTRL_DBLOCKSIZE_2|SDIO_DCTRL_DBLOCKSIZE_3)
+#define SDIO_DATABLOCK_SIZE_8192B            (SDIO_DCTRL_DBLOCKSIZE_0|\
+                                              SDIO_DCTRL_DBLOCKSIZE_2|SDIO_DCTRL_DBLOCKSIZE_3)
+#define SDIO_DATABLOCK_SIZE_16384B           (SDIO_DCTRL_DBLOCKSIZE_1|\
+                                              SDIO_DCTRL_DBLOCKSIZE_2|SDIO_DCTRL_DBLOCKSIZE_3)
 
 #define IS_SDIO_BLOCK_SIZE(SIZE) (((SIZE) == SDIO_DATABLOCK_SIZE_1B)    || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_2B)    || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_4B)    || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_8B)    || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_16B)   || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_32B)   || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_64B)   || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_128B)  || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_256B)  || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_512B)  || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_1024B) || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_2048B) || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_4096B) || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_8192B) || \
-                                          ((SIZE) == SDIO_DATABLOCK_SIZE_16384B))
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_2B)    || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_4B)    || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_8B)    || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_16B)   || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_32B)   || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_64B)   || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_128B)  || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_256B)  || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_512B)  || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_1024B) || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_2048B) || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_4096B) || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_8192B) || \
+                                  ((SIZE) == SDIO_DATABLOCK_SIZE_16384B))
 /**
   * @}
   */
@@ -513,7 +517,7 @@ typedef struct
 #define SDIO_TRANSFER_DIR_TO_SDIO    SDIO_DCTRL_DTDIR
 
 #define IS_SDIO_TRANSFER_DIR(DIR) (((DIR) == SDIO_TRANSFER_DIR_TO_CARD) || \
-                                           ((DIR) == SDIO_TRANSFER_DIR_TO_SDIO))
+                                   ((DIR) == SDIO_TRANSFER_DIR_TO_SDIO))
 /**
   * @}
   */
@@ -525,7 +529,7 @@ typedef struct
 #define SDIO_TRANSFER_MODE_STREAM            SDIO_DCTRL_DTMODE
 
 #define IS_SDIO_TRANSFER_MODE(MODE) (((MODE) == SDIO_TRANSFER_MODE_BLOCK) || \
-                                             ((MODE) == SDIO_TRANSFER_MODE_STREAM))
+                                     ((MODE) == SDIO_TRANSFER_MODE_STREAM))
 /**
   * @}
   */
@@ -537,7 +541,7 @@ typedef struct
 #define SDIO_DPSM_ENABLE                     SDIO_DCTRL_DTEN
 
 #define IS_SDIO_DPSM(DPSM) (((DPSM) == SDIO_DPSM_DISABLE) ||\
-                                    ((DPSM) == SDIO_DPSM_ENABLE))
+                            ((DPSM) == SDIO_DPSM_ENABLE))
 /**
   * @}
   */
@@ -549,7 +553,7 @@ typedef struct
 #define SDIO_READ_WAIT_MODE_CLK                  (SDIO_DCTRL_RWMOD)
 
 #define IS_SDIO_READWAIT_MODE(MODE) (((MODE) == SDIO_READ_WAIT_MODE_CLK) || \
-                                             ((MODE) == SDIO_READ_WAIT_MODE_DATA2))
+                                     ((MODE) == SDIO_READ_WAIT_MODE_DATA2))
 /**
   * @}
   */
@@ -621,15 +625,15 @@ typedef struct
 #define SDIO_FLAG_CEATAEND                  SDIO_STA_CEATAEND
 #endif
 #define SDIO_STATIC_FLAGS                   ((uint32_t)(SDIO_FLAG_CCRCFAIL | SDIO_FLAG_DCRCFAIL | SDIO_FLAG_CTIMEOUT |\
-                                                         SDIO_FLAG_DTIMEOUT | SDIO_FLAG_TXUNDERR | SDIO_FLAG_RXOVERR  |\
-                                                         SDIO_FLAG_CMDREND  | SDIO_FLAG_CMDSENT  | SDIO_FLAG_DATAEND  |\
-                                                         SDIO_FLAG_DBCKEND | SDIO_FLAG_SDIOIT))
+                                                        SDIO_FLAG_DTIMEOUT | SDIO_FLAG_TXUNDERR | SDIO_FLAG_RXOVERR  |\
+                                                        SDIO_FLAG_CMDREND  | SDIO_FLAG_CMDSENT  | SDIO_FLAG_DATAEND  |\
+                                                        SDIO_FLAG_DBCKEND | SDIO_FLAG_SDIOIT))
 
 #define SDIO_STATIC_CMD_FLAGS               ((uint32_t)(SDIO_FLAG_CCRCFAIL | SDIO_FLAG_CTIMEOUT | SDIO_FLAG_CMDREND |\
-                                                         SDIO_FLAG_CMDSENT))
+                                                        SDIO_FLAG_CMDSENT))
 
 #define SDIO_STATIC_DATA_FLAGS              ((uint32_t)(SDIO_FLAG_DCRCFAIL | SDIO_FLAG_DTIMEOUT | SDIO_FLAG_TXUNDERR |\
-                                                         SDIO_FLAG_RXOVERR  | SDIO_FLAG_DATAEND  | SDIO_FLAG_DBCKEND))
+                                                        SDIO_FLAG_RXOVERR  | SDIO_FLAG_DATAEND  | SDIO_FLAG_DBCKEND))
 /**
   * @}
   */
@@ -730,9 +734,9 @@ typedef struct
   */
 
 /** @defgroup SDIO_LL_Interrupt_Clock Interrupt And Clock Configuration
- *  @brief macros to handle interrupts and specific clock configurations
- * @{
- */
+  *  @brief macros to handle interrupts and specific clock configurations
+  * @{
+  */
 
 /**
   * @brief  Enable the SDIO device.
@@ -765,7 +769,7 @@ typedef struct
 /**
   * @brief  Enable the SDIO device interrupt.
   * @param  __INSTANCE__ : Pointer to SDIO register base
-  * @param  __INTERRUPT__ : specifies the SDIO interrupt sources to be enabled.
+  * @param  __INTERRUPT__: specifies the SDIO interrupt sources to be enabled.
   *         This parameter can be one or a combination of the following values:
   *            @arg SDIO_IT_CCRCFAIL: Command response received (CRC check failed) interrupt
   *            @arg SDIO_IT_DCRCFAIL: Data block sent/received (CRC check failed) interrupt
@@ -796,8 +800,8 @@ typedef struct
 /**
   * @brief  Disable the SDIO device interrupt.
   * @param  __INSTANCE__ : Pointer to SDIO register base
-  * @param  __INTERRUPT__ : specifies the SDIO interrupt sources to be disabled.
-  *          This parameter can be one or a combination of the following values:
+  * @param  __INTERRUPT__: specifies the SDIO interrupt sources to be disabled.
+  *         This parameter can be one or a combination of the following values:
   *            @arg SDIO_IT_CCRCFAIL: Command response received (CRC check failed) interrupt
   *            @arg SDIO_IT_DCRCFAIL: Data block sent/received (CRC check failed) interrupt
   *            @arg SDIO_IT_CTIMEOUT: Command response timeout interrupt
@@ -905,7 +909,8 @@ typedef struct
   *            @arg SDIO_IT_SDIOIT:   SDIO interrupt received interrupt
   * @retval The new state of SDIO_IT (SET or RESET).
   */
-#define __SDIO_GET_IT  (__INSTANCE__, __INTERRUPT__)  (((__INSTANCE__)->STA &(__INTERRUPT__)) == (__INTERRUPT__))
+#define __SDIO_GET_IT  (__INSTANCE__, __INTERRUPT__)  (((__INSTANCE__)->STA &\
+                                                        (__INTERRUPT__)) == (__INTERRUPT__))
 
 /**
   * @brief  Clears the SDIO's interrupt pending bits.
@@ -1046,7 +1051,7 @@ HAL_StatusTypeDef SDIO_Init(SDIO_TypeDef *SDIOx, SDIO_InitTypeDef Init);
 /** @addtogroup HAL_SDMMC_LL_Group2
   * @{
   */
-uint32_t          SDIO_ReadFIFO(SDIO_TypeDef *SDIOx);
+uint32_t          SDIO_ReadFIFO(const SDIO_TypeDef *SDIOx);
 HAL_StatusTypeDef SDIO_WriteFIFO(SDIO_TypeDef *SDIOx, uint32_t *pWriteData);
 /**
   * @}
@@ -1058,20 +1063,21 @@ HAL_StatusTypeDef SDIO_WriteFIFO(SDIO_TypeDef *SDIOx, uint32_t *pWriteData);
   */
 HAL_StatusTypeDef SDIO_PowerState_ON(SDIO_TypeDef *SDIOx);
 HAL_StatusTypeDef SDIO_PowerState_OFF(SDIO_TypeDef *SDIOx);
-uint32_t          SDIO_GetPowerState(SDIO_TypeDef *SDIOx);
+uint32_t          SDIO_GetPowerState(const SDIO_TypeDef *SDIOx);
 
 /* Command path state machine (CPSM) management functions */
 HAL_StatusTypeDef SDIO_SendCommand(SDIO_TypeDef *SDIOx, SDIO_CmdInitTypeDef *Command);
-uint8_t           SDIO_GetCommandResponse(SDIO_TypeDef *SDIOx);
-uint32_t          SDIO_GetResponse(SDIO_TypeDef *SDIOx, uint32_t Response);
+uint8_t           SDIO_GetCommandResponse(const SDIO_TypeDef *SDIOx);
+uint32_t          SDIO_GetResponse(const SDIO_TypeDef *SDIOx, uint32_t Response);
 
 /* Data path state machine (DPSM) management functions */
-HAL_StatusTypeDef SDIO_ConfigData(SDIO_TypeDef *SDIOx, SDIO_DataInitTypeDef* Data);
-uint32_t          SDIO_GetDataCounter(SDIO_TypeDef *SDIOx);
-uint32_t          SDIO_GetFIFOCount(SDIO_TypeDef *SDIOx);
+HAL_StatusTypeDef SDIO_ConfigData(SDIO_TypeDef *SDIOx, SDIO_DataInitTypeDef *Data);
+uint32_t          SDIO_GetDataCounter(const SDIO_TypeDef *SDIOx);
+uint32_t          SDIO_GetFIFOCount(const SDIO_TypeDef *SDIOx);
 
 /* SDMMC Cards mode management functions */
-HAL_StatusTypeDef SDIO_SetSDMMCReadWaitMode(SDIO_TypeDef *SDIOx, uint32_t SDIO_ReadWaitMode);
+HAL_StatusTypeDef SDIO_SetSDMMCReadWaitMode(SDIO_TypeDef *SDIOx,
+                                            uint32_t SDIO_ReadWaitMode);
 /**
   * @}
   */

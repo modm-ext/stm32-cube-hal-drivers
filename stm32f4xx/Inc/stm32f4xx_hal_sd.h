@@ -21,7 +21,7 @@
 #define STM32F4xx_HAL_SD_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 #if defined(SDIO)
@@ -56,7 +56,7 @@ typedef enum
   HAL_SD_STATE_RECEIVING              = 0x00000005U,  /*!< SD Receiving State                  */
   HAL_SD_STATE_TRANSFER               = 0x00000006U,  /*!< SD Transfer State                  */
   HAL_SD_STATE_ERROR                  = 0x0000000FU   /*!< SD is in error state                */
-}HAL_SD_StateTypeDef;
+} HAL_SD_StateTypeDef;
 /**
   * @}
   */
@@ -106,7 +106,7 @@ typedef struct
 
   uint32_t LogBlockSize;                 /*!< Specifies logical block size in bytes           */
 
-}HAL_SD_CardInfoTypeDef;
+} HAL_SD_CardInfoTypeDef;
 
 /**
   * @brief  SD handle Structure definition
@@ -148,15 +148,15 @@ typedef struct
   uint32_t                     CID[4];           /*!< SD card identification number table */
 
 #if defined (USE_HAL_SD_REGISTER_CALLBACKS) && (USE_HAL_SD_REGISTER_CALLBACKS == 1U)
-  void (* TxCpltCallback)                 (struct __SD_HandleTypeDef *hsd);
-  void (* RxCpltCallback)                 (struct __SD_HandleTypeDef *hsd);
-  void (* ErrorCallback)                  (struct __SD_HandleTypeDef *hsd);
-  void (* AbortCpltCallback)              (struct __SD_HandleTypeDef *hsd);
+  void (* TxCpltCallback)(struct __SD_HandleTypeDef *hsd);
+  void (* RxCpltCallback)(struct __SD_HandleTypeDef *hsd);
+  void (* ErrorCallback)(struct __SD_HandleTypeDef *hsd);
+  void (* AbortCpltCallback)(struct __SD_HandleTypeDef *hsd);
 
-  void (* MspInitCallback)                (struct __SD_HandleTypeDef *hsd);
-  void (* MspDeInitCallback)              (struct __SD_HandleTypeDef *hsd);
+  void (* MspInitCallback)(struct __SD_HandleTypeDef *hsd);
+  void (* MspDeInitCallback)(struct __SD_HandleTypeDef *hsd);
 #endif /* USE_HAL_SD_REGISTER_CALLBACKS */
-}SD_HandleTypeDef;
+} SD_HandleTypeDef;
 
 /**
   * @}
@@ -204,7 +204,7 @@ typedef struct
   __IO uint8_t  ECC;                  /*!< ECC code                              */
   __IO uint8_t  CSD_CRC;              /*!< CSD CRC                               */
   __IO uint8_t  Reserved4;            /*!< Always 1                              */
-}HAL_SD_CardCSDTypeDef;
+} HAL_SD_CardCSDTypeDef;
 /**
   * @}
   */
@@ -225,7 +225,7 @@ typedef struct
   __IO uint8_t  CID_CRC;         /*!< CID CRC               */
   __IO uint8_t  Reserved2;       /*!< Always 1              */
 
-}HAL_SD_CardCIDTypeDef;
+} HAL_SD_CardCIDTypeDef;
 /**
   * @}
   */
@@ -246,7 +246,7 @@ typedef struct
   __IO uint8_t  EraseTimeout;           /*!< Determines the timeout for any number of AU erase          */
   __IO uint8_t  EraseOffset;            /*!< Carries information about the erase offset                 */
 
-}HAL_SD_CardStatusTypeDef;
+} HAL_SD_CardStatusTypeDef;
 /**
   * @}
   */
@@ -264,7 +264,7 @@ typedef enum
 
   HAL_SD_MSP_INIT_CB_ID                = 0x10U,  /*!< SD MspInit Callback ID                         */
   HAL_SD_MSP_DEINIT_CB_ID              = 0x11U   /*!< SD MspDeInit Callback ID                       */
-}HAL_SD_CallbackIDTypeDef;
+} HAL_SD_CallbackIDTypeDef;
 /**
   * @}
   */
@@ -272,7 +272,7 @@ typedef enum
 /** @defgroup SD_Exported_Types_Group8 SD Callback pointer definition
   * @{
   */
-typedef void (*pSD_CallbackTypeDef)           (SD_HandleTypeDef *hsd);
+typedef void (*pSD_CallbackTypeDef)(SD_HandleTypeDef *hsd);
 /**
   * @}
   */
@@ -376,9 +376,9 @@ typedef void (*pSD_CallbackTypeDef)           (SD_HandleTypeDef *hsd);
 
 /* Exported macro ------------------------------------------------------------*/
 /** @defgroup SD_Exported_macros SD Exported Macros
- *  @brief macros to handle interrupts and specific clock configurations
- * @{
- */
+  *  @brief macros to handle interrupts and specific clock configurations
+  * @{
+  */
 /** @brief Reset SD handle state.
   * @param  __HANDLE__ : SD handle.
   * @retval None
@@ -452,7 +452,7 @@ typedef void (*pSD_CallbackTypeDef)           (SD_HandleTypeDef *hsd);
   * @brief  Disable the SD device interrupt.
   * @param  __HANDLE__: SD Handle
   * @param  __INTERRUPT__: specifies the SDMMC interrupt sources to be disabled.
-  *          This parameter can be one or a combination of the following values:
+  *         This parameter can be one or a combination of the following values:
   *            @arg SDIO_IT_CCRCFAIL: Command response received (CRC check failed) interrupt
   *            @arg SDIO_IT_DCRCFAIL: Data block sent/received (CRC check failed) interrupt
   *            @arg SDIO_IT_CTIMEOUT: Command response timeout interrupt
@@ -594,7 +594,7 @@ typedef void (*pSD_CallbackTypeDef)           (SD_HandleTypeDef *hsd);
   */
 HAL_StatusTypeDef HAL_SD_Init(SD_HandleTypeDef *hsd);
 HAL_StatusTypeDef HAL_SD_InitCard(SD_HandleTypeDef *hsd);
-HAL_StatusTypeDef HAL_SD_DeInit (SD_HandleTypeDef *hsd);
+HAL_StatusTypeDef HAL_SD_DeInit(SD_HandleTypeDef *hsd);
 void HAL_SD_MspInit(SD_HandleTypeDef *hsd);
 void HAL_SD_MspDeInit(SD_HandleTypeDef *hsd);
 /**
@@ -605,15 +605,21 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef *hsd);
   * @{
   */
 /* Blocking mode: Polling */
-HAL_StatusTypeDef HAL_SD_ReadBlocks(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks, uint32_t Timeout);
-HAL_StatusTypeDef HAL_SD_WriteBlocks(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks, uint32_t Timeout);
+HAL_StatusTypeDef HAL_SD_ReadBlocks(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks,
+                                    uint32_t Timeout);
+HAL_StatusTypeDef HAL_SD_WriteBlocks(SD_HandleTypeDef *hsd, const uint8_t *pData, uint32_t BlockAdd,
+                                     uint32_t NumberOfBlocks, uint32_t Timeout);
 HAL_StatusTypeDef HAL_SD_Erase(SD_HandleTypeDef *hsd, uint32_t BlockStartAdd, uint32_t BlockEndAdd);
 /* Non-Blocking mode: IT */
-HAL_StatusTypeDef HAL_SD_ReadBlocks_IT(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks);
-HAL_StatusTypeDef HAL_SD_WriteBlocks_IT(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks);
+HAL_StatusTypeDef HAL_SD_ReadBlocks_IT(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd,
+                                       uint32_t NumberOfBlocks);
+HAL_StatusTypeDef HAL_SD_WriteBlocks_IT(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd,
+                                        uint32_t NumberOfBlocks);
 /* Non-Blocking mode: DMA */
-HAL_StatusTypeDef HAL_SD_ReadBlocks_DMA(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks);
-HAL_StatusTypeDef HAL_SD_WriteBlocks_DMA(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd, uint32_t NumberOfBlocks);
+HAL_StatusTypeDef HAL_SD_ReadBlocks_DMA(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd,
+                                        uint32_t NumberOfBlocks);
+HAL_StatusTypeDef HAL_SD_WriteBlocks_DMA(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd,
+                                         uint32_t NumberOfBlocks);
 
 void HAL_SD_IRQHandler(SD_HandleTypeDef *hsd);
 
@@ -625,7 +631,8 @@ void HAL_SD_AbortCallback(SD_HandleTypeDef *hsd);
 
 #if defined (USE_HAL_SD_REGISTER_CALLBACKS) && (USE_HAL_SD_REGISTER_CALLBACKS == 1U)
 /* SD callback registering/unregistering */
-HAL_StatusTypeDef HAL_SD_RegisterCallback  (SD_HandleTypeDef *hsd, HAL_SD_CallbackIDTypeDef CallbackId, pSD_CallbackTypeDef pCallback);
+HAL_StatusTypeDef HAL_SD_RegisterCallback(SD_HandleTypeDef *hsd, HAL_SD_CallbackIDTypeDef CallbackId,
+                                          pSD_CallbackTypeDef pCallback);
 HAL_StatusTypeDef HAL_SD_UnRegisterCallback(SD_HandleTypeDef *hsd, HAL_SD_CallbackIDTypeDef CallbackId);
 #endif /* USE_HAL_SD_REGISTER_CALLBACKS */
 
@@ -657,8 +664,8 @@ HAL_StatusTypeDef       HAL_SD_GetCardInfo(SD_HandleTypeDef *hsd, HAL_SD_CardInf
 /** @defgroup SD_Exported_Functions_Group5 Peripheral State and Errors functions
   * @{
   */
-HAL_SD_StateTypeDef HAL_SD_GetState(SD_HandleTypeDef *hsd);
-uint32_t HAL_SD_GetError(SD_HandleTypeDef *hsd);
+HAL_SD_StateTypeDef HAL_SD_GetState(const SD_HandleTypeDef *hsd);
+uint32_t HAL_SD_GetError(const SD_HandleTypeDef *hsd);
 /**
   * @}
   */

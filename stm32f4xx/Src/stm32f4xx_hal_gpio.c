@@ -222,7 +222,7 @@ void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
         assert_param(IS_GPIO_AF(GPIO_Init->Alternate));
         /* Configure Alternate function mapped with the current IO */
         temp = GPIOx->AFR[position >> 3U];
-        temp &= ~(0xFU << ((uint32_t)(position & 0x07U) * 4U)) ;
+        temp &= ~(0xFUL << ((uint32_t)(position & 0x07U) * 4U)) ;
         temp |= ((uint32_t)(GPIO_Init->Alternate) << (((uint32_t)position & 0x07U) * 4U));
         GPIOx->AFR[position >> 3U] = temp;
       }
@@ -241,7 +241,7 @@ void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
         __HAL_RCC_SYSCFG_CLK_ENABLE();
 
         temp = SYSCFG->EXTICR[position >> 2U];
-        temp &= ~(0x0FU << (4U * (position & 0x03U)));
+        temp &= ~(0x0FUL << (4U * (position & 0x03U)));
         temp |= ((uint32_t)(GPIO_GET_INDEX(GPIOx)) << (4U * (position & 0x03U)));
         SYSCFG->EXTICR[position >> 2U] = temp;
 
@@ -313,7 +313,7 @@ void HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
     {
       /*------------------------- EXTI Mode Configuration --------------------*/
       tmp = SYSCFG->EXTICR[position >> 2U];
-      tmp &= (0x0FU << (4U * (position & 0x03U)));
+      tmp &= (0x0FUL << (4U * (position & 0x03U)));
       if(tmp == ((uint32_t)(GPIO_GET_INDEX(GPIOx)) << (4U * (position & 0x03U))))
       {
         /* Clear EXTI line configuration */
@@ -325,7 +325,7 @@ void HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
         EXTI->RTSR &= ~((uint32_t)iocurrent);
 
         /* Configure the External Interrupt or event for the current IO */
-        tmp = 0x0FU << (4U * (position & 0x03U));
+        tmp = 0x0FUL << (4U * (position & 0x03U));
         SYSCFG->EXTICR[position >> 2U] &= ~tmp;
       }
 
@@ -334,7 +334,7 @@ void HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
       GPIOx->MODER &= ~(GPIO_MODER_MODER0 << (position * 2U));
 
       /* Configure the default Alternate Function in current IO */
-      GPIOx->AFR[position >> 3U] &= ~(0xFU << ((uint32_t)(position & 0x07U) * 4U)) ;
+      GPIOx->AFR[position >> 3U] &= ~(0xFUL << ((uint32_t)(position & 0x07U) * 4U)) ;
 
       /* Deactivate the Pull-up and Pull-down resistor for the current IO */
       GPIOx->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << (position * 2U));
