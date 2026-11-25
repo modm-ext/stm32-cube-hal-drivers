@@ -1306,7 +1306,7 @@ extern "C" {
 #if defined(STM32H5) || defined(STM32WBA) || defined(STM32H7RS) || defined(STM32N6)
 #define TAMP_SECRETDEVICE_ERASE_DISABLE     TAMP_DEVICESECRETS_ERASE_NONE
 #define TAMP_SECRETDEVICE_ERASE_ENABLE      TAMP_SECRETDEVICE_ERASE_ALL
-#endif /* STM32H5 || STM32WBA || STM32H7RS ||  STM32N6 */
+#endif /* STM32H5 || STM32WBA || STM32H7RS || STM32N6 */
 
 #if defined(STM32F7) || defined(STM32WB)
 #define RTC_TAMPCR_TAMPXE          RTC_TAMPER_ENABLE_BITS_MASK
@@ -2256,6 +2256,15 @@ extern "C" {
 #define __HAL_ADC_CFGR1_OVERRUN                          ADC_CFGR1_OVERRUN
 #define __HAL_ADC_CFGR1_SCANDIR                          ADC_CFGR1_SCANDIR
 #define __HAL_ADC_CFGR1_DMACONTREQ                       ADC_CFGR1_DMACONTREQ
+
+#if defined (STM32L031xx) || defined (STM32L041xx) || \
+    defined (STM32L051xx) || defined (STM32L052xx) || defined (STM32L053xx) || \
+    defined (STM32L062xx) || defined (STM32L063xx) || \
+    defined (STM32L071xx) || defined (STM32L072xx) || defined (STM32L073xx) || \
+    defined (STM32L081xx) || defined (STM32L082xx) || defined (STM32L083xx) || \
+    defined (STM32L010x6) || defined (STM32L010x8) || defined (STM32L010xB)
+#define ADC_EXTERNALTRIGCONV_T21_TRGO           (ADC_EXTERNALTRIGCONV_T22_TRGO)
+#endif
 
 /**
   * @}
@@ -3698,7 +3707,11 @@ extern "C" {
 #define RCC_PLLDIV_4                RCC_PLL_DIV4
 
 #define IS_RCC_MCOSOURCE            IS_RCC_MCO1SOURCE
+#define RCC_MCOSOURCE_SYSCLK        RCC_MCO1SOURCE_SYSCLK
+#define RCC_MCOSOURCE_HSE           RCC_MCO1SOURCE_HSE
 #define __HAL_RCC_MCO_CONFIG        __HAL_RCC_MCO1_CONFIG
+
+
 #define RCC_MCO_NODIV               RCC_MCODIV_1
 #define RCC_MCO_DIV1                RCC_MCODIV_1
 #define RCC_MCO_DIV2                RCC_MCODIV_2
@@ -3711,17 +3724,20 @@ extern "C" {
 #define RCC_MCOSOURCE_NONE          RCC_MCO1SOURCE_NOCLOCK
 #define RCC_MCOSOURCE_LSI           RCC_MCO1SOURCE_LSI
 #define RCC_MCOSOURCE_LSE           RCC_MCO1SOURCE_LSE
-#define RCC_MCOSOURCE_SYSCLK        RCC_MCO1SOURCE_SYSCLK
 #define RCC_MCOSOURCE_HSI           RCC_MCO1SOURCE_HSI
 #define RCC_MCOSOURCE_HSI14         RCC_MCO1SOURCE_HSI14
 #define RCC_MCOSOURCE_HSI48         RCC_MCO1SOURCE_HSI48
-#define RCC_MCOSOURCE_HSE           RCC_MCO1SOURCE_HSE
 #define RCC_MCOSOURCE_PLLCLK_DIV1   RCC_MCO1SOURCE_PLLCLK
 #define RCC_MCOSOURCE_PLLCLK_NODIV  RCC_MCO1SOURCE_PLLCLK
 #define RCC_MCOSOURCE_PLLCLK_DIV2   RCC_MCO1SOURCE_PLLCLK_DIV2
 
 #if defined(STM32U0)
 #define RCC_SYSCLKSOURCE_STATUS_PLLR   RCC_SYSCLKSOURCE_STATUS_PLLCLK
+#endif
+
+#if defined(STM32C0)
+#define RCC_LSEDRIVE_LOW            RCC_LSEDRIVE_MEDIUMHIGH
+#define RCC_LSEDRIVE_MEDIUMLOW      RCC_LSEDRIVE_MEDIUMHIGH
 #endif
 
 #if defined(STM32L4) || defined(STM32WB) || defined(STM32G0) || defined(STM32G4) || defined(STM32L5) ||  defined(STM32WL) || defined(STM32C0) || defined(STM32N6) || defined(STM32H7RS) ||  defined(STM32U0)
@@ -3973,7 +3989,7 @@ extern "C" {
 /** @defgroup HAL_RTC_Aliased_Macros HAL RTC Aliased Macros maintained for legacy purpose
   * @{
   */
-#if defined (STM32G0) || defined (STM32L5) || defined (STM32L412xx) || defined (STM32L422xx) ||  defined (STM32L4P5xx)|| defined (STM32L4Q5xx) || defined (STM32G4) || defined (STM32WL) || defined (STM32U5) || defined (STM32WBA) || defined (STM32H5) ||  defined (STM32C0) || defined (STM32N6) || defined (STM32H7RS) || defined (STM32U0) || defined (STM32U3)
+#if defined (STM32G0) || defined (STM32L5) || defined (STM32L412xx) || defined (STM32L422xx) || defined (STM32L4P5xx)|| defined (STM32L4Q5xx) || defined (STM32G4) || defined (STM32WL) || defined (STM32U5) || defined (STM32WBA) || defined (STM32H5) || defined (STM32C0) || defined (STM32N6) || defined (STM32H7RS) || defined (STM32U0) || defined (STM32U3)
 #else
 #define __HAL_RTC_CLEAR_FLAG                      __HAL_RTC_EXTI_CLEAR_FLAG
 #endif
