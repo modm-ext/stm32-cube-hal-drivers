@@ -419,6 +419,17 @@ extern "C" {
   * @}
   */
 
+/** @defgroup SYSTEM_LL_EC_VOLTAGE VREFBUF VOLTAGE
+  * @{
+  */
+#define LL_VREFBUF_VOLTAGE_SCALE0          VREFBUF_CSR_VRS_OUT1      /*!< Voltage reference scale 0 (VREF_OUT1) */
+#define LL_VREFBUF_VOLTAGE_SCALE1          VREFBUF_CSR_VRS_OUT2      /*!< Voltage reference scale 1 (VREF_OUT2) */
+#define LL_VREFBUF_VOLTAGE_SCALE2          VREFBUF_CSR_VRS_OUT3      /*!< Voltage reference scale 2 (VREF_OUT3) */
+#define LL_VREFBUF_VOLTAGE_SCALE3          VREFBUF_CSR_VRS_OUT4      /*!< Voltage reference scale 3 (VREF_OUT4) */
+/**
+  * @}
+  */
+
 /** @defgroup SYSTEM_LL_EC_LATENCY FLASH LATENCY
   * @{
   */
@@ -430,6 +441,17 @@ extern "C" {
 #define LL_FLASH_LATENCY_5                 FLASH_ACR_LATENCY_5WS   /*!< FLASH five wait state */
 #define LL_FLASH_LATENCY_6                 FLASH_ACR_LATENCY_6WS   /*!< FLASH six wait state */
 #define LL_FLASH_LATENCY_7                 FLASH_ACR_LATENCY_7WS   /*!< FLASH seven wait states */
+/**
+  * @}
+  */
+
+/** @defgroup SYSTEM_LL_EC_PROGRAMMING_DELAY FLASH PROGRAMMING DELAY
+  * @{
+  */
+#define LL_FLASH_PROGRAMMING_DELAY_0   0x00000000U            /*!< programming delay set for Flash running at 70 MHz or below          */
+#define LL_FLASH_PROGRAMMING_DELAY_1   FLASH_ACR_WRHIGHFREQ_0 /*!< programming delay set for Flash running between 70 MHz and 185 MHz  */
+#define LL_FLASH_PROGRAMMING_DELAY_2   FLASH_ACR_WRHIGHFREQ_1 /*!< programming delay set for Flash running between 185 MHz and 225 MHz */
+#define LL_FLASH_PROGRAMMING_DELAY_3   FLASH_ACR_WRHIGHFREQ   /*!< programming delay set for Flash at startup */
 /**
   * @}
   */
@@ -2321,6 +2343,114 @@ __STATIC_INLINE void LL_DBGMCU_APB4_GRP1_UnFreezePeriph(uint32_t Periphs)
   * @}
   */
 
+/** @defgroup SYSTEM_LL_EF_VREFBUF VREFBUF
+  * @{
+  */
+
+/**
+  * @brief  Enable Internal voltage reference
+  * @rmtoll VREFBUF_CSR  ENVR          LL_VREFBUF_Enable
+  * @retval None
+  */
+__STATIC_INLINE void LL_VREFBUF_Enable(void)
+{
+  SET_BIT(VREFBUF->CSR, VREFBUF_CSR_ENVR);
+}
+
+/**
+  * @brief  Disable Internal voltage reference
+  * @rmtoll VREFBUF_CSR  ENVR          LL_VREFBUF_Disable
+  * @retval None
+  */
+__STATIC_INLINE void LL_VREFBUF_Disable(void)
+{
+  CLEAR_BIT(VREFBUF->CSR, VREFBUF_CSR_ENVR);
+}
+
+/**
+  * @brief  Enable high impedance (VREF+pin is high impedance)
+  * @rmtoll VREFBUF_CSR  HIZ           LL_VREFBUF_EnableHIZ
+  * @retval None
+  */
+__STATIC_INLINE void LL_VREFBUF_EnableHIZ(void)
+{
+  SET_BIT(VREFBUF->CSR, VREFBUF_CSR_HIZ);
+}
+
+/**
+  * @brief  Disable high impedance (VREF+pin is internally connected to the voltage reference buffer output)
+  * @rmtoll VREFBUF_CSR  HIZ           LL_VREFBUF_DisableHIZ
+  * @retval None
+  */
+__STATIC_INLINE void LL_VREFBUF_DisableHIZ(void)
+{
+  CLEAR_BIT(VREFBUF->CSR, VREFBUF_CSR_HIZ);
+}
+
+/**
+  * @brief  Set the Voltage reference scale
+  * @rmtoll VREFBUF_CSR  VRS           LL_VREFBUF_SetVoltageScaling
+  * @param  Scale This parameter can be one of the following values:
+  *         @arg @ref LL_VREFBUF_VOLTAGE_SCALE0
+  *         @arg @ref LL_VREFBUF_VOLTAGE_SCALE1
+  *         @arg @ref LL_VREFBUF_VOLTAGE_SCALE2
+  *         @arg @ref LL_VREFBUF_VOLTAGE_SCALE3
+  * @retval None
+  */
+__STATIC_INLINE void LL_VREFBUF_SetVoltageScaling(uint32_t Scale)
+{
+  MODIFY_REG(VREFBUF->CSR, VREFBUF_CSR_VRS, Scale);
+}
+
+/**
+  * @brief  Get the Voltage reference scale
+  * @rmtoll VREFBUF_CSR  VRS           LL_VREFBUF_GetVoltageScaling
+  * @retval Returned value can be one of the following values:
+  *         @arg @ref LL_VREFBUF_VOLTAGE_SCALE0
+  *         @arg @ref LL_VREFBUF_VOLTAGE_SCALE1
+  *         @arg @ref LL_VREFBUF_VOLTAGE_SCALE2
+  *         @arg @ref LL_VREFBUF_VOLTAGE_SCALE3
+  */
+__STATIC_INLINE uint32_t LL_VREFBUF_GetVoltageScaling(void)
+{
+  return (uint32_t)(READ_BIT(VREFBUF->CSR, VREFBUF_CSR_VRS));
+}
+
+/**
+  * @brief  Check if Voltage reference buffer is ready
+  * @rmtoll VREFBUF_CSR  VRR           LL_VREFBUF_IsVREFReady
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_VREFBUF_IsVREFReady(void)
+{
+  return ((READ_BIT(VREFBUF->CSR, VREFBUF_CSR_VRR) == VREFBUF_CSR_VRR) ? 1UL : 0UL);
+}
+
+/**
+  * @brief  Get the trimming code for VREFBUF calibration
+  * @rmtoll VREFBUF_CCR  TRIM          LL_VREFBUF_GetTrimming
+  * @retval Between 0 and 0x3F
+  */
+__STATIC_INLINE uint32_t LL_VREFBUF_GetTrimming(void)
+{
+  return (uint32_t)(READ_BIT(VREFBUF->CCR, VREFBUF_CCR_TRIM));
+}
+
+/**
+  * @brief  Set the trimming code for VREFBUF calibration (Tune the internal reference buffer voltage)
+  * @rmtoll VREFBUF_CCR  TRIM          LL_VREFBUF_SetTrimming
+  * @param  Value Between 0 and 0x3F
+  * @retval None
+  */
+__STATIC_INLINE void LL_VREFBUF_SetTrimming(uint32_t Value)
+{
+  MODIFY_REG(VREFBUF->CCR, VREFBUF_CCR_TRIM, Value);
+}
+
+/**
+  * @}
+  */
+
 /** @defgroup SYSTEM_LL_EF_FLASH FLASH
   * @{
   */
@@ -2360,6 +2490,35 @@ __STATIC_INLINE void LL_FLASH_SetLatency(uint32_t Latency)
 __STATIC_INLINE uint32_t LL_FLASH_GetLatency(void)
 {
   return (uint32_t)(READ_BIT(FLASH->ACR, FLASH_ACR_LATENCY));
+}
+
+/**
+  * @brief  Set FLASH Programming Delay
+  * @rmtoll FLASH_ACR    DELAY       LL_FLASH_SetProgrammingDelay
+  * @param  Delay This parameter can be one of the following values:
+  *         @arg @ref LL_FLASH_PROGRAMMING_DELAY_0
+  *         @arg @ref LL_FLASH_PROGRAMMING_DELAY_1
+  *         @arg @ref LL_FLASH_PROGRAMMING_DELAY_2
+  *         @arg @ref LL_FLASH_PROGRAMMING_DELAY_3
+  * @retval None
+  */
+__STATIC_INLINE void LL_FLASH_SetProgrammingDelay(uint32_t Delay)
+{
+  MODIFY_REG(FLASH->ACR, FLASH_ACR_WRHIGHFREQ, Delay);
+}
+
+/**
+  * @brief  Get FLASH Programming Delay
+  * @rmtoll FLASH_ACR    DELAY       LL_FLASH_GetProgrammingDelay
+  * @retval Returned value can be one of the following values:
+  *         @arg @ref LL_FLASH_PROGRAMMING_DELAY_0
+  *         @arg @ref LL_FLASH_PROGRAMMING_DELAY_1
+  *         @arg @ref LL_FLASH_PROGRAMMING_DELAY_2
+  *         @arg @ref LL_FLASH_PROGRAMMING_DELAY_3
+  */
+__STATIC_INLINE uint32_t LL_FLASH_GetProgrammingDelay(void)
+{
+  return (uint32_t) READ_BIT(FLASH->ACR, FLASH_ACR_WRHIGHFREQ);
 }
 
 /**
@@ -2448,4 +2607,3 @@ __STATIC_INLINE uint32_t LL_ART_GetBaseAddress(void)
 #endif
 
 #endif /* __STM32H7xx_LL_SYSTEM_H */
-
