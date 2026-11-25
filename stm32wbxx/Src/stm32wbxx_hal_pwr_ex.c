@@ -760,7 +760,7 @@ void HAL_PWREx_DisablePVM3(void)
   *         detection level and to each monitored supply.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_PWREx_ConfigPVM(PWR_PVMTypeDef *sConfigPVM)
+HAL_StatusTypeDef HAL_PWREx_ConfigPVM(const PWR_PVMTypeDef *sConfigPVM)
 {
   HAL_StatusTypeDef status = HAL_OK;
 
@@ -858,7 +858,7 @@ HAL_StatusTypeDef HAL_PWREx_ConfigPVM(PWR_PVMTypeDef *sConfigPVM)
   *        "HAL_PWREx_SMPS_SetMode()".
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_PWREx_ConfigSMPS(PWR_SMPSTypeDef *sConfigSMPS)
+HAL_StatusTypeDef HAL_PWREx_ConfigSMPS(const PWR_SMPSTypeDef *sConfigSMPS)
 {
   HAL_StatusTypeDef status = HAL_OK;
 

@@ -1593,7 +1593,7 @@ uint32_t          HAL_RCCEx_GetRngCLKSource(void);
   */
 
 #if defined(SAI1)
-HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI1(RCC_PLLSAI1InitTypeDef  *PLLSAI1Init);
+HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI1(const RCC_PLLSAI1InitTypeDef  *PLLSAI1Init);
 HAL_StatusTypeDef HAL_RCCEx_DisablePLLSAI1(void);
 #endif /* SAI1 */
 
@@ -1625,7 +1625,7 @@ HAL_StatusTypeDef   HAL_RCCEx_TrimOsc(uint32_t OscillatorType);
   * @{
   */
 
-void              HAL_RCCEx_CRSConfig(RCC_CRSInitTypeDef *pInit);
+void              HAL_RCCEx_CRSConfig(const RCC_CRSInitTypeDef *pInit);
 void              HAL_RCCEx_CRSSoftwareSynchronizationGenerate(void);
 void              HAL_RCCEx_CRSGetSynchronizationInfo(RCC_CRSSynchroInfoTypeDef *pSynchroInfo);
 uint32_t          HAL_RCCEx_CRSWaitSynchronization(uint32_t Timeout);

@@ -378,7 +378,8 @@ __weak void HAL_LCD_MspInit(LCD_HandleTypeDef *hlcd)
   * @param Data specifies LCD Data Value to be written.
   * @retval None
   */
-HAL_StatusTypeDef HAL_LCD_Write(LCD_HandleTypeDef *hlcd, uint32_t RAMRegisterIndex, uint32_t RAMRegisterMask, uint32_t Data)
+HAL_StatusTypeDef HAL_LCD_Write(LCD_HandleTypeDef *hlcd, uint32_t RAMRegisterIndex, uint32_t RAMRegisterMask,
+                                uint32_t Data)
 {
   uint32_t tickstart;
   HAL_LCD_StateTypeDef state = hlcd->State;
@@ -518,7 +519,6 @@ HAL_StatusTypeDef HAL_LCD_UpdateDisplayRequest(LCD_HandleTypeDef *hlcd)
 
   return HAL_OK;
 }
-
 /**
   * @}
   */
@@ -543,7 +543,7 @@ HAL_StatusTypeDef HAL_LCD_UpdateDisplayRequest(LCD_HandleTypeDef *hlcd)
   * @param hlcd LCD handle
   * @retval HAL state
   */
-HAL_LCD_StateTypeDef HAL_LCD_GetState(LCD_HandleTypeDef *hlcd)
+HAL_LCD_StateTypeDef HAL_LCD_GetState(const LCD_HandleTypeDef *hlcd)
 {
   /* Return LCD handle state */
   return hlcd->State;
@@ -554,7 +554,7 @@ HAL_LCD_StateTypeDef HAL_LCD_GetState(LCD_HandleTypeDef *hlcd)
   * @param hlcd LCD handle
   * @retval LCD Error Code
   */
-uint32_t HAL_LCD_GetError(LCD_HandleTypeDef *hlcd)
+uint32_t HAL_LCD_GetError(const LCD_HandleTypeDef *hlcd)
 {
   return hlcd->ErrorCode;
 }

@@ -105,7 +105,7 @@ static void              FLASH_OB_PCROP1AConfig(uint32_t PCROPConfig, uint32_t P
                                                 uint32_t PCROP1AEndAddr);
 static void              FLASH_OB_PCROP1BConfig(uint32_t PCROP1BStartAddr, uint32_t PCROP1BEndAddr);
 static void              FLASH_OB_IPCCBufferAddrConfig(uint32_t IPCCDataBufAddr);
-static void              FLASH_OB_SecureConfig(FLASH_OBProgramInitTypeDef *pOBParam);
+static void              FLASH_OB_SecureConfig(const FLASH_OBProgramInitTypeDef *pOBParam);
 static void              FLASH_OB_GetWRP(uint32_t WRPArea, uint32_t *WRPStartOffset, uint32_t *WRDPEndOffset);
 static uint32_t          FLASH_OB_GetRDP(void);
 static uint32_t          FLASH_OB_GetUser(void);
@@ -150,7 +150,7 @@ static HAL_StatusTypeDef FLASH_OB_ProceedWriteOperation(void);
   *         the pages have been correctly erased)
   * @retval HAL Status
   */
-HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError)
+HAL_StatusTypeDef HAL_FLASHEx_Erase(const FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError)
 {
   HAL_StatusTypeDef status;
   uint32_t index;
@@ -758,7 +758,7 @@ static void FLASH_OB_IPCCBufferAddrConfig(uint32_t IPCCDataBufAddr)
   *         contains the configuration information for the programming
   * @retval void
   */
-static void FLASH_OB_SecureConfig(FLASH_OBProgramInitTypeDef *pOBParam)
+static void FLASH_OB_SecureConfig(const FLASH_OBProgramInitTypeDef *pOBParam)
 {
   uint32_t sfr_reg_val = READ_REG(FLASH->SFR);
   uint32_t srrvr_reg_val = READ_REG(FLASH->SRRVR);

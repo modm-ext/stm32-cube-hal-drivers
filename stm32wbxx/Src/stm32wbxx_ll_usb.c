@@ -64,7 +64,7 @@
   *         the configuration information for the specified USBx peripheral.
   * @retval HAL status
   */
-HAL_StatusTypeDef USB_CoreInit(USB_TypeDef const *USBx, USB_CfgTypeDef cfg)
+HAL_StatusTypeDef USB_CoreInit(const USB_TypeDef *USBx, USB_CfgTypeDef cfg)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(USBx);
@@ -133,7 +133,7 @@ HAL_StatusTypeDef USB_DisableGlobalInt(USB_TypeDef *USBx)
   *            @arg USB_DEVICE_MODE Peripheral mode
   * @retval HAL status
   */
-HAL_StatusTypeDef USB_SetCurrentMode(USB_TypeDef const *USBx, USB_ModeTypeDef mode)
+HAL_StatusTypeDef USB_SetCurrentMode(const USB_TypeDef *USBx, USB_ModeTypeDef mode)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(USBx);
@@ -183,7 +183,7 @@ HAL_StatusTypeDef USB_DevInit(USB_TypeDef *USBx, USB_CfgTypeDef cfg)
             15 means Flush all Tx FIFOs
   * @retval HAL status
   */
-HAL_StatusTypeDef USB_FlushTxFifo(USB_TypeDef const *USBx, uint32_t num)
+HAL_StatusTypeDef USB_FlushTxFifo(const USB_TypeDef *USBx, uint32_t num)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(USBx);
@@ -202,7 +202,7 @@ HAL_StatusTypeDef USB_FlushTxFifo(USB_TypeDef const *USBx, uint32_t num)
   * @param  USBx : Selected device
   * @retval HAL status
   */
-HAL_StatusTypeDef USB_FlushRxFifo(USB_TypeDef const *USBx)
+HAL_StatusTypeDef USB_FlushRxFifo(const USB_TypeDef *USBx)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(USBx);
@@ -790,7 +790,7 @@ HAL_StatusTypeDef  USB_DevDisconnect(USB_TypeDef *USBx)
   * @param  USBx Selected device
   * @retval USB Global Interrupt status
   */
-uint32_t USB_ReadInterrupts(USB_TypeDef const *USBx)
+uint32_t USB_ReadInterrupts(const USB_TypeDef *USBx)
 {
   uint32_t tmpreg;
 
@@ -830,7 +830,7 @@ HAL_StatusTypeDef USB_DeActivateRemoteWakeup(USB_TypeDef *USBx)
   * @param   wNBytes no. of bytes to be copied.
   * @retval None
   */
-void USB_WritePMA(USB_TypeDef const *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
+void USB_WritePMA(const USB_TypeDef *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
 {
   uint32_t n = ((uint32_t)wNBytes + 1U) >> 1;
   uint32_t BaseAddr = (uint32_t)USBx;
@@ -865,7 +865,7 @@ void USB_WritePMA(USB_TypeDef const *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAd
   * @param   wNBytes no. of bytes to be copied.
   * @retval None
   */
-void USB_ReadPMA(USB_TypeDef const *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
+void USB_ReadPMA(const USB_TypeDef *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
 {
   uint32_t n = (uint32_t)wNBytes >> 1;
   uint32_t BaseAddr = (uint32_t)USBx;
@@ -895,6 +895,16 @@ void USB_ReadPMA(USB_TypeDef const *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAdd
     RdVal = *pdwVal;
     *pBuf = (uint8_t)((RdVal >> 0) & 0xFFU);
   }
+}
+
+/**
+  * @brief  Return Current Frame number
+  * @param  USBx Selected device
+  * @retval current frame number
+  */
+uint32_t USB_GetCurrentFrame(USB_TypeDef const *USBx)
+{
+  return (uint32_t)(USBx->FNR & 0x7FFUL);
 }
 
 

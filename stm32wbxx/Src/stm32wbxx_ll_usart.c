@@ -31,7 +31,7 @@
   * @{
   */
 
-#if defined (USART1)
+#if defined(USART1)
 
 /** @addtogroup USART_LL
   * @{

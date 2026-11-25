@@ -920,10 +920,10 @@ void              HAL_PWREx_DisablePVM1(void);
 void              HAL_PWREx_EnablePVM3(void);
 void              HAL_PWREx_DisablePVM3(void);
 
-HAL_StatusTypeDef HAL_PWREx_ConfigPVM(PWR_PVMTypeDef *sConfigPVM);
+HAL_StatusTypeDef HAL_PWREx_ConfigPVM(const PWR_PVMTypeDef *sConfigPVM);
 
 #if defined(PWR_CR5_SMPSEN)
-HAL_StatusTypeDef HAL_PWREx_ConfigSMPS(PWR_SMPSTypeDef *sConfigSMPS);
+HAL_StatusTypeDef HAL_PWREx_ConfigSMPS(const PWR_SMPSTypeDef *sConfigSMPS);
 void              HAL_PWREx_SMPS_SetMode(uint32_t OperatingMode);
 uint32_t          HAL_PWREx_SMPS_GetEffectiveMode(void);
 #endif /* PWR_CR5_SMPSEN */

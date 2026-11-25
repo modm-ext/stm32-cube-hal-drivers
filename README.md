@@ -33,7 +33,7 @@ as the Cube release version in braces:
 - [STM32U0: v1.3.0 created 04-June-2025](https://github.com/STMicroelectronics/stm32u0xx-hal-driver)
 - [STM32U3: v1.4.0 created 03-June-2026](https://github.com/STMicroelectronics/stm32u3xx-hal-driver)
 - [STM32U5: v1.6.3 created 03-June-2026](https://github.com/STMicroelectronics/stm32u5xx-hal-driver)
-- [STM32WB: v1.14.7 created 29-October-2025](https://github.com/STMicroelectronics/stm32wbxx-hal-driver)
+- [STM32WB: v1.14.8 created 28-October-2026](https://github.com/STMicroelectronics/stm32wbxx-hal-driver)
 - [STM32WB0: v1.5.0 created 05-June-2026](https://github.com/STMicroelectronics/stm32wb0x-hal-driver)
 - [STM32WBA: v1.10.0 created 03-June-2026](https://github.com/STMicroelectronics/stm32wbaxx-hal-driver)
 - [STM32WL: v1.6.0 created 05-June-2026](https://github.com/STMicroelectronics/stm32wlxx-hal-driver)

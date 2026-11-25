@@ -689,12 +689,12 @@ typedef struct
 #define RCC_MCO2_INDEX         (0x1UL << RCC_MCO_INDEX_POS)             /*!< MCO2 index */
 /* @endcond */
 
-#define RCC_MCO1_PA8           (RCC_MCO1_INDEX | \
-                                (GPIO_AF0_MCO << RCC_MCO_GPIOAF_POS) | (GPIO_GET_INDEX(GPIOA) << RCC_MCO_GPIOPORT_POS) | GPIO_PIN_8)
+#define RCC_MCO1_PA8           (RCC_MCO1_INDEX | ((uint32_t)GPIO_AF0_MCO << RCC_MCO_GPIOAF_POS) | \
+                                (GPIO_GET_INDEX(GPIOA) << RCC_MCO_GPIOPORT_POS) | GPIO_PIN_8)
 #define RCC_MCO1               RCC_MCO1_PA8         /*!< Alias for compatibility */
 
-#define RCC_MCO2_PB6           (RCC_MCO2_INDEX | \
-                                (GPIO_AF0_MCO << RCC_MCO_GPIOAF_POS) | (GPIO_GET_INDEX(GPIOB) << RCC_MCO_GPIOPORT_POS) | GPIO_PIN_6)
+#define RCC_MCO2_PB6           (RCC_MCO2_INDEX | ((uint32_t)GPIO_AF0_MCO << RCC_MCO_GPIOAF_POS) | \
+                                (GPIO_GET_INDEX(GPIOB) << RCC_MCO_GPIOPORT_POS) | GPIO_PIN_6)
 #define RCC_MCO2               RCC_MCO2_PB6         /*!< Alias for compatibility */
 
 #if defined(RCC_MCO3_SUPPORT)
@@ -702,8 +702,8 @@ typedef struct
 #define RCC_MCO3_INDEX         (0x2UL << RCC_MCO_INDEX_POS)             /*!< MCO3 index */
 /* @endcond */
 
-#define RCC_MCO3_PA15          (RCC_MCO3_INDEX | \
-                                (GPIO_AF6_MCO << RCC_MCO_GPIOAF_POS) | (GPIO_GET_INDEX(GPIOA) << RCC_MCO_GPIOPORT_POS) | GPIO_PIN_15)
+#define RCC_MCO3_PA15          (RCC_MCO3_INDEX | ((uint32_t)GPIO_AF6_MCO << RCC_MCO_GPIOAF_POS) | \
+                                (GPIO_GET_INDEX(GPIOA) << RCC_MCO_GPIOPORT_POS) | GPIO_PIN_15)
 #define RCC_MCO3               RCC_MCO3_PA15        /*!< Alias for compatibility */
 #endif /* RCC_MCO3_SUPPORT */
 

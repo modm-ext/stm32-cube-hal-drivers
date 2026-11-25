@@ -385,7 +385,7 @@ void HAL_PWR_DisableBkUpAccess(void)
   *         "__HAL_PWR_PVD_EXTI_DISABLE_IT()").
   * @retval None
   */
-HAL_StatusTypeDef HAL_PWR_ConfigPVD(PWR_PVDTypeDef *sConfigPVD)
+HAL_StatusTypeDef HAL_PWR_ConfigPVD(const PWR_PVDTypeDef *sConfigPVD)
 {
   /* Check the parameters */
   assert_param(IS_PWR_PVD_LEVEL(sConfigPVD->PVDLevel));

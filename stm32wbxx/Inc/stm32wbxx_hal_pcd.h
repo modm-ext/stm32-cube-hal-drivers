@@ -81,9 +81,6 @@ typedef enum
 } PCD_BCD_MsgTypeDef;
 
 
-
-
-
 typedef USB_TypeDef        PCD_TypeDef;
 typedef USB_CfgTypeDef     PCD_InitTypeDef;
 typedef USB_EPTypeDef      PCD_EPTypeDef;
@@ -109,7 +106,7 @@ typedef struct
   uint32_t                Setup[12];   /*!< Setup packet buffer               */
   PCD_LPM_StateTypeDef    LPM_State;   /*!< LPM State                         */
   uint32_t                BESL;
-
+  uint32_t                FrameNumber; /*!< Store Current Frame number        */
 
   uint32_t lpm_active;                 /*!< Enable or disable the Link Power Management .
                                        This parameter can be set to ENABLE or DISABLE        */
@@ -164,6 +161,7 @@ typedef struct
   */
 #define PCD_PHY_ULPI                 1U
 #define PCD_PHY_EMBEDDED             2U
+#define PCD_HS_PHY_EMBEDDED          3U
 #define PCD_PHY_UTMI                 3U
 /**
   * @}
@@ -202,7 +200,6 @@ typedef struct
 
 #define __HAL_USB_WAKEUP_EXTI_ENABLE_IT()                         EXTI->IMR1 |= USB_WAKEUP_EXTI_LINE
 #define __HAL_USB_WAKEUP_EXTI_DISABLE_IT()                        EXTI->IMR1 &= ~(USB_WAKEUP_EXTI_LINE)
-
 
 /**
   * @}
@@ -339,7 +336,7 @@ HAL_StatusTypeDef HAL_PCD_EP_Flush(PCD_HandleTypeDef *hpcd, uint8_t ep_addr);
 HAL_StatusTypeDef HAL_PCD_EP_Abort(PCD_HandleTypeDef *hpcd, uint8_t ep_addr);
 HAL_StatusTypeDef HAL_PCD_ActivateRemoteWakeup(PCD_HandleTypeDef *hpcd);
 HAL_StatusTypeDef HAL_PCD_DeActivateRemoteWakeup(PCD_HandleTypeDef *hpcd);
-uint32_t          HAL_PCD_EP_GetRxCount(PCD_HandleTypeDef const *hpcd, uint8_t ep_addr);
+uint32_t          HAL_PCD_EP_GetRxCount(const PCD_HandleTypeDef *hpcd, uint8_t ep_addr);
 /**
   * @}
   */
@@ -348,7 +345,7 @@ uint32_t          HAL_PCD_EP_GetRxCount(PCD_HandleTypeDef const *hpcd, uint8_t e
 /** @addtogroup PCD_Exported_Functions_Group4 Peripheral State functions
   * @{
   */
-PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
+PCD_StateTypeDef HAL_PCD_GetState(const PCD_HandleTypeDef *hpcd);
 /**
   * @}
   */
@@ -803,21 +800,21 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
 #define PCD_SET_EP_CNT_RX_REG(pdwReg, wCount) \
   do { \
     uint32_t wNBlocks; \
-    \
-    *(pdwReg) &= 0x3FFU; \
+    uint16_t wRegVal = (uint16_t)(*(pdwReg) & 0x3FFU); \
     \
     if ((wCount) == 0U) \
     { \
-      *(pdwReg) |= (uint16_t)USB_CNTRX_BLSIZE; \
+      wRegVal |= (uint16_t)USB_CNTRX_BLSIZE; \
     } \
     else if ((wCount) <= 62U) \
     { \
-      PCD_CALC_BLK2((pdwReg), (wCount), wNBlocks); \
+      PCD_CALC_BLK2(&wRegVal, (wCount), wNBlocks); \
     } \
     else \
     { \
-      PCD_CALC_BLK32((pdwReg), (wCount), wNBlocks); \
+      PCD_CALC_BLK32(&wRegVal, (wCount), wNBlocks); \
     } \
+    *(pdwReg) = wRegVal; \
   } while(0) /* PCD_SET_EP_CNT_RX_REG */
 
 #define PCD_SET_EP_RX_DBUF0_CNT(USBx, bEpNum, wCount) \
@@ -968,7 +965,6 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
   */
 #define PCD_GET_EP_DBUF0_CNT(USBx, bEpNum)     (PCD_GET_EP_TX_CNT((USBx), (bEpNum)))
 #define PCD_GET_EP_DBUF1_CNT(USBx, bEpNum)     (PCD_GET_EP_RX_CNT((USBx), (bEpNum)))
-
 
 
 /**

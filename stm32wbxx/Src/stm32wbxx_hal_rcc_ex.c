@@ -74,9 +74,9 @@
   * @{
   */
 #if defined(SAI1)
-static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNP(RCC_PLLSAI1InitTypeDef *PLLSAI1);
-static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNQ(RCC_PLLSAI1InitTypeDef *PLLSAI1);
-static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNR(RCC_PLLSAI1InitTypeDef *PLLSAI1);
+static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNP(const RCC_PLLSAI1InitTypeDef *PLLSAI1);
+static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNQ(const RCC_PLLSAI1InitTypeDef *PLLSAI1);
+static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNR(const RCC_PLLSAI1InitTypeDef *PLLSAI1);
 #endif /* SAI1 */
 
 static uint32_t          RCC_PLL_GetFreqDomain_P(void);
@@ -1176,7 +1176,7 @@ uint32_t HAL_RCCEx_GetRngCLKSource(void)
   *         contains the configuration information for the PLLSAI1
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI1(RCC_PLLSAI1InitTypeDef  *PLLSAI1Init)
+HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI1(const RCC_PLLSAI1InitTypeDef  *PLLSAI1Init)
 {
   uint32_t tickstart;
   HAL_StatusTypeDef status = HAL_OK;
@@ -1597,7 +1597,7 @@ HAL_StatusTypeDef HAL_RCCEx_TrimOsc(uint32_t OscillatorType)
   * @param  pInit Pointer on RCC_CRSInitTypeDef structure
   * @retval None
   */
-void HAL_RCCEx_CRSConfig(RCC_CRSInitTypeDef *pInit)
+void HAL_RCCEx_CRSConfig(const RCC_CRSInitTypeDef *pInit)
 {
   uint32_t value;
 
@@ -1901,7 +1901,7 @@ __weak void HAL_RCCEx_CRS_ErrorCallback(uint32_t Error)
   *
   * @retval HAL status
   */
-static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNP(RCC_PLLSAI1InitTypeDef *PLLSAI1)
+static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNP(const RCC_PLLSAI1InitTypeDef *PLLSAI1)
 {
   uint32_t tickstart;
   HAL_StatusTypeDef status = HAL_OK;
@@ -1970,7 +1970,7 @@ static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNP(RCC_PLLSAI1InitTypeDef *PLLSAI1)
   *
   * @retval HAL status
   */
-static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNQ(RCC_PLLSAI1InitTypeDef *PLLSAI1)
+static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNQ(const RCC_PLLSAI1InitTypeDef *PLLSAI1)
 {
   uint32_t tickstart;
   HAL_StatusTypeDef status = HAL_OK;
@@ -2038,7 +2038,7 @@ static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNQ(RCC_PLLSAI1InitTypeDef *PLLSAI1)
   *
   * @retval HAL status
   */
-static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNR(RCC_PLLSAI1InitTypeDef *PLLSAI1)
+static HAL_StatusTypeDef RCCEx_PLLSAI1_ConfigNR(const RCC_PLLSAI1InitTypeDef *PLLSAI1)
 {
   uint32_t tickstart;
   HAL_StatusTypeDef status = HAL_OK;

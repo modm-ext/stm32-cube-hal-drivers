@@ -31,7 +31,7 @@ extern "C" {
   * @{
   */
 
-#if defined (USART1)
+#if defined(USART1)
 
 /** @defgroup USART_LL USART
   * @{
@@ -56,6 +56,10 @@ static const uint32_t USART_PRESCALER_TAB[] =
   32UL,
   64UL,
   128UL,
+  256UL,
+  256UL,
+  256UL,
+  256UL,
   256UL
 };
 /**
@@ -69,7 +73,6 @@ static const uint32_t USART_PRESCALER_TAB[] =
 /**
   * @}
   */
-
 /* Private macros ------------------------------------------------------------*/
 #if defined(USE_FULL_LL_DRIVER)
 /** @defgroup USART_LL_Private_Macros USART Private Macros
