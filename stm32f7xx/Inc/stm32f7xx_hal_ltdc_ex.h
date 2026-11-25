@@ -27,6 +27,8 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal_def.h"
 
+#if defined(HAL_LTDC_MODULE_ENABLED) && defined(HAL_DSI_MODULE_ENABLED)
+
 #if defined (LTDC) && defined (DSI)
 
 #include "stm32f7xx_hal_dsi.h"
@@ -50,8 +52,9 @@ extern "C" {
 /** @addtogroup LTDCEx_Exported_Functions_Group1
   * @{
   */
-HAL_StatusTypeDef HAL_LTDCEx_StructInitFromVideoConfig(LTDC_HandleTypeDef *hltdc, DSI_VidCfgTypeDef *VidCfg);
-HAL_StatusTypeDef HAL_LTDCEx_StructInitFromAdaptedCommandConfig(LTDC_HandleTypeDef *hltdc, DSI_CmdCfgTypeDef *CmdCfg);
+HAL_StatusTypeDef HAL_LTDCEx_StructInitFromVideoConfig(LTDC_HandleTypeDef *hltdc, const DSI_VidCfgTypeDef *VidCfg);
+HAL_StatusTypeDef HAL_LTDCEx_StructInitFromAdaptedCommandConfig(LTDC_HandleTypeDef *hltdc,
+                                                                const DSI_CmdCfgTypeDef *CmdCfg);
 /**
   * @}
   */
@@ -75,6 +78,8 @@ HAL_StatusTypeDef HAL_LTDCEx_StructInitFromAdaptedCommandConfig(LTDC_HandleTypeD
   */
 
 #endif /* LTDC && DSI */
+
+#endif /* HAL_LTCD_MODULE_ENABLED && HAL_DSI_MODULE_ENABLED */
 
 #ifdef __cplusplus
 }

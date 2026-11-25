@@ -51,8 +51,8 @@ typedef struct
   uint32_t DataType;                   /*!< 32-bit data, 16-bit data, 8-bit data or 1-bit string.
                                         This parameter can be a value of @ref CRYP_Data_Type */
   uint32_t KeySize;                    /*!< Used only in AES mode : 128, 192 or 256 bit key length in CRYP1.
-                                        128 or 256 bit key length in TinyAES This parameter can be a value
-                                        of @ref CRYP_Key_Size */
+                                        128 or 256 bit key length in TinyAES This parameter can be a value of
+                                        @ref CRYP_Key_Size */
   uint32_t *pKey;                      /*!< The key used for encryption/decryption */
   uint32_t *pInitVect;                 /*!< The initialization vector used also as initialization
                                          counter in CTR mode */
@@ -112,7 +112,7 @@ typedef struct __CRYP_HandleTypeDef
 
   __IO uint16_t                     CrypOutCount;     /*!< Counter of output data */
 
-  uint16_t                          Size;           /*!< length of input data in word */
+  uint32_t                          Size;           /*!< length of input data in byte */
 
   uint32_t                          Phase;            /*!< CRYP peripheral phase */
 

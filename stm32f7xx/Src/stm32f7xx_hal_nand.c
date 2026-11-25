@@ -520,9 +520,9 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_8b(NAND_HandleTypeDef *hnand, const NAND_Ad
   uint32_t index;
   uint32_t tickstart;
   uint32_t deviceaddress;
-  uint32_t numpagesread = 0U;
   uint32_t nandaddress;
   uint32_t nbpages = NumPageToRead;
+  uint32_t status;
   uint8_t *buff = pBuffer;
 
   /* Check the NAND controller state */
@@ -613,9 +613,11 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_8b(NAND_HandleTypeDef *hnand, const NAND_Ad
         tickstart = HAL_GetTick();
 
         /* Read status until NAND is ready */
-        while (HAL_NAND_Read_Status(hnand) != NAND_READY)
+        do
         {
-          if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+          status = HAL_NAND_Read_Status(hnand);
+
+          if (status == NAND_ERROR)
           {
             /* Update the NAND controller state */
             hnand->State = HAL_NAND_STATE_ERROR;
@@ -623,9 +625,28 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_8b(NAND_HandleTypeDef *hnand, const NAND_Ad
             /* Process unlocked */
             __HAL_UNLOCK(hnand);
 
-            return HAL_TIMEOUT;
+            return HAL_ERROR;
           }
-        }
+
+          if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+          {
+            /* Perform a new read status to check if NAND is now ready */
+            if (HAL_NAND_Read_Status(hnand) == NAND_READY)
+            {
+              break;
+            }
+            else
+            {
+              /* Update the NAND controller state */
+              hnand->State = HAL_NAND_STATE_ERROR;
+
+              /* Process unlocked */
+              __HAL_UNLOCK(hnand);
+
+              return HAL_TIMEOUT;
+            }
+          }
+        } while (status != NAND_READY);
 
         /* Go back to read mode */
         *(__IO uint8_t *)((uint32_t)(deviceaddress | CMD_AREA)) = ((uint8_t)0x00);
@@ -638,9 +659,6 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_8b(NAND_HandleTypeDef *hnand, const NAND_Ad
         *buff = *(__IO uint8_t *)deviceaddress;
         buff++;
       }
-
-      /* Increment read pages number */
-      numpagesread++;
 
       /* Decrement pages to read */
       nbpages--;
@@ -678,9 +696,9 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_16b(NAND_HandleTypeDef *hnand, const NAND_A
   uint32_t index;
   uint32_t tickstart;
   uint32_t deviceaddress;
-  uint32_t numpagesread = 0U;
   uint32_t nandaddress;
   uint32_t nbpages = NumPageToRead;
+  uint32_t status;
   uint16_t *buff = pBuffer;
 
   /* Check the NAND controller state */
@@ -770,9 +788,11 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_16b(NAND_HandleTypeDef *hnand, const NAND_A
         tickstart = HAL_GetTick();
 
         /* Read status until NAND is ready */
-        while (HAL_NAND_Read_Status(hnand) != NAND_READY)
+        do
         {
-          if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+          status = HAL_NAND_Read_Status(hnand);
+
+          if (status == NAND_ERROR)
           {
             /* Update the NAND controller state */
             hnand->State = HAL_NAND_STATE_ERROR;
@@ -780,9 +800,28 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_16b(NAND_HandleTypeDef *hnand, const NAND_A
             /* Process unlocked */
             __HAL_UNLOCK(hnand);
 
-            return HAL_TIMEOUT;
+            return HAL_ERROR;
           }
-        }
+
+          if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+          {
+            /* Perform a new read status to check if NAND is now ready */
+            if (HAL_NAND_Read_Status(hnand) == NAND_READY)
+            {
+              break;
+            }
+            else
+            {
+              /* Update the NAND controller state */
+              hnand->State = HAL_NAND_STATE_ERROR;
+
+              /* Process unlocked */
+              __HAL_UNLOCK(hnand);
+
+              return HAL_TIMEOUT;
+            }
+          }
+        } while (status != NAND_READY);
 
         /* Go back to read mode */
         *(__IO uint8_t *)((uint32_t)(deviceaddress | CMD_AREA)) = ((uint8_t)0x00);
@@ -806,9 +845,6 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_16b(NAND_HandleTypeDef *hnand, const NAND_A
         *buff = *(__IO uint16_t *)deviceaddress;
         buff++;
       }
-
-      /* Increment read pages number */
-      numpagesread++;
 
       /* Decrement pages to read */
       nbpages--;
@@ -846,9 +882,9 @@ HAL_StatusTypeDef HAL_NAND_Write_Page_8b(NAND_HandleTypeDef *hnand, const NAND_A
   uint32_t index;
   uint32_t tickstart;
   uint32_t deviceaddress;
-  uint32_t numpageswritten = 0U;
   uint32_t nandaddress;
   uint32_t nbpages = NumPageToWrite;
+  uint32_t status;
   const uint8_t *buff = pBuffer;
 
   /* Check the NAND controller state */
@@ -946,9 +982,11 @@ HAL_StatusTypeDef HAL_NAND_Write_Page_8b(NAND_HandleTypeDef *hnand, const NAND_A
       tickstart = HAL_GetTick();
 
       /* Read status until NAND is ready */
-      while (HAL_NAND_Read_Status(hnand) != NAND_READY)
+      do
       {
-        if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+        status = HAL_NAND_Read_Status(hnand);
+
+        if (status == NAND_ERROR)
         {
           /* Update the NAND controller state */
           hnand->State = HAL_NAND_STATE_ERROR;
@@ -956,12 +994,28 @@ HAL_StatusTypeDef HAL_NAND_Write_Page_8b(NAND_HandleTypeDef *hnand, const NAND_A
           /* Process unlocked */
           __HAL_UNLOCK(hnand);
 
-          return HAL_TIMEOUT;
+          return HAL_ERROR;
         }
-      }
 
-      /* Increment written pages number */
-      numpageswritten++;
+        if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+        {
+          /* Perform a new read status to check if NAND is now ready */
+          if (HAL_NAND_Read_Status(hnand) == NAND_READY)
+          {
+            break;
+          }
+          else
+          {
+            /* Update the NAND controller state */
+            hnand->State = HAL_NAND_STATE_ERROR;
+
+            /* Process unlocked */
+            __HAL_UNLOCK(hnand);
+
+            return HAL_TIMEOUT;
+          }
+        }
+      } while (status != NAND_READY);
 
       /* Decrement pages to write */
       nbpages--;
@@ -999,9 +1053,9 @@ HAL_StatusTypeDef HAL_NAND_Write_Page_16b(NAND_HandleTypeDef *hnand, const NAND_
   uint32_t index;
   uint32_t tickstart;
   uint32_t deviceaddress;
-  uint32_t numpageswritten = 0U;
   uint32_t nandaddress;
   uint32_t nbpages = NumPageToWrite;
+  uint32_t status;
   const uint16_t *buff = pBuffer;
 
   /* Check the NAND controller state */
@@ -1110,9 +1164,11 @@ HAL_StatusTypeDef HAL_NAND_Write_Page_16b(NAND_HandleTypeDef *hnand, const NAND_
       tickstart = HAL_GetTick();
 
       /* Read status until NAND is ready */
-      while (HAL_NAND_Read_Status(hnand) != NAND_READY)
+      do
       {
-        if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+        status = HAL_NAND_Read_Status(hnand);
+
+        if (status == NAND_ERROR)
         {
           /* Update the NAND controller state */
           hnand->State = HAL_NAND_STATE_ERROR;
@@ -1120,12 +1176,28 @@ HAL_StatusTypeDef HAL_NAND_Write_Page_16b(NAND_HandleTypeDef *hnand, const NAND_
           /* Process unlocked */
           __HAL_UNLOCK(hnand);
 
-          return HAL_TIMEOUT;
+          return HAL_ERROR;
         }
-      }
 
-      /* Increment written pages number */
-      numpageswritten++;
+        if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+        {
+          /* Perform a new read status to check if NAND is now ready */
+          if (HAL_NAND_Read_Status(hnand) == NAND_READY)
+          {
+            break;
+          }
+          else
+          {
+            /* Update the NAND controller state */
+            hnand->State = HAL_NAND_STATE_ERROR;
+
+            /* Process unlocked */
+            __HAL_UNLOCK(hnand);
+
+            return HAL_TIMEOUT;
+          }
+        }
+      } while (status != NAND_READY);
 
       /* Decrement pages to write */
       nbpages--;
@@ -1163,10 +1235,10 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_8b(NAND_HandleTypeDef *hnand, const NA
   uint32_t index;
   uint32_t tickstart;
   uint32_t deviceaddress;
-  uint32_t numsparearearead = 0U;
   uint32_t nandaddress;
   uint32_t columnaddress;
   uint32_t nbspare = NumSpareAreaToRead;
+  uint32_t status;
   uint8_t *buff = pBuffer;
 
   /* Check the NAND controller state */
@@ -1263,9 +1335,11 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_8b(NAND_HandleTypeDef *hnand, const NA
         tickstart = HAL_GetTick();
 
         /* Read status until NAND is ready */
-        while (HAL_NAND_Read_Status(hnand) != NAND_READY)
+        do
         {
-          if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+          status = HAL_NAND_Read_Status(hnand);
+
+          if (status == NAND_ERROR)
           {
             /* Update the NAND controller state */
             hnand->State = HAL_NAND_STATE_ERROR;
@@ -1273,9 +1347,28 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_8b(NAND_HandleTypeDef *hnand, const NA
             /* Process unlocked */
             __HAL_UNLOCK(hnand);
 
-            return HAL_TIMEOUT;
+            return HAL_ERROR;
           }
-        }
+
+          if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+          {
+            /* Perform a new read status to check if NAND is now ready */
+            if (HAL_NAND_Read_Status(hnand) == NAND_READY)
+            {
+              break;
+            }
+            else
+            {
+              /* Update the NAND controller state */
+              hnand->State = HAL_NAND_STATE_ERROR;
+
+              /* Process unlocked */
+              __HAL_UNLOCK(hnand);
+
+              return HAL_TIMEOUT;
+            }
+          }
+        } while (status != NAND_READY);
 
         /* Go back to read mode */
         *(__IO uint8_t *)((uint32_t)(deviceaddress | CMD_AREA)) = ((uint8_t)0x00);
@@ -1288,9 +1381,6 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_8b(NAND_HandleTypeDef *hnand, const NA
         *buff = *(__IO uint8_t *)deviceaddress;
         buff++;
       }
-
-      /* Increment read spare areas number */
-      numsparearearead++;
 
       /* Decrement spare areas to read */
       nbspare--;
@@ -1328,10 +1418,10 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_16b(NAND_HandleTypeDef *hnand, const N
   uint32_t index;
   uint32_t tickstart;
   uint32_t deviceaddress;
-  uint32_t numsparearearead = 0U;
   uint32_t nandaddress;
   uint32_t columnaddress;
   uint32_t nbspare = NumSpareAreaToRead;
+  uint32_t status;
   uint16_t *buff = pBuffer;
 
   /* Check the NAND controller state */
@@ -1428,9 +1518,11 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_16b(NAND_HandleTypeDef *hnand, const N
         tickstart = HAL_GetTick();
 
         /* Read status until NAND is ready */
-        while (HAL_NAND_Read_Status(hnand) != NAND_READY)
+        do
         {
-          if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+          status = HAL_NAND_Read_Status(hnand);
+
+          if (status == NAND_ERROR)
           {
             /* Update the NAND controller state */
             hnand->State = HAL_NAND_STATE_ERROR;
@@ -1438,9 +1530,28 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_16b(NAND_HandleTypeDef *hnand, const N
             /* Process unlocked */
             __HAL_UNLOCK(hnand);
 
-            return HAL_TIMEOUT;
+            return HAL_ERROR;
           }
-        }
+
+          if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+          {
+            /* Perform a new read status to check if NAND is now ready */
+            if (HAL_NAND_Read_Status(hnand) == NAND_READY)
+            {
+              break;
+            }
+            else
+            {
+              /* Update the NAND controller state */
+              hnand->State = HAL_NAND_STATE_ERROR;
+
+              /* Process unlocked */
+              __HAL_UNLOCK(hnand);
+
+              return HAL_TIMEOUT;
+            }
+          }
+        } while (status != NAND_READY);
 
         /* Go back to read mode */
         *(__IO uint8_t *)((uint32_t)(deviceaddress | CMD_AREA)) = ((uint8_t)0x00);
@@ -1453,9 +1564,6 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_16b(NAND_HandleTypeDef *hnand, const N
         *buff = *(__IO uint16_t *)deviceaddress;
         buff++;
       }
-
-      /* Increment read spare areas number */
-      numsparearearead++;
 
       /* Decrement spare areas to read */
       nbspare--;
@@ -1493,10 +1601,10 @@ HAL_StatusTypeDef HAL_NAND_Write_SpareArea_8b(NAND_HandleTypeDef *hnand, const N
   uint32_t index;
   uint32_t tickstart;
   uint32_t deviceaddress;
-  uint32_t numspareareawritten = 0U;
   uint32_t nandaddress;
   uint32_t columnaddress;
   uint32_t nbspare = NumSpareAreaTowrite;
+  uint32_t status;
   const uint8_t *buff = pBuffer;
 
   /* Check the NAND controller state */
@@ -1603,9 +1711,11 @@ HAL_StatusTypeDef HAL_NAND_Write_SpareArea_8b(NAND_HandleTypeDef *hnand, const N
       tickstart = HAL_GetTick();
 
       /* Read status until NAND is ready */
-      while (HAL_NAND_Read_Status(hnand) != NAND_READY)
+      do
       {
-        if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+        status = HAL_NAND_Read_Status(hnand);
+
+        if (status == NAND_ERROR)
         {
           /* Update the NAND controller state */
           hnand->State = HAL_NAND_STATE_ERROR;
@@ -1613,12 +1723,28 @@ HAL_StatusTypeDef HAL_NAND_Write_SpareArea_8b(NAND_HandleTypeDef *hnand, const N
           /* Process unlocked */
           __HAL_UNLOCK(hnand);
 
-          return HAL_TIMEOUT;
+          return HAL_ERROR;
         }
-      }
 
-      /* Increment written spare areas number */
-      numspareareawritten++;
+        if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+        {
+          /* Perform a new read status to check if NAND is now ready */
+          if (HAL_NAND_Read_Status(hnand) == NAND_READY)
+          {
+            break;
+          }
+          else
+          {
+            /* Update the NAND controller state */
+            hnand->State = HAL_NAND_STATE_ERROR;
+
+            /* Process unlocked */
+            __HAL_UNLOCK(hnand);
+
+            return HAL_TIMEOUT;
+          }
+        }
+      } while (status != NAND_READY);
 
       /* Decrement spare areas to write */
       nbspare--;
@@ -1656,10 +1782,10 @@ HAL_StatusTypeDef HAL_NAND_Write_SpareArea_16b(NAND_HandleTypeDef *hnand, const 
   uint32_t index;
   uint32_t tickstart;
   uint32_t deviceaddress;
-  uint32_t numspareareawritten = 0U;
   uint32_t nandaddress;
   uint32_t columnaddress;
   uint32_t nbspare = NumSpareAreaTowrite;
+  uint32_t status;
   const uint16_t *buff = pBuffer;
 
   /* Check the NAND controller state */
@@ -1766,9 +1892,11 @@ HAL_StatusTypeDef HAL_NAND_Write_SpareArea_16b(NAND_HandleTypeDef *hnand, const 
       tickstart = HAL_GetTick();
 
       /* Read status until NAND is ready */
-      while (HAL_NAND_Read_Status(hnand) != NAND_READY)
+      do
       {
-        if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+        status = HAL_NAND_Read_Status(hnand);
+
+        if (status == NAND_ERROR)
         {
           /* Update the NAND controller state */
           hnand->State = HAL_NAND_STATE_ERROR;
@@ -1776,12 +1904,28 @@ HAL_StatusTypeDef HAL_NAND_Write_SpareArea_16b(NAND_HandleTypeDef *hnand, const 
           /* Process unlocked */
           __HAL_UNLOCK(hnand);
 
-          return HAL_TIMEOUT;
+          return HAL_ERROR;
         }
-      }
 
-      /* Increment written spare areas number */
-      numspareareawritten++;
+        if ((HAL_GetTick() - tickstart) > NAND_WRITE_TIMEOUT)
+        {
+          /* Perform a new read status to check if NAND is now ready */
+          if (HAL_NAND_Read_Status(hnand) == NAND_READY)
+          {
+            break;
+          }
+          else
+          {
+            /* Update the NAND controller state */
+            hnand->State = HAL_NAND_STATE_ERROR;
+
+            /* Process unlocked */
+            __HAL_UNLOCK(hnand);
+
+            return HAL_TIMEOUT;
+          }
+        }
+      } while (status != NAND_READY);
 
       /* Decrement spare areas to write */
       nbspare--;

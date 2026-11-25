@@ -395,27 +395,27 @@ extern "C" {
 #if defined (STM32F745xx) || defined (STM32F746xx) || defined (STM32F756xx) || defined (STM32F765xx) ||\
     defined (STM32F767xx) || defined (STM32F769xx) || defined (STM32F777xx) || defined (STM32F779xx) ||\
     defined (STM32F750xx)
-#define GPIO_GET_INDEX(__GPIOx__)   (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                              ((__GPIOx__) == (GPIOB))? 1U :\
-                                              ((__GPIOx__) == (GPIOC))? 2U :\
-                                              ((__GPIOx__) == (GPIOD))? 3U :\
-                                              ((__GPIOx__) == (GPIOE))? 4U :\
-                                              ((__GPIOx__) == (GPIOF))? 5U :\
-                                              ((__GPIOx__) == (GPIOG))? 6U :\
-                                              ((__GPIOx__) == (GPIOH))? 7U :\
-                                              ((__GPIOx__) == (GPIOI))? 8U :\
-                                              ((__GPIOx__) == (GPIOJ))? 9U : 10U)
+#define GPIO_GET_INDEX(__GPIOx__)   (((__GPIOx__) == (GPIOA))? 0UL :\
+                                     ((__GPIOx__) == (GPIOB))? 1UL :\
+                                     ((__GPIOx__) == (GPIOC))? 2UL :\
+                                     ((__GPIOx__) == (GPIOD))? 3UL :\
+                                     ((__GPIOx__) == (GPIOE))? 4UL :\
+                                     ((__GPIOx__) == (GPIOF))? 5UL :\
+                                     ((__GPIOx__) == (GPIOG))? 6UL :\
+                                     ((__GPIOx__) == (GPIOH))? 7UL :\
+                                     ((__GPIOx__) == (GPIOI))? 8UL :\
+                                     ((__GPIOx__) == (GPIOJ))? 9UL : 10UL)
 #endif /* STM32F745xx || STM32F746xx || STM32F756xx || STM32F765xx || STM32F767xx || STM32F769xx || STM32F777xx || STM32F779xx || STM32F750xx */
 
 #if defined (STM32F722xx) || defined (STM32F723xx) || defined (STM32F732xx) || defined (STM32F733xx) || defined (STM32F730xx)
-#define GPIO_GET_INDEX(__GPIOx__)   (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
-                                              ((__GPIOx__) == (GPIOB))? 1U :\
-                                              ((__GPIOx__) == (GPIOC))? 2U :\
-                                              ((__GPIOx__) == (GPIOD))? 3U :\
-                                              ((__GPIOx__) == (GPIOE))? 4U :\
-                                              ((__GPIOx__) == (GPIOF))? 5U :\
-                                              ((__GPIOx__) == (GPIOG))? 6U :\
-                                              ((__GPIOx__) == (GPIOH))? 7U : 8U)
+#define GPIO_GET_INDEX(__GPIOx__)   (((__GPIOx__) == (GPIOA))? 0UL :\
+                                     ((__GPIOx__) == (GPIOB))? 1UL :\
+                                     ((__GPIOx__) == (GPIOC))? 2UL :\
+                                     ((__GPIOx__) == (GPIOD))? 3UL :\
+                                     ((__GPIOx__) == (GPIOE))? 4UL :\
+                                     ((__GPIOx__) == (GPIOF))? 5UL :\
+                                     ((__GPIOx__) == (GPIOG))? 6UL :\
+                                     ((__GPIOx__) == (GPIOH))? 7UL : 8UL)
 #endif /* STM32F722xx || STM32F723xx || STM32F732xx || STM32F733xx || STM32F730xx */
 /**
   * @}

@@ -32,7 +32,134 @@
 <div class="col-sm-12 col-lg-8">
 <h1 id="update-history"><strong>Update History</strong></h1>
 <div class="collapse">
-<input type="checkbox" id="collapse-section20" Checked aria-hidden="true"> <label for="collapse-section20" aria-hidden="true"><strong>V1.3.3 / 23-July-2025</strong></label>
+<input type="checkbox" id="collapse-section21" Checked aria-hidden="true"> <label for="collapse-section21" aria-hidden="true"><strong>V1.3.4 / 27-October-2026</strong></label>
+<div>
+<p><strong>Main Changes</strong></p>
+<ul>
+<li>The STM32F7xx HAL drivers comply with the required <strong>MISRA-C 2004</strong> standard and rules. However, some <strong>MISRA-C 2012</strong> rules are applied to certain IPs to ensure compliance with other STM32 series.
+<ul>
+<li>General updates to comply with MISRA-C 2012 Rules 8.13 and 12.2.</li>
+</ul></li>
+<li><strong>HAL GENERIC</strong>
+<ul>
+<li>Update HAL_InitTick() API in stm32f7xx_hal_timebase_tim_template.c file to initialize the HAL_TIM_PERIOD_ELAPSED_CB_ID callback before starting the timer.</li>
+</ul></li>
+<li><strong>HAL EXTI</strong>
+<ul>
+<li>Add macro UNUSED() to avoid the generation of a warning related to the unused argument ‘Edge’.</li>
+</ul></li>
+<li><strong>HAL DMA</strong>
+<ul>
+<li>Update the HAL_DMA_Start_IT() API to avoid enabling the DMA framing error interrupt.</li>
+</ul></li>
+<li><strong>HAL/LL RTC</strong>
+<ul>
+<li>General updates to comply with MISRA-C 2012 rules:
+<ul>
+<li>Update RTC_ByteToBcd2() function to comply with MISRA-C 2012 rule 17.8.</li>
+<li>Update LL_RTC_WriteReg() and LL_RTC_ReadReg() APIs to comply with MISRA-C 2012 Rule 20.7.</li>
+<li>Update __LL_RTC_CONVERT_BCD2BIN to comply with MISRA C-2012 Rule 12.1.</li>
+<li>Update RTC Timeout condition management to comply with MISRA-C 2012 Rule 13.5.</li>
+</ul></li>
+</ul></li>
+<li><strong>HAL CRYP</strong>
+<ul>
+<li>Update CRYP_GCMCCM_SetHeaderPhase() function to complete the mask array used during the header phase by adding masks for the 1-bit data type.</li>
+<li>Update lenght of input data size management:
+<ul>
+<li>Use uint32_t instead of uint16_t to encrypt more than 65KB at a time.</li>
+</ul></li>
+</ul></li>
+<li><strong>HAL HASH</strong>
+<ul>
+<li>Update HASH_WaitOnFlagUntilTimeout() function to optimize HAL_GetTick() usage in HASH polling loops.</li>
+</ul></li>
+<li><strong>HAL TIM</strong>
+<ul>
+<li>Fix the UIF flag set after TIM_Base_SetConfig() function.</li>
+<li>Update the HAL_TIMEx_ConfigBreakInput() API to comply with MISRA-C 2012 Rule-16.1.</li>
+<li>Fix the complementary channel being systematically disabled by TIM_OCx_SetConfig() function.</li>
+<li>Avoid enabling channel 2 in LL_TIM_HALLSENSOR_Init() API.</li>
+</ul></li>
+<li><strong>HAL DFSDM</strong>
+<ul>
+<li>Fix HAL_DFSDM_IRQHandler() API to correctly handle multiple pending IRQ flags.</li>
+</ul></li>
+<li><strong>HAL LTDC</strong>
+<ul>
+<li>Add DSI and LTDC driver compilation condition to avoid compilation errors when the DSI module is not enabled.</li>
+</ul></li>
+<li><strong>HAL NAND</strong>
+<ul>
+<li>Handle the case when HAL_NAND_Read_Status() API returns NAND_ERROR on other NAND APIs.</li>
+</ul></li>
+<li><strong>HAL NOR</strong>
+<ul>
+<li>Remove 8-bit support from the FMC NOR driver.</li>
+<li>Update HAL_NOR_Read() API to comply with MISRA-C 2012 Rule-11.3.</li>
+</ul></li>
+<li><strong>HAL SMARTCARD</strong>
+<ul>
+<li>Update the configuration sequence to better fit SMARTCARD specifications.</li>
+</ul></li>
+<li><strong>HAL ETH</strong>
+<ul>
+<li>Fix RMII Ethernet issue when switching to 10Mbits/s.</li>
+<li>Fix intermittent RX packet loss from descriptor/DMA race condition.</li>
+<li>Fix an ETH bus fault error for the RX context descriptor and remove the CSC MACTSCR configuration.</li>
+</ul></li>
+<li><strong>HAL CAN</strong>
+<ul>
+<li>Avoid losing FOVR0 or FULL0 status:
+<ul>
+<li>Update HAL_CAN_GetRxMessage() API to use direct access to the RFOMx bit in CAN RFxR register instead of Read-Modify-Write access.</li>
+</ul></li>
+</ul></li>
+<li><strong>HAL I2C</strong>
+<ul>
+<li>Improve and simplify IsDeviceReady() function.</li>
+<li>Remove __HAL_LOCK() API to avoid deadlock if EV IRQ preempts before interrupts are disabled during I2C transfer abort.</li>
+<li>Fix abort issue in IT process during sequential transfer.</li>
+</ul></li>
+<li><strong>HAL SMBUS</strong>
+<ul>
+<li>Improve and simplify IsDeviceReady() function.</li>
+</ul></li>
+<li><strong>HAL SDMMC</strong>
+<ul>
+<li>General SD and MMC driver enhancement.</li>
+<li>Update HAL SD and MMC process to initialize transfer context.</li>
+<li>Update HAL_MMC_IRQHandler() API to clear data flags before DMA multi-block read.</li>
+<li>Update MMC_ReadExtCSD() function to get error states.</li>
+<li>Update HAL_SD_Init() API to configure correctly SDMMC_BUS_WIDE_4B.</li>
+</ul></li>
+<li><strong>HAL UART</strong>
+<ul>
+<li>Fix transfer count underflow when using polling mode.</li>
+<li>Align UART baudrate macros definitions between LL and HAL.</li>
+<li>Fix the transfer count in DMA linked list.</li>
+<li>Remove __HAL_UART_DISABLE(huart) API call from the HAL_UART_DeInit() API.</li>
+</ul></li>
+<li><strong>HAL/LL USB</strong>
+<ul>
+<li>Correct host-channel interrupt handling so required NYET/NAK events are enabled</li>
+<li>Correct HS PHY capability definitions in PCD/HCD headers</li>
+<li>Remove HAL locks from callback registration and un-registration APIs</li>
+<li>Enable ULPI chirp timing delay for device mode operation</li>
+<li>Correct OTG host DMA data toggle accounting, including zero-length and exact-packet boundary transfers</li>
+<li>Mask endpoint addresses before OUT endpoint indexing and endpoint range checks</li>
+<li>Defer OUT halt processing while channel disable is active and clear pending halt status on TXERR</li>
+<li>Use clock scaled USB timeouts and tick-based waits for polling and reset operations</li>
+<li>Clear HCSPLT XACTPOS for middle split transactions</li>
+<li>Validate the receive Data PID reported by OTG_HCTSIZx</li>
+<li>Add optional NAK auto-activation throttling for split control IN host channels</li>
+<li>Add optional auto-reactivation throttling for split control-OUT NYET responses</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section20" aria-hidden="true"> <label for="collapse-section20" aria-hidden="true"><strong>V1.3.3 / 23-July-2025</strong></label>
 <div>
 <p><strong>Main Changes</strong></p>
 <ul>

@@ -344,8 +344,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterCallback(PCD_HandleTypeDef *hpcd,
     hpcd->ErrorCode |= HAL_PCD_ERROR_INVALID_CALLBACK;
     return HAL_ERROR;
   }
-  /* Process locked */
-  __HAL_LOCK(hpcd);
 
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
@@ -423,8 +421,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterCallback(PCD_HandleTypeDef *hpcd,
     status =  HAL_ERROR;
   }
 
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
   return status;
 }
 
@@ -448,9 +444,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterCallback(PCD_HandleTypeDef *hpcd,
 HAL_StatusTypeDef HAL_PCD_UnRegisterCallback(PCD_HandleTypeDef *hpcd, HAL_PCD_CallbackIDTypeDef CallbackID)
 {
   HAL_StatusTypeDef status = HAL_OK;
-
-  /* Process locked */
-  __HAL_LOCK(hpcd);
 
   /* Setup Legacy weak Callbacks  */
   if (hpcd->State == HAL_PCD_STATE_READY)
@@ -532,8 +525,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterCallback(PCD_HandleTypeDef *hpcd, HAL_PCD_Ca
     status =  HAL_ERROR;
   }
 
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
   return status;
 }
 
@@ -557,9 +548,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterDataOutStageCallback(PCD_HandleTypeDef *hpcd,
     return HAL_ERROR;
   }
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->DataOutStageCallback = pCallback;
@@ -572,9 +560,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterDataOutStageCallback(PCD_HandleTypeDef *hpcd,
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -589,9 +574,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterDataOutStageCallback(PCD_HandleTypeDef *hpcd
 {
   HAL_StatusTypeDef status = HAL_OK;
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->DataOutStageCallback = HAL_PCD_DataOutStageCallback; /* Legacy weak DataOutStageCallback  */
@@ -604,9 +586,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterDataOutStageCallback(PCD_HandleTypeDef *hpcd
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -631,9 +610,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterDataInStageCallback(PCD_HandleTypeDef *hpcd,
     return HAL_ERROR;
   }
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->DataInStageCallback = pCallback;
@@ -646,9 +622,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterDataInStageCallback(PCD_HandleTypeDef *hpcd,
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -663,9 +636,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterDataInStageCallback(PCD_HandleTypeDef *hpcd)
 {
   HAL_StatusTypeDef status = HAL_OK;
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->DataInStageCallback = HAL_PCD_DataInStageCallback; /* Legacy weak DataInStageCallback  */
@@ -678,9 +648,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterDataInStageCallback(PCD_HandleTypeDef *hpcd)
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -705,9 +672,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterIsoOutIncpltCallback(PCD_HandleTypeDef *hpcd,
     return HAL_ERROR;
   }
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->ISOOUTIncompleteCallback = pCallback;
@@ -720,9 +684,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterIsoOutIncpltCallback(PCD_HandleTypeDef *hpcd,
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -738,9 +699,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterIsoOutIncpltCallback(PCD_HandleTypeDef *hpcd
 {
   HAL_StatusTypeDef status = HAL_OK;
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->ISOOUTIncompleteCallback = HAL_PCD_ISOOUTIncompleteCallback; /* Legacy weak ISOOUTIncompleteCallback  */
@@ -753,9 +711,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterIsoOutIncpltCallback(PCD_HandleTypeDef *hpcd
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -780,9 +735,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterIsoInIncpltCallback(PCD_HandleTypeDef *hpcd,
     return HAL_ERROR;
   }
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->ISOINIncompleteCallback = pCallback;
@@ -795,9 +747,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterIsoInIncpltCallback(PCD_HandleTypeDef *hpcd,
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -813,9 +762,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterIsoInIncpltCallback(PCD_HandleTypeDef *hpcd)
 {
   HAL_StatusTypeDef status = HAL_OK;
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->ISOINIncompleteCallback = HAL_PCD_ISOINIncompleteCallback; /* Legacy weak ISOINIncompleteCallback  */
@@ -828,9 +774,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterIsoInIncpltCallback(PCD_HandleTypeDef *hpcd)
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -854,9 +797,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterLpmCallback(PCD_HandleTypeDef *hpcd, pPCD_LpmC
     return HAL_ERROR;
   }
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->LPMCallback = pCallback;
@@ -869,9 +809,6 @@ HAL_StatusTypeDef HAL_PCD_RegisterLpmCallback(PCD_HandleTypeDef *hpcd, pPCD_LpmC
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -886,9 +823,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterLpmCallback(PCD_HandleTypeDef *hpcd)
 {
   HAL_StatusTypeDef status = HAL_OK;
 
-  /* Process locked */
-  __HAL_LOCK(hpcd);
-
   if (hpcd->State == HAL_PCD_STATE_READY)
   {
     hpcd->LPMCallback = HAL_PCDEx_LPM_Callback; /* Legacy weak HAL_PCDEx_LPM_Callback  */
@@ -901,9 +835,6 @@ HAL_StatusTypeDef HAL_PCD_UnRegisterLpmCallback(PCD_HandleTypeDef *hpcd)
     /* Return error status */
     status =  HAL_ERROR;
   }
-
-  /* Release Lock */
-  __HAL_UNLOCK(hpcd);
 
   return status;
 }
@@ -1339,8 +1270,9 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
       {
         if (hpcd->OUT_ep[epnum].is_iso_incomplete == 1U)
         {
-          /* Abort current transaction and disable the EP */
-          (void)HAL_PCD_EP_Abort(hpcd, (uint8_t)epnum);
+          /* disable the EP */
+          USBx_OUTEP(epnum)->DOEPCTL |= (USB_OTG_DOEPCTL_SNAK);
+          USBx_OUTEP(epnum)->DOEPCTL |= (USB_OTG_DOEPCTL_EPDIS);
         }
       }
     }
@@ -1374,7 +1306,7 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
 
         if ((hpcd->OUT_ep[epnum].type == EP_TYPE_ISOC) &&
             ((RegVal & USB_OTG_DOEPCTL_EPENA) == USB_OTG_DOEPCTL_EPENA) &&
-            (((RegVal & (0x1U << 16)) >> 16U) == (hpcd->FrameNumber & 0x1U)))
+            (((RegVal & (0x1UL << 16)) >> 16U) == (hpcd->FrameNumber & 0x1U)))
         {
           hpcd->OUT_ep[epnum].is_iso_incomplete = 1U;
 
@@ -1796,7 +1728,7 @@ HAL_StatusTypeDef HAL_PCD_EP_Receive(PCD_HandleTypeDef *hpcd, uint8_t ep_addr, u
   * @param  ep_addr endpoint address
   * @retval Data Size
   */
-uint32_t HAL_PCD_EP_GetRxCount(PCD_HandleTypeDef const *hpcd, uint8_t ep_addr)
+uint32_t HAL_PCD_EP_GetRxCount(const PCD_HandleTypeDef *hpcd, uint8_t ep_addr)
 {
   return hpcd->OUT_ep[ep_addr & EP_ADDR_MSK].xfer_count;
 }
@@ -1853,7 +1785,7 @@ HAL_StatusTypeDef HAL_PCD_EP_SetStall(PCD_HandleTypeDef *hpcd, uint8_t ep_addr)
   }
   else
   {
-    ep = &hpcd->OUT_ep[ep_addr];
+    ep = &hpcd->OUT_ep[ep_addr & EP_ADDR_MSK];
     ep->is_in = 0U;
   }
 
@@ -1884,7 +1816,7 @@ HAL_StatusTypeDef HAL_PCD_EP_ClrStall(PCD_HandleTypeDef *hpcd, uint8_t ep_addr)
 {
   PCD_EPTypeDef *ep;
 
-  if (((uint32_t)ep_addr & 0x0FU) > hpcd->Init.dev_endpoints)
+  if (((uint32_t)ep_addr & EP_ADDR_MSK) > hpcd->Init.dev_endpoints)
   {
     return HAL_ERROR;
   }
@@ -2004,7 +1936,7 @@ HAL_StatusTypeDef HAL_PCD_DeActivateRemoteWakeup(PCD_HandleTypeDef *hpcd)
   * @param  hpcd PCD handle
   * @retval HAL state
   */
-PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd)
+PCD_StateTypeDef HAL_PCD_GetState(const PCD_HandleTypeDef *hpcd)
 {
   return hpcd->State;
 }
@@ -2028,7 +1960,7 @@ HAL_StatusTypeDef HAL_PCD_SetTestMode(const PCD_HandleTypeDef *hpcd, uint8_t tes
     case TEST_SE0_NAK:
     case TEST_PACKET:
     case TEST_FORCE_EN:
-      USBx_DEVICE->DCTL &= ~(0x7U << 4);
+      USBx_DEVICE->DCTL &= ~(0x7UL << 4);
       USBx_DEVICE->DCTL |= (uint32_t)testmode << 4;
       break;
 

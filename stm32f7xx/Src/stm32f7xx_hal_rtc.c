@@ -1635,7 +1635,7 @@ HAL_StatusTypeDef HAL_RTC_PollForAlarmAEvent(RTC_HandleTypeDef *hrtc, uint32_t T
   {
     if (Timeout != HAL_MAX_DELAY)
     {
-      if ((Timeout == 0U) || ((HAL_GetTick() - tickstart) > Timeout))
+      if (((HAL_GetTick() - tickstart) > Timeout) || (Timeout == 0U))
       {
         hrtc->State = HAL_RTC_STATE_TIMEOUT;
         return HAL_TIMEOUT;
@@ -1888,14 +1888,15 @@ HAL_StatusTypeDef RTC_ExitInitMode(RTC_HandleTypeDef *hrtc)
 uint8_t RTC_ByteToBcd2(uint8_t number)
 {
   uint32_t bcdhigh = 0U;
+  uint8_t  bcdlow  = number;
 
-  while (number >= 10U)
+  while (bcdlow >= 10U)
   {
     bcdhigh++;
-    number -= 10U;
+    bcdlow -= (uint8_t)10;
   }
 
-  return ((uint8_t)(bcdhigh << 4U) | number);
+  return ((uint8_t)(bcdhigh << 4U) | bcdlow);
 }
 
 /**

@@ -512,7 +512,7 @@ __STATIC_INLINE void LL_SYSCFG_DisableFastModePlus(uint32_t ConfigFastModePlus)
   */
 __STATIC_INLINE void LL_SYSCFG_SetEXTISource(uint32_t Port, uint32_t Line)
 {
-  MODIFY_REG(SYSCFG->EXTICR[Line & 0xFFU], (Line >> 16U), Port << POSITION_VAL((Line >> 16U)));
+  MODIFY_REG(SYSCFG->EXTICR[Line & 0x03U], (Line >> 16U), Port << POSITION_VAL((Line >> 16U)));
 }
 
 /**
@@ -554,7 +554,7 @@ __STATIC_INLINE void LL_SYSCFG_SetEXTISource(uint32_t Port, uint32_t Line)
   */
 __STATIC_INLINE uint32_t LL_SYSCFG_GetEXTISource(uint32_t Line)
 {
-  return (uint32_t)(READ_BIT(SYSCFG->EXTICR[Line & 0xFFU], (Line >> 16U)) >> POSITION_VAL(Line >> 16U));
+  return (uint32_t)(READ_BIT(SYSCFG->EXTICR[Line & 0x03U], (Line >> 16U)) >> POSITION_VAL(Line >> 16U));
 }
 
 #if defined(SYSCFG_CBR_CLL)

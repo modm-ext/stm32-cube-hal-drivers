@@ -21,7 +21,7 @@
 #define STM32F7xx_LL_SDMMC_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 #if defined(SDMMC1)
@@ -67,7 +67,7 @@ typedef struct
   uint32_t ClockDiv;             /*!< Specifies the clock frequency of the SDMMC controller.
                                       This parameter can be a value between Min_Data = 0 and Max_Data = 255 */
 
-}SDMMC_InitTypeDef;
+} SDMMC_InitTypeDef;
 
 
 /**
@@ -93,7 +93,7 @@ typedef struct
   uint32_t CPSM;                /*!< Specifies whether SDMMC Command path state machine (CPSM)
                                      is enabled or disabled.
                                      This parameter can be a value of @ref SDMMC_LL_CPSM_State            */
-}SDMMC_CmdInitTypeDef;
+} SDMMC_CmdInitTypeDef;
 
 
 /**
@@ -118,7 +118,7 @@ typedef struct
   uint32_t DPSM;                /*!< Specifies whether SDMMC Data path state machine (DPSM)
                                      is enabled or disabled.
                                      This parameter can be a value of @ref SDMMC_LL_DPSM_State         */
-}SDMMC_DataInitTypeDef;
+} SDMMC_DataInitTypeDef;
 
 /**
   * @}
@@ -333,7 +333,7 @@ typedef struct
 #define SDMMC_CLOCK_EDGE_FALLING              SDMMC_CLKCR_NEGEDGE
 
 #define IS_SDMMC_CLOCK_EDGE(EDGE) (((EDGE) == SDMMC_CLOCK_EDGE_RISING) || \
-                                          ((EDGE) == SDMMC_CLOCK_EDGE_FALLING))
+                                   ((EDGE) == SDMMC_CLOCK_EDGE_FALLING))
 /**
   * @}
   */
@@ -345,7 +345,7 @@ typedef struct
 #define SDMMC_CLOCK_BYPASS_ENABLE              SDMMC_CLKCR_BYPASS
 
 #define IS_SDMMC_CLOCK_BYPASS(BYPASS) (((BYPASS) == SDMMC_CLOCK_BYPASS_DISABLE) || \
-                                              ((BYPASS) == SDMMC_CLOCK_BYPASS_ENABLE))
+                                       ((BYPASS) == SDMMC_CLOCK_BYPASS_ENABLE))
 /**
   * @}
   */
@@ -357,7 +357,7 @@ typedef struct
 #define SDMMC_CLOCK_POWER_SAVE_ENABLE          SDMMC_CLKCR_PWRSAV
 
 #define IS_SDMMC_CLOCK_POWER_SAVE(SAVE) (((SAVE) == SDMMC_CLOCK_POWER_SAVE_DISABLE) || \
-                                                ((SAVE) == SDMMC_CLOCK_POWER_SAVE_ENABLE))
+                                         ((SAVE) == SDMMC_CLOCK_POWER_SAVE_ENABLE))
 /**
   * @}
   */
@@ -370,8 +370,8 @@ typedef struct
 #define SDMMC_BUS_WIDE_8B                      SDMMC_CLKCR_WIDBUS_1
 
 #define IS_SDMMC_BUS_WIDE(WIDE) (((WIDE) == SDMMC_BUS_WIDE_1B) || \
-                                        ((WIDE) == SDMMC_BUS_WIDE_4B) || \
-                                        ((WIDE) == SDMMC_BUS_WIDE_8B))
+                                 ((WIDE) == SDMMC_BUS_WIDE_4B) || \
+                                 ((WIDE) == SDMMC_BUS_WIDE_8B))
 /**
   * @}
   */
@@ -383,7 +383,7 @@ typedef struct
 #define SDMMC_HARDWARE_FLOW_CONTROL_ENABLE     SDMMC_CLKCR_HWFC_EN
 
 #define IS_SDMMC_HARDWARE_FLOW_CONTROL(CONTROL) (((CONTROL) == SDMMC_HARDWARE_FLOW_CONTROL_DISABLE) || \
-                                                        ((CONTROL) == SDMMC_HARDWARE_FLOW_CONTROL_ENABLE))
+                                                 ((CONTROL) == SDMMC_HARDWARE_FLOW_CONTROL_ENABLE))
 /**
   * @}
   */
@@ -412,8 +412,8 @@ typedef struct
 #define SDMMC_RESPONSE_LONG                  SDMMC_CMD_WAITRESP
 
 #define IS_SDMMC_RESPONSE(RESPONSE) (((RESPONSE) == SDMMC_RESPONSE_NO)    || \
-                                            ((RESPONSE) == SDMMC_RESPONSE_SHORT) || \
-                                            ((RESPONSE) == SDMMC_RESPONSE_LONG))
+                                     ((RESPONSE) == SDMMC_RESPONSE_SHORT) || \
+                                     ((RESPONSE) == SDMMC_RESPONSE_LONG))
 /**
   * @}
   */
@@ -426,8 +426,8 @@ typedef struct
 #define SDMMC_WAIT_PEND                      SDMMC_CMD_WAITPEND
 
 #define IS_SDMMC_WAIT(WAIT) (((WAIT) == SDMMC_WAIT_NO) || \
-                                    ((WAIT) == SDMMC_WAIT_IT) || \
-                                    ((WAIT) == SDMMC_WAIT_PEND))
+                             ((WAIT) == SDMMC_WAIT_IT) || \
+                             ((WAIT) == SDMMC_WAIT_PEND))
 /**
   * @}
   */
@@ -439,7 +439,7 @@ typedef struct
 #define SDMMC_CPSM_ENABLE                    SDMMC_CMD_CPSMEN
 
 #define IS_SDMMC_CPSM(CPSM) (((CPSM) == SDMMC_CPSM_DISABLE) || \
-                                    ((CPSM) == SDMMC_CPSM_ENABLE))
+                             ((CPSM) == SDMMC_CPSM_ENABLE))
 /**
   * @}
   */
@@ -453,9 +453,9 @@ typedef struct
 #define SDMMC_RESP4                          0x0000000CU
 
 #define IS_SDMMC_RESP(RESP) (((RESP) == SDMMC_RESP1) || \
-                                    ((RESP) == SDMMC_RESP2) || \
-                                    ((RESP) == SDMMC_RESP3) || \
-                                    ((RESP) == SDMMC_RESP4))
+                             ((RESP) == SDMMC_RESP2) || \
+                             ((RESP) == SDMMC_RESP3) || \
+                             ((RESP) == SDMMC_RESP4))
 /**
   * @}
   */
@@ -478,30 +478,34 @@ typedef struct
 #define SDMMC_DATABLOCK_SIZE_16B              SDMMC_DCTRL_DBLOCKSIZE_2
 #define SDMMC_DATABLOCK_SIZE_32B              (SDMMC_DCTRL_DBLOCKSIZE_0|SDMMC_DCTRL_DBLOCKSIZE_2)
 #define SDMMC_DATABLOCK_SIZE_64B              (SDMMC_DCTRL_DBLOCKSIZE_1|SDMMC_DCTRL_DBLOCKSIZE_2)
-#define SDMMC_DATABLOCK_SIZE_128B             (SDMMC_DCTRL_DBLOCKSIZE_0|SDMMC_DCTRL_DBLOCKSIZE_1|SDMMC_DCTRL_DBLOCKSIZE_2)
+#define SDMMC_DATABLOCK_SIZE_128B             (SDMMC_DCTRL_DBLOCKSIZE_0|\
+                                               SDMMC_DCTRL_DBLOCKSIZE_1|SDMMC_DCTRL_DBLOCKSIZE_2)
 #define SDMMC_DATABLOCK_SIZE_256B             SDMMC_DCTRL_DBLOCKSIZE_3
 #define SDMMC_DATABLOCK_SIZE_512B             (SDMMC_DCTRL_DBLOCKSIZE_0|SDMMC_DCTRL_DBLOCKSIZE_3)
 #define SDMMC_DATABLOCK_SIZE_1024B            (SDMMC_DCTRL_DBLOCKSIZE_1|SDMMC_DCTRL_DBLOCKSIZE_3)
-#define SDMMC_DATABLOCK_SIZE_2048B            (SDMMC_DCTRL_DBLOCKSIZE_0|SDMMC_DCTRL_DBLOCKSIZE_1|SDMMC_DCTRL_DBLOCKSIZE_3)
+#define SDMMC_DATABLOCK_SIZE_2048B            (SDMMC_DCTRL_DBLOCKSIZE_0|\
+                                               SDMMC_DCTRL_DBLOCKSIZE_1|SDMMC_DCTRL_DBLOCKSIZE_3)
 #define SDMMC_DATABLOCK_SIZE_4096B            (SDMMC_DCTRL_DBLOCKSIZE_2|SDMMC_DCTRL_DBLOCKSIZE_3)
-#define SDMMC_DATABLOCK_SIZE_8192B            (SDMMC_DCTRL_DBLOCKSIZE_0|SDMMC_DCTRL_DBLOCKSIZE_2|SDMMC_DCTRL_DBLOCKSIZE_3)
-#define SDMMC_DATABLOCK_SIZE_16384B           (SDMMC_DCTRL_DBLOCKSIZE_1|SDMMC_DCTRL_DBLOCKSIZE_2|SDMMC_DCTRL_DBLOCKSIZE_3)
+#define SDMMC_DATABLOCK_SIZE_8192B            (SDMMC_DCTRL_DBLOCKSIZE_0|\
+                                               SDMMC_DCTRL_DBLOCKSIZE_2|SDMMC_DCTRL_DBLOCKSIZE_3)
+#define SDMMC_DATABLOCK_SIZE_16384B           (SDMMC_DCTRL_DBLOCKSIZE_1|\
+                                               SDMMC_DCTRL_DBLOCKSIZE_2|SDMMC_DCTRL_DBLOCKSIZE_3)
 
 #define IS_SDMMC_BLOCK_SIZE(SIZE) (((SIZE) == SDMMC_DATABLOCK_SIZE_1B)    || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_2B)    || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_4B)    || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_8B)    || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_16B)   || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_32B)   || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_64B)   || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_128B)  || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_256B)  || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_512B)  || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_1024B) || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_2048B) || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_4096B) || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_8192B) || \
-                                          ((SIZE) == SDMMC_DATABLOCK_SIZE_16384B))
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_2B)    || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_4B)    || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_8B)    || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_16B)   || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_32B)   || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_64B)   || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_128B)  || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_256B)  || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_512B)  || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_1024B) || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_2048B) || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_4096B) || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_8192B) || \
+                                   ((SIZE) == SDMMC_DATABLOCK_SIZE_16384B))
 /**
   * @}
   */
@@ -513,7 +517,7 @@ typedef struct
 #define SDMMC_TRANSFER_DIR_TO_SDMMC    SDMMC_DCTRL_DTDIR
 
 #define IS_SDMMC_TRANSFER_DIR(DIR) (((DIR) == SDMMC_TRANSFER_DIR_TO_CARD) || \
-                                           ((DIR) == SDMMC_TRANSFER_DIR_TO_SDMMC))
+                                    ((DIR) == SDMMC_TRANSFER_DIR_TO_SDMMC))
 /**
   * @}
   */
@@ -525,7 +529,7 @@ typedef struct
 #define SDMMC_TRANSFER_MODE_STREAM            SDMMC_DCTRL_DTMODE
 
 #define IS_SDMMC_TRANSFER_MODE(MODE) (((MODE) == SDMMC_TRANSFER_MODE_BLOCK) || \
-                                             ((MODE) == SDMMC_TRANSFER_MODE_STREAM))
+                                      ((MODE) == SDMMC_TRANSFER_MODE_STREAM))
 /**
   * @}
   */
@@ -537,7 +541,7 @@ typedef struct
 #define SDMMC_DPSM_ENABLE                     SDMMC_DCTRL_DTEN
 
 #define IS_SDMMC_DPSM(DPSM) (((DPSM) == SDMMC_DPSM_DISABLE) ||\
-                                    ((DPSM) == SDMMC_DPSM_ENABLE))
+                             ((DPSM) == SDMMC_DPSM_ENABLE))
 /**
   * @}
   */
@@ -549,7 +553,7 @@ typedef struct
 #define SDMMC_READ_WAIT_MODE_CLK                  (SDMMC_DCTRL_RWMOD)
 
 #define IS_SDMMC_READWAIT_MODE(MODE) (((MODE) == SDMMC_READ_WAIT_MODE_CLK) || \
-                                             ((MODE) == SDMMC_READ_WAIT_MODE_DATA2))
+                                      ((MODE) == SDMMC_READ_WAIT_MODE_DATA2))
 /**
   * @}
   */
@@ -663,9 +667,9 @@ typedef struct
   */
 
 /** @defgroup SDMMC_LL_Interrupt_Clock Interrupt And Clock Configuration
- *  @brief macros to handle interrupts and specific clock configurations
- * @{
- */
+  *  @brief macros to handle interrupts and specific clock configurations
+  * @{
+  */
 
 /**
   * @brief  Enable the SDMMC device.
@@ -698,7 +702,7 @@ typedef struct
 /**
   * @brief  Enable the SDMMC device interrupt.
   * @param  __INSTANCE__ : Pointer to SDMMC register base
-  * @param  __INTERRUPT__ : specifies the SDMMC interrupt sources to be enabled.
+  * @param  __INTERRUPT__: specifies the SDMMC interrupt sources to be enabled.
   *         This parameter can be one or a combination of the following values:
   *            @arg SDMMC_IT_CCRCFAIL: Command response received (CRC check failed) interrupt
   *            @arg SDMMC_IT_DCRCFAIL: Data block sent/received (CRC check failed) interrupt
@@ -729,8 +733,8 @@ typedef struct
 /**
   * @brief  Disable the SDMMC device interrupt.
   * @param  __INSTANCE__ : Pointer to SDMMC register base
-  * @param  __INTERRUPT__ : specifies the SDMMC interrupt sources to be disabled.
-  *          This parameter can be one or a combination of the following values:
+  * @param  __INTERRUPT__: specifies the SDMMC interrupt sources to be disabled.
+  *         This parameter can be one or a combination of the following values:
   *            @arg SDMMC_IT_CCRCFAIL: Command response received (CRC check failed) interrupt
   *            @arg SDMMC_IT_DCRCFAIL: Data block sent/received (CRC check failed) interrupt
   *            @arg SDMMC_IT_CTIMEOUT: Command response timeout interrupt
@@ -838,7 +842,8 @@ typedef struct
   *            @arg SDMMC_IT_SDIOIT:   SDIO interrupt received interrupt
   * @retval The new state of SDMMC_IT (SET or RESET).
   */
-#define __SDMMC_GET_IT  (__INSTANCE__, __INTERRUPT__)  (((__INSTANCE__)->STA &(__INTERRUPT__)) == (__INTERRUPT__))
+#define __SDMMC_GET_IT  (__INSTANCE__, __INTERRUPT__)  (((__INSTANCE__)->STA &\
+                                                         (__INTERRUPT__)) == (__INTERRUPT__))
 
 /**
   * @brief  Clears the SDMMC's interrupt pending bits.
@@ -941,7 +946,7 @@ HAL_StatusTypeDef SDMMC_Init(SDMMC_TypeDef *SDMMCx, SDMMC_InitTypeDef Init);
 /** @addtogroup HAL_SDMMC_LL_Group2
   * @{
   */
-uint32_t          SDMMC_ReadFIFO(SDMMC_TypeDef *SDMMCx);
+uint32_t          SDMMC_ReadFIFO(const SDMMC_TypeDef *SDMMCx);
 HAL_StatusTypeDef SDMMC_WriteFIFO(SDMMC_TypeDef *SDMMCx, uint32_t *pWriteData);
 /**
   * @}
@@ -953,20 +958,21 @@ HAL_StatusTypeDef SDMMC_WriteFIFO(SDMMC_TypeDef *SDMMCx, uint32_t *pWriteData);
   */
 HAL_StatusTypeDef SDMMC_PowerState_ON(SDMMC_TypeDef *SDMMCx);
 HAL_StatusTypeDef SDMMC_PowerState_OFF(SDMMC_TypeDef *SDMMCx);
-uint32_t          SDMMC_GetPowerState(SDMMC_TypeDef *SDMMCx);
+uint32_t          SDMMC_GetPowerState(const SDMMC_TypeDef *SDMMCx);
 
 /* Command path state machine (CPSM) management functions */
 HAL_StatusTypeDef SDMMC_SendCommand(SDMMC_TypeDef *SDMMCx, SDMMC_CmdInitTypeDef *Command);
-uint8_t           SDMMC_GetCommandResponse(SDMMC_TypeDef *SDMMCx);
-uint32_t          SDMMC_GetResponse(SDMMC_TypeDef *SDMMCx, uint32_t Response);
+uint8_t           SDMMC_GetCommandResponse(const SDMMC_TypeDef *SDMMCx);
+uint32_t          SDMMC_GetResponse(const SDMMC_TypeDef *SDMMCx, uint32_t Response);
 
 /* Data path state machine (DPSM) management functions */
-HAL_StatusTypeDef SDMMC_ConfigData(SDMMC_TypeDef *SDMMCx, SDMMC_DataInitTypeDef* Data);
-uint32_t          SDMMC_GetDataCounter(SDMMC_TypeDef *SDMMCx);
-uint32_t          SDMMC_GetFIFOCount(SDMMC_TypeDef *SDMMCx);
+HAL_StatusTypeDef SDMMC_ConfigData(SDMMC_TypeDef *SDMMCx, SDMMC_DataInitTypeDef *Data);
+uint32_t          SDMMC_GetDataCounter(const SDMMC_TypeDef *SDMMCx);
+uint32_t          SDMMC_GetFIFOCount(const SDMMC_TypeDef *SDMMCx);
 
 /* SDMMC Cards mode management functions */
-HAL_StatusTypeDef SDMMC_SetSDMMCReadWaitMode(SDMMC_TypeDef *SDMMCx, uint32_t SDMMC_ReadWaitMode);
+HAL_StatusTypeDef SDMMC_SetSDMMCReadWaitMode(SDMMC_TypeDef *SDMMCx,
+                                             uint32_t SDMMC_ReadWaitMode);
 /**
   * @}
   */
